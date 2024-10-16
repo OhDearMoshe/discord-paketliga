@@ -1,0 +1,56 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.8.20'
+    id 'application'
+}
+
+group = 'uk.co.mutuallyassureddistraction'
+version = '1.0-SNAPSHOT'
+
+// APP
+def koin_version = '3.3.3'
+def jdbi_version = '3.37.1'
+def kotlin_reflect_version = '1.8.20'
+def kord_version = '1.5.6'
+def hawking_version = '0.1.7'
+def postgres_kt_version = '0.9.3'
+
+// TEST
+def test_container_version = '1.17.6'
+def mockk_version = '1.13.4'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect_version"
+    implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kord_version"
+    implementation "com.zoho:hawking:$hawking_version"
+    implementation "io.github.jan-tennert.supabase:postgrest-kt:$postgres_kt_version"
+
+    // Data Access
+    implementation "org.jdbi:jdbi3-core:$jdbi_version"
+    implementation "org.jdbi:jdbi3-postgres:$jdbi_version"
+    implementation "org.jdbi:jdbi3-kotlin:$jdbi_version"
+    implementation "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
+    implementation("org.postgresql:postgresql:42.5.4")
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation "org.testcontainers:testcontainers:$test_container_version"
+    testImplementation "org.testcontainers:postgresql:$test_container_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+application {
+    mainClassName = 'MainKt'
+}
