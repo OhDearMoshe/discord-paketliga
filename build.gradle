@@ -37,6 +37,10 @@ dependencies {
     implementation "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
     implementation("org.postgresql:postgresql:42.5.4")
 
+    // Logging, Metrics
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation "org.testcontainers:testcontainers:$test_container_version"
     testImplementation "org.testcontainers:postgresql:$test_container_version"
