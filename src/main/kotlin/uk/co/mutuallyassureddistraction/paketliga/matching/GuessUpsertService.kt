@@ -6,6 +6,7 @@ import com.zoho.hawking.language.english.model.DatesFound
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
@@ -20,6 +21,7 @@ class GuessUpsertService(private val guessDao: GuessDao, private val gameDao: Ga
     private val hawkingConfiguration = HawkingConfiguration()
     private val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
     private val javaDtf: java.time.format.DateTimeFormatter = java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm")
+    private val logger = LoggerFactory.getLogger(GuessUpsertService::class.java)
 
     fun guessGame(gameId: Int, guessTime: String, userId: String): GuessGameResponse {
         val guessDates: DatesFound = parseDate(guessTime)
@@ -51,7 +53,6 @@ class GuessUpsertService(private val guessDao: GuessDao, private val gameDao: Ga
             return GuessGameResponse(true, null, gameId, userId, guessDateString)
         } catch (e: Exception) {
             var errorString = "An error has occurred, please re-check your inputs and try again"
-            // TODO logging
             when(e) {
                 is UnableToExecuteStatementException -> {
                     val original = e.cause as SQLException
@@ -65,7 +66,7 @@ class GuessUpsertService(private val guessDao: GuessDao, private val gameDao: Ga
                     }
                 }
                 else -> {
-                    e.printStackTrace()
+                    logger.error("Error while guessing ${e.message} ${e.stackTrace}")
                 }
             }
 

@@ -8,6 +8,7 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import java.time.ZoneId
@@ -19,6 +20,7 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
     private val referenceDate = Date()
     private val hawkingConfiguration = HawkingConfiguration()
     private val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
+    private val logger = LoggerFactory.getLogger(GameUpsertService::class.java)
 
     init {
         hawkingConfiguration.timeZone = ZoneId.systemDefault().toString()
@@ -59,8 +61,7 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
             return gameNameString + " : package arriving between " + startDateString + " and " + closeDateString +
                     ". Guesses accepted until " + guessesCloseDateString
         } catch (e: Exception) {
-            // TODO logging
-            e.printStackTrace()
+            logger.error("Error while creating game${e.message} ${e.stackTrace}")
             return "An error has occurred, please re-check your inputs and try again"
         }
     }
@@ -103,8 +104,7 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
 
             return Pair(arrayOf(gameUpdatedString), userIds)
         } catch (e: Exception) {
-            e.printStackTrace()
-            // TODO logging
+            logger.error("Error while updating game${e.message} ${e.stackTrace}")
             return Pair(arrayOf("An error has occurred, please re-check your inputs and try again"), arrayListOf())
         }
     }
