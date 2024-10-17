@@ -6,8 +6,8 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.8.20'
     id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
     id "org.flywaydb.flyway" version "10.0.0"
 }
 group = 'uk.co.mutuallyassureddistraction'
@@ -31,6 +31,7 @@ repositories {
 }
 
 dependencies {
+
     implementation "io.insert-koin:koin-core:$koin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect_version"
     implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kord_version"
