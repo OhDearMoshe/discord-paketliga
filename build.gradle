@@ -62,5 +62,5 @@ kotlin {
 }
 
 application {
-    mainClassName = 'MainKt'
+    mainClassName = 'uk.co.mutuallyassureddistraction.paketliga.MainKt'
 }
