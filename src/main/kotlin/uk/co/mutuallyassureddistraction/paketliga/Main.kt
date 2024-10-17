@@ -30,7 +30,7 @@ val SERVER_ID = Snowflake(
 private val BOT_TOKEN = env("BOT_TOKEN") // Get the bot' token from the env vars or a .env file
 private class PKLBOT {}
 
-suspend fun main() {
+suspend fun main(args: Array<String>) {
     val logger = LoggerFactory.getLogger(PKLBOT::class.java)
     logger.info("Initialising database")
     val connection = DriverManager.getConnection(PG_JDBC_URL, PG_USERNAME, PG_PASSWORD)
