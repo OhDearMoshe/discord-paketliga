@@ -21,6 +21,7 @@ import java.sql.DriverManager
 import kotlin.math.log
 
 val PG_JDBC_URL = env("POSTGRES_JDBC_URL")
+val PG_USERNAME = env("POSTGRES_USERNAME")
 val PG_PASSWORD = env("POSTGRES_PASSWORD")
 val SERVER_ID = Snowflake(
     env("SERVER_ID").toLong()  // Get the test server ID from the env vars or a .env file
@@ -32,7 +33,7 @@ private class PKLBOT {}
 suspend fun main() {
     val logger = LoggerFactory.getLogger(PKLBOT::class.java)
     logger.info("Initialising database")
-    val connection = DriverManager.getConnection(PG_JDBC_URL, "postgres", PG_PASSWORD)
+    val connection = DriverManager.getConnection(PG_JDBC_URL, PG_USERNAME, PG_PASSWORD)
     if(connection.isValid(0)) {
         val jdbi = getJdbi(connection)
         logger.info("Init DAO's")

@@ -7,9 +7,14 @@ PKL is a bot for guessing package delivery.
 
 ## Usage
 
-Replace the placeholder in `.env` file, namely the `BOT_TOKEN`, `SERVER_ID`, `POSTGRES_JDBC_URL` and `POSTGRES_PASSWORD`. As this is not a global bot (for now?) and we haven't really configure it to have different database for different servers, then the settings should really be personalised for each server that is going to use the bot, hence, different database as well.
+Replace the placeholder in `.env` file, namely the `BOT_TOKEN`, `SERVER_ID`,`POSTGRES_USERNAME`, `POSTGRES_JDBC_URL` and `POSTGRES_PASSWORD`. As this is not a global bot (for now?) and we haven't really configure it to have different database for different servers, then the settings should really be personalised for each server that is going to use the bot, hence, different database as well.
 
 Afterwards, just run up `Main.kt` and the bot will be good to go.
+
+### Local running
+
+Assuming you are using the docker compose file configs for postgres you can use the following command to run the migration
+```./gradlew flywayMigrate -Dflyway.url=jdbc:postgresql://127.0.0.1:666/PKL -Dflyway.user=mypreciousadmin -Dflyway.password=localtestingonlypassword -Dflyway.locations=filesystem:migrations```
 
 ## Commands
 Note: Any time-related parameters are equipped with Natural Language date/time parser. While it is possible to just go with "<b>18:00</b>" as input, the bot would prefer a much verbose input. Here are some examples:
@@ -76,15 +81,12 @@ Show leaderboard sorted by total points descending, with parameters:
 Leaving the parameter empty will resulted in all (played) users to be shown.
 The fields shown are: played, win, lost, and total points.
 
-## TODOs
-While the bot already have commands from creating the game, guessing, ending the game, and leaderboard, there are several features that still under developed based on the rules that was made up by r/London discord peeps:
-
-- [ ] Bonus points for winning player, when their submitted guess is the same as the actual delivery time.
-- [ ] Splitting points between the players (I assume maximum two players in this case), so 0.5 each for them.
-- [ ] If the delivery time is before the guesses close time, the game should be null and void.
-
 ## Contributing / Bug report
 Please open an Issue / PR, and we'll address it soon. 
+
+## Credits
+To Chris, who did the hard bits
+To Mike, who bitched this into existence
 
 
 

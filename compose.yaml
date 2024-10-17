@@ -1,0 +1,15 @@
+services:
+  pkltest:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: localtestingonlypassword
+      POSTGRES_DB: PKL
+      POSTGRES_USER: mypreciousadmin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '666:5432'
+
+volumes:
+  pgdata:

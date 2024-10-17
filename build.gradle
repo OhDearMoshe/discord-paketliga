@@ -1,8 +1,15 @@
+buildscript {
+    dependencies {
+        classpath("org.postgresql:postgresql:42.7.1")
+        classpath("org.flywaydb:flyway-database-postgresql:10.4.1")
+    }
+}
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.8.20'
     id 'application'
+    id "org.flywaydb.flyway" version "10.0.0"
 }
-
 group = 'uk.co.mutuallyassureddistraction'
 version = '1.0-SNAPSHOT'
 
@@ -36,7 +43,6 @@ dependencies {
     implementation "org.jdbi:jdbi3-kotlin:$jdbi_version"
     implementation "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi_version"
     implementation("org.postgresql:postgresql:42.5.4")
-
     // Logging, Metrics
     implementation 'org.slf4j:slf4j-api:2.0.9'
     implementation 'org.slf4j:slf4j-simple:2.0.9'
