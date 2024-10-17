@@ -1,3 +1,4 @@
+@file:JvmName("Pakidge")
 package uk.co.mutuallyassureddistraction.paketliga
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
