@@ -84,3 +84,5 @@ CREATE USER pklbot WITH PASSWORD 'only_for_local_testing';
 GRANT SELECT,INSERT,UPDATE, TRIGGER
       ON GAME, GUESS, WIN, POINT
       TO pklbot;
+
+GRANT USAGE ON SEQUENCE game_gameid_seq, guess_guessid_seq, point_pointid_seq, win_winid_seq TO pklbot;
