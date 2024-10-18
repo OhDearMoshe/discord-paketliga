@@ -94,7 +94,7 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
 
             return Pair(arrayOf(gameUpdatedString), userIds)
         } catch (e: Exception) {
-            logger.error("Error while updating game${e.message} ${e.stackTrace}")
+            logger.error("Error while updating game", e)
             return Pair(arrayOf("An error has occurred, please re-check your inputs and try again"), arrayListOf())
         }
     }

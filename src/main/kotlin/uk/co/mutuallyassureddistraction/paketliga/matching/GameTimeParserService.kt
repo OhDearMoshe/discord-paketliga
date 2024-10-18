@@ -3,8 +3,6 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 import com.zoho.hawking.HawkingTimeParser
 import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import java.time.ZoneId
 import java.util.*
 
@@ -12,7 +10,6 @@ class GameTimeParserService {
 
     //TODO: Externalise these to proper DI
     private val parser = HawkingTimeParser()
-    private val referenceDate = Date()
     private val hawkingConfiguration = HawkingConfiguration()
 
     init {
@@ -50,7 +47,7 @@ class GameTimeParserService {
     }
 
     private fun parseDate(dateString: String): DateTime {
-        val parsedDate = parser.parse(dateString, referenceDate, hawkingConfiguration, "eng")
+        val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
         return parsedDate.parserOutputs[0].dateRange.start
     }
 }
