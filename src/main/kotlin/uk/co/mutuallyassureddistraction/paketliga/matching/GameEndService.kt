@@ -4,6 +4,7 @@ import com.zoho.hawking.HawkingTimeParser
 import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration
 import com.zoho.hawking.language.english.model.DatesFound
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
+import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
@@ -16,6 +17,7 @@ import java.sql.SQLException
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.math.log
 
 class GameEndService(
     private val guessDao: GuessDao,
@@ -27,6 +29,8 @@ class GameEndService(
     private val parser = HawkingTimeParser()
     private val referenceDate = Date()
     private val hawkingConfiguration = HawkingConfiguration()
+
+    private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
     fun endGame(gameId: Int, actualTime: String): Pair<String?, List<Guess>> {
         var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair("No games found.", arrayListOf())
@@ -51,7 +55,7 @@ class GameEndService(
                 }
 
                 else -> {
-                    e.printStackTrace()
+                    logger.error("Error while ending a game", e)
                 }
             }
             return Pair(errorString, arrayListOf())

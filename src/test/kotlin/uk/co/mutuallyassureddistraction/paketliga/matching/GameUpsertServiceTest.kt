@@ -19,6 +19,12 @@ class GameUpsertServiceTest {
     private lateinit var target: GameUpsertService
     private lateinit var dtf: DateTimeFormatter
 
+    val guessWindow = GuessWindow(
+        startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
+        endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z") ,
+        guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
+    )
+
     @BeforeEach
     fun setUp() {
         val gameDao = mockk<GameDao>()
@@ -48,26 +54,24 @@ class GameUpsertServiceTest {
         val member = mockk<Member>()
         every {member.mention} returns "Z"
         val gameName = "Random Amazon package"
-        val returnedString = target.createGame(gameName, "today 2pm",
-            "today 7pm", "today 1pm", "1234", member, "ZLX")
-        val expectedString = getCreateGameExpectedString(gameName, member, "ZLX")
+
+        val returnedString = target.createGame(gameName, guessWindow, "1234", member, "ZLX")
+        val expectedString = "Random Amazon package (#1) by Z : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(expectedString, returnedString)
     }
 
     @DisplayName("createGame() will return string with default 'Game' string and username if game name and member are null")
     @Test
     fun returnStringWithNullGameNameAndMember() {
-        val returnedString = target.createGame(null, "today 2pm",
-            "today 7pm", "today 1pm", "1234", null, "ZLX")
-        val expectedString = getCreateGameExpectedString(null, null, "ZLX")
-        assertEquals(returnedString, expectedString)
+        val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
+        val expectedString = "Game (#1) by ZLX : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
+        assertEquals(expectedString, returnedString)
     }
 
     @DisplayName("updateGame() will return wrong Game ID string")
     @Test
     fun returnStringWithWrongGameIDInformation() {
-        target.createGame(null, "today 2pm",
-            "today 7pm", "today 1pm", "1234", null, "ZLX")
+        target.createGame(null, guessWindow, "1234", null, "ZLX")
         val (updateString, _) = target.updateGame(999, null, null, null)
         val expectedString = "Wrong Game ID, please check your gameId input and try again"
         assertEquals(updateString[0], expectedString)
@@ -76,8 +80,7 @@ class GameUpsertServiceTest {
     @DisplayName("updateGame() will return updated game string")
     @Test
     fun returnStringWithUpdatedGameInfo() {
-        target.createGame(null, "today 2pm",
-            "today 7pm", "today 1pm", "1234", null, "ZLX")
+        target.createGame(null, guessWindow, "1234", null, "ZLX")
         val (updateString, _) = target.updateGame(1, "today 3 pm", null, "today 2 pm")
 
         val startTime = LocalDateTime.now().withHourOfDay(15).withMinuteOfHour(0).toString(dtf)
@@ -91,8 +94,7 @@ class GameUpsertServiceTest {
     @DisplayName("updateGame() will return userIds")
     @Test
     fun returnStringWithUserIds() {
-        target.createGame(null, "today 2pm",
-            "today 7pm", "today 1pm", "1234", null, "ZLX")
+        target.createGame(null, guessWindow, "1234", null, "ZLX")
         val (_, userIds) = target.updateGame(1, "today 3 pm", null, "today 2 pm")
 
         assertEquals(userIds[0], "Z")

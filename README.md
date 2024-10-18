@@ -30,7 +30,7 @@ List of available commands goes below. <br/>
 Create a PKL game, with parameters:
 - `startwindow` - Start window of the delivery time
 - `closewindow` - Closing window of the delivery time
-- `guessesclose` - Guessing deadline for guessers
+- `guessesclose (Optional)` - Guessing deadline for guessers. If none provided it will give a default value of an hour from current time. Or if window begins before then, five minutes before window start
 - `gamename (optional)` - Game name for the created game.
 
 ### `/findgames`

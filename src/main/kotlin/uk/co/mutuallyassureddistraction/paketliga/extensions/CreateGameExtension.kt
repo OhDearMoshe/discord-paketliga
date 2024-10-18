@@ -7,9 +7,14 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
+import uk.co.mutuallyassureddistraction.paketliga.matching.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
+import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessWindowValidator
 
-class CreateGameExtension(private val gameUpsertService: GameUpsertService, private val serverId: Snowflake) : Extension() {
+class CreateGameExtension(private val gameUpsertService: GameUpsertService,
+                          private val gameTimeParserService: GameTimeParserService,
+                          private val guessWindowValidator: GuessWindowValidator,
+                          private val serverId: Snowflake) : Extension() {
     override val name = "createGameExtension"
 
     override suspend fun setup() {
@@ -21,13 +26,21 @@ class CreateGameExtension(private val gameUpsertService: GameUpsertService, priv
             guild(serverId)
 
             action {
-                val createGameResponse = gameUpsertService.createGame(
-                    arguments.gamename, arguments.startwindow, arguments.closewindow, arguments.guessesclose,
-                    user.asUser().id.value.toString(), member?.asMember(), user.asUser().username
-                )
+                val guessWindow = gameTimeParserService.parseGameTime(arguments.startwindow, arguments.closewindow, arguments.guessesclose)
+                val responseMessage: String
+                val validatorResponse = guessWindowValidator.validateGuessWindow(guessWindow)
+                //TODO cleanup assignment
+                if (validatorResponse == null) {
+                    responseMessage = gameUpsertService.createGame(
+                        arguments.gamename, guessWindow,
+                        user.asUser().id.value.toString(), member?.asMember(), user.asUser().username
+                    )
+                } else {
+                    responseMessage = validatorResponse
+                }
 
                 respond {
-                    content = createGameResponse
+                    content = responseMessage
                 }
 
                 //TODO put the logic in try/catch and add logging?
@@ -53,7 +66,7 @@ class CreateGameExtension(private val gameUpsertService: GameUpsertService, priv
             description = "Close window time inputted by user"
         }
 
-        val guessesclose by string {
+        val guessesclose by optionalString {
             name = "guessesclose"
             description = "Close window time inputted by user"
         }
