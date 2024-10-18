@@ -21,3 +21,9 @@ data class GuessWindow(val startTime: ZonedDateTime,
         return guessDeadline.format(dtf)
     }
 }
+
+data class UpdateGuessWindow(val startTime: ZonedDateTime?,
+                             val endTime: ZonedDateTime?,
+                             val guessDeadline: ZonedDateTime?) {
+
+}

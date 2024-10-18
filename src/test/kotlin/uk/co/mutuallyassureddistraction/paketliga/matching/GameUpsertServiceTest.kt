@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,11 +18,18 @@ import kotlin.test.assertEquals
 class GameUpsertServiceTest {
 
     private lateinit var target: GameUpsertService
-    private lateinit var dtf: DateTimeFormatter
+    private val gameValidator: GameValidator = mockk<GameValidator>()
+    private val activeGame = mockk<Game>()
 
     val guessWindow = GuessWindow(
         startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
-        endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z") ,
+        endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
+        guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
+    )
+
+    val updateGuessWindow = UpdateGuessWindow(
+        startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
+        endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
         guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
     )
 
@@ -29,34 +37,44 @@ class GameUpsertServiceTest {
     fun setUp() {
         val gameDao = mockk<GameDao>()
         val guessFinderService = mockk<GuessFinderService>()
-        every {gameDao.createGame(any())} returns getGameStub()
-        every {gameDao.findActiveGameById(999)} returns null
-        every {gameDao.findActiveGameById(1)} returns mockk<Game>()
-        every {gameDao.updateGameTimes(any(), any(), any(), any())} returns getUpdatedGameStub()
+        every { gameDao.createGame(any()) } returns getGameStub()
+        every { gameDao.findActiveGameById(1) } returns activeGame
+        every { gameDao.updateGameTimes(any(), any(), any(), any()) } returns getUpdatedGameStub()
+        every { gameValidator.validateGameCreate(any()) } returns null
+        every { gameValidator.validateGameUpdate(any(), any(), any()) } returns null
 
         val guessesResponse = arrayListOf(
-            GuessFinderService.FindGuessesResponse (
+            GuessFinderService.FindGuessesResponse(
                 guessId = 1,
                 gameId = 1,
                 userId = "Z",
                 guessTime = "\"2023-04-10T10:00:00.000Z[Europe/London]"
             )
         )
-        every {guessFinderService.findGuesses(any(), any())} returns guessesResponse
+        every { guessFinderService.findGuesses(any(), any()) } returns guessesResponse
 
-        target = GameUpsertService(gameDao, guessFinderService)
-        dtf = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
+        target = GameUpsertService(gameDao, guessFinderService, gameValidator)
+    }
+
+    @DisplayName("createGame() if an error message is returned from validator return it")
+    @Test
+    fun returnsErrorMessageWhenCreatingGame() {
+        val expectedString = "A failure"
+        every { gameValidator.validateGameCreate(any()) } returns expectedString
+        val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
+        assertEquals(expectedString, returnedString)
     }
 
     @DisplayName("createGame() will return string with gameName and member mentioned if both values are not null")
     @Test
     fun returnStringWithNonNullGameNameAndMember() {
         val member = mockk<Member>()
-        every {member.mention} returns "Z"
+        every { member.mention } returns "Z"
         val gameName = "Random Amazon package"
 
         val returnedString = target.createGame(gameName, guessWindow, "1234", member, "ZLX")
-        val expectedString = "Random Amazon package (#1) by Z : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
+        val expectedString =
+            "Random Amazon package (#1) by Z : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(expectedString, returnedString)
     }
 
@@ -64,39 +82,29 @@ class GameUpsertServiceTest {
     @Test
     fun returnStringWithNullGameNameAndMember() {
         val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
-        val expectedString = "Game (#1) by ZLX : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
+        val expectedString =
+            "Game (#1) by ZLX : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(expectedString, returnedString)
     }
 
-    @DisplayName("updateGame() will return wrong Game ID string")
+    @DisplayName("updateGame() if validation fails return validation message")
     @Test
-    fun returnStringWithWrongGameIDInformation() {
-        target.createGame(null, guessWindow, "1234", null, "ZLX")
-        val (updateString, _) = target.updateGame(999, null, null, null)
-        val expectedString = "Wrong Game ID, please check your gameId input and try again"
+    fun returnUpdateStringOfFailure() {
+        val expectedString = "A big failure"
+        every { gameValidator.validateGameUpdate(any(), any(), any()) } returns expectedString
+        val (updateString, _) = target.updateGame(1, "OhDear", updateGuessWindow)
+
         assertEquals(updateString[0], expectedString)
+
     }
 
-    @DisplayName("updateGame() will return updated game string")
+    @DisplayName("updateGame() will return updated game string and correct user IDS")
     @Test
     fun returnStringWithUpdatedGameInfo() {
-        target.createGame(null, guessWindow, "1234", null, "ZLX")
-        val (updateString, _) = target.updateGame(1, "today 3 pm", null, "today 2 pm")
+        val (updateString, userIds) = target.updateGame(1, "OhDear", updateGuessWindow)
 
-        val startTime = LocalDateTime.now().withHourOfDay(15).withMinuteOfHour(0).toString(dtf)
-        val closeTime = LocalDateTime.now().withHourOfDay(19).withMinuteOfHour(0).toString(dtf)
-        val guessesCloseTime = LocalDateTime.now().withHourOfDay(14).withMinuteOfHour(0).toString(dtf)
-        val expectedString = "Game #1 updated: package now arriving between " + startTime +
-                " and " + closeTime + ". Guesses accepted until " + guessesCloseTime
+        val expectedString = "Game #1  updated: package now arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(updateString[0], expectedString)
-    }
-
-    @DisplayName("updateGame() will return userIds")
-    @Test
-    fun returnStringWithUserIds() {
-        target.createGame(null, guessWindow, "1234", null, "ZLX")
-        val (_, userIds) = target.updateGame(1, "today 3 pm", null, "today 2 pm")
-
         assertEquals(userIds[0], "Z")
     }
 
@@ -104,29 +112,13 @@ class GameUpsertServiceTest {
         return Game(
             gameId = 1,
             gameName = "Testing testing",
-            windowStart = ZonedDateTime.now().withHour(15).withMinute(0),
-            windowClose = ZonedDateTime.now().withHour(19).withMinute(0),
-            guessesClose = ZonedDateTime.now().withHour(14).withMinute(0),
+            windowStart = guessWindow.startTime,
+            windowClose = guessWindow.endTime,
+            guessesClose = guessWindow.guessDeadline,
             deliveryTime = null,
             userId = "Z",
             gameActive = true
         )
-    }
-
-    private fun getCreateGameExpectedString(userGameName: String?, member: Member?, username: String): String {
-        val startTime = LocalDateTime.now().withHourOfDay(14).withMinuteOfHour(0).toString(dtf)
-        val closeTime = LocalDateTime.now().withHourOfDay(19).withMinuteOfHour(0).toString(dtf)
-        val guessesCloseTime = LocalDateTime.now().withHourOfDay(13).withMinuteOfHour(0).toString(dtf)
-
-        val gameName = userGameName ?: "Game"
-
-        return if(member != null) {
-            "$gameName (#1) by ${member.mention}" + " : package arriving between " + startTime + " and " + closeTime +
-                    ". Guesses accepted until " + guessesCloseTime
-        } else {
-            "$gameName (#1) by $username" + " : package arriving between " + startTime + " and " + closeTime +
-                    ". Guesses accepted until " + guessesCloseTime
-        }
     }
 
     private fun getGameStub(): Game {
