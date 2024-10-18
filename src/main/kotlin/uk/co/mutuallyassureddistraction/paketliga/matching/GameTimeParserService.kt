@@ -26,7 +26,17 @@ class GameTimeParserService {
             endTime = closeDate.toGregorianCalendar().toZonedDateTime(),
             guessDeadline = guessDeadline.toGregorianCalendar().toZonedDateTime()
         )
+    }
 
+    fun parseGameUpdateTime(startWindow: String?, closeWindow: String?, guessesClose: String?): UpdateGuessWindow {
+        val startDate = startWindow?.let { parseDate(it) }
+        val closeDate = closeWindow?.let { parseDate(it) }
+        val guessDeadline = guessesClose?.let { parseDate(it) }
+        return UpdateGuessWindow(
+            startTime = startDate?.toGregorianCalendar()?.toZonedDateTime(),
+            endTime = closeDate?.toGregorianCalendar()?.toZonedDateTime(),
+            guessDeadline = guessDeadline?.toGregorianCalendar()?.toZonedDateTime()
+        )
     }
 
     private fun resolveCloseTime(startDate: DateTime, guessesClose: String? ): DateTime {

@@ -9,9 +9,12 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.types.respondEphemeral
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
+import uk.co.mutuallyassureddistraction.paketliga.matching.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 
-class UpdateGameExtension(private val gameUpsertService: GameUpsertService, private val serverId: Snowflake) : Extension() {
+class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
+                          private val gameTimeParserService: GameTimeParserService,
+                          private val serverId: Snowflake) : Extension() {
     override val name = "updateGameExtension"
     override suspend fun setup() {
         publicSlashCommand(::UpdateGameArgs) {
@@ -31,8 +34,9 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService, priv
                         content = "No time specified, the game will not be updated"
                     }
                 } else {
+                    val uddateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
                     val (responseString, userIds) = gameUpsertService.updateGame(
-                        gameId, startWindow, closeWindow, guessesClose
+                        gameId, user.asUser().id.value.toString(), uddateWindow
                     )
 
                     respond {

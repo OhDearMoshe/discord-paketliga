@@ -38,9 +38,9 @@ interface GameDao {
           WHERE gameId = :id
           RETURNING *
      """)
-     fun updateGameTimes(@Bind("id")gameId: Int, @Bind("windowStart")windowStart: ZonedDateTime?,
-                         @Bind("windowClose")windowClose: ZonedDateTime?,
-                         @Bind("guessesClose")guessesClose: ZonedDateTime?): Game
+     fun updateGameTimes(@Bind("id")gameId: Int, @Bind("windowStart") windowStart: ZonedDateTime?,
+                         @Bind("windowClose") windowClose: ZonedDateTime?,
+                         @Bind("guessesClose") guessesClose: ZonedDateTime?): Game
 
      @SqlQuery("""
           UPDATE Game
