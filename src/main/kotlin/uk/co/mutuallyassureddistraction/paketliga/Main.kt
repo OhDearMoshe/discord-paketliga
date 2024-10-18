@@ -50,8 +50,9 @@ suspend fun main(args: Array<String>) {
         val gameResultResolver = GameResultResolver()
         val gameEndService = GameEndService(guessDao, gameDao, pointDao, winDao, gameResultResolver)
         val leaderboardService = LeaderboardService(pointDao)
+        val gameTimeParserService = GameTimeParserService()
 
-        val createGameExtension = CreateGameExtension(gameUpsertService, SERVER_ID)
+        val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, SERVER_ID)

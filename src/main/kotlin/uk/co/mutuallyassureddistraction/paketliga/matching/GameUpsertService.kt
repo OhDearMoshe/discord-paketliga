@@ -26,30 +26,19 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
         hawkingConfiguration.timeZone = ZoneId.systemDefault().toString()
     }
 
-    fun createGame(userGameName: String?, startWindow: String, closeWindow: String, guessesClose: String,
+    fun createGame(userGameName: String?, guessWindow: GuessWindow,
                    userId: String, member: Member?, username: String): String {
         try {
-            val startDates: DatesFound = parseDate(startWindow)
-            val closeDates: DatesFound = parseDate(closeWindow)
-            val guessesCloseDates: DatesFound = parseDate(guessesClose)
-
             // Start or end doesn't matter if we only have one date at a time
-            val startDate = startDates.parserOutputs[0].dateRange.start
-            val closeDate = closeDates.parserOutputs[0].dateRange.start
-            val guessesCloseDate = guessesCloseDates.parserOutputs[0].dateRange.start
             val gameName = userGameName ?: "Game"
-
-            val startDateString = startDate.toString(dtf)
-            val closeDateString = closeDate.toString(dtf)
-            val guessesCloseDateString = guessesCloseDate.toString(dtf)
 
             val createdGame = gameDao.createGame(
                 Game(
                     gameId = null,
                     gameName = gameName,
-                    windowStart = startDate.toGregorianCalendar().toZonedDateTime(),
-                    windowClose = closeDate.toGregorianCalendar().toZonedDateTime(),
-                    guessesClose = guessesCloseDate.toGregorianCalendar().toZonedDateTime(),
+                    windowStart = guessWindow.startAsDate(),
+                    windowClose = guessWindow.endAsDate(),
+                    guessesClose = guessWindow.deadlineAsDate(),
                     deliveryTime = null,
                     userId = userId,
                     gameActive = true
@@ -57,11 +46,10 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
             )
 
             val gameNameString = gameNameStringMaker(gameName, member, username, createdGame.gameId!!)
+            return "$gameNameString : package arriving between ${guessWindow.startTime} and ${guessWindow.endTime}. Guesses accepted until ${guessWindow.endTime}"
 
-            return gameNameString + " : package arriving between " + startDateString + " and " + closeDateString +
-                    ". Guesses accepted until " + guessesCloseDateString
         } catch (e: Exception) {
-            logger.error("Error while creating game${e.message} ${e.stackTrace}")
+            logger.error("Error while creating game", e)
             return "An error has occurred, please re-check your inputs and try again"
         }
     }
