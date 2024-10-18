@@ -16,6 +16,7 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.WinDao
 import uk.co.mutuallyassureddistraction.paketliga.extensions.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.*
+import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessWindowValidator
 import java.sql.Connection
 import java.sql.DriverManager
 import kotlin.math.log
@@ -51,8 +52,9 @@ suspend fun main(args: Array<String>) {
         val gameEndService = GameEndService(guessDao, gameDao, pointDao, winDao, gameResultResolver)
         val leaderboardService = LeaderboardService(pointDao)
         val gameTimeParserService = GameTimeParserService()
+        val guessWindowValidator = GuessWindowValidator()
 
-        val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
+        val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, guessWindowValidator, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, SERVER_ID)

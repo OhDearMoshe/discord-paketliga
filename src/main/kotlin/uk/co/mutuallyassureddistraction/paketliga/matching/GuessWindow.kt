@@ -5,19 +5,19 @@ import java.time.format.DateTimeFormatter
 
 private val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm")
 
-data class GuessWindow(val startTime: String,
-                       val endTime: String,
-                        val guessDeadline: String){
+data class GuessWindow(val startTime: ZonedDateTime,
+                       val endTime: ZonedDateTime,
+                        val guessDeadline: ZonedDateTime){
 
-    fun startAsDate(): ZonedDateTime {
-        return ZonedDateTime.of(LocalDate.parse(startTime, dtf), LocalTime.now(), ZoneId.systemDefault())
+    fun startAsHumanFriendlyString(): String {
+        return startTime.format(dtf)
     }
 
-    fun endAsDate(): ZonedDateTime {
-        return ZonedDateTime.of(LocalDate.parse(endTime, dtf), LocalTime.now(), ZoneId.systemDefault())
+    fun endAsHumanFriendlyString(): String {
+        return endTime.format(dtf)
     }
 
-    fun deadlineAsDate(): ZonedDateTime {
-        return ZonedDateTime.of(LocalDate.parse(guessDeadline, dtf), LocalTime.now(), ZoneId.systemDefault())
+    fun deadlineAsHumanFriendlyString(): String {
+        return guessDeadline.format(dtf)
     }
 }

@@ -36,9 +36,9 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
                 Game(
                     gameId = null,
                     gameName = gameName,
-                    windowStart = guessWindow.startAsDate(),
-                    windowClose = guessWindow.endAsDate(),
-                    guessesClose = guessWindow.deadlineAsDate(),
+                    windowStart = guessWindow.startTime,
+                    windowClose = guessWindow.endTime,
+                    guessesClose = guessWindow.guessDeadline,
                     deliveryTime = null,
                     userId = userId,
                     gameActive = true
@@ -46,7 +46,9 @@ class GameUpsertService(private val gameDao: GameDao, private val guessFinderSer
             )
 
             val gameNameString = gameNameStringMaker(gameName, member, username, createdGame.gameId!!)
-            return "$gameNameString : package arriving between ${guessWindow.startTime} and ${guessWindow.endTime}. Guesses accepted until ${guessWindow.endTime}"
+            return "$gameNameString : package arriving between ${guessWindow.startAsHumanFriendlyString()} and " +
+                    "${guessWindow.endAsHumanFriendlyString()}." +
+                    " Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
         } catch (e: Exception) {
             logger.error("Error while creating game", e)

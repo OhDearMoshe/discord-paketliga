@@ -21,9 +21,9 @@ class GameTimeParserServiceTest {
         val deadline = "15/10/2024 18:00"
 
         val result = target.parseGameTime(startTime, endTime, deadline)
-        assertEquals("15-Oct-24 19:00", result.startTime)
-        assertEquals("15-Oct-24 22:00", result.endTime)
-        assertEquals("15-Oct-24 18:00", result.guessDeadline)
+        assertEquals("15-Oct-24 19:00", result.startAsHumanFriendlyString())
+        assertEquals("15-Oct-24 22:00", result.endAsHumanFriendlyString())
+        assertEquals("15-Oct-24 18:00", result.deadlineAsHumanFriendlyString())
     }
 
     @DisplayName("parseGameTime() A guess with a defined start and end but no deadline should default the deadline to an hour from now")
@@ -34,9 +34,9 @@ class GameTimeParserServiceTest {
         val expectedDeadline = DateTime.now().plusHours(1);
 
         val result = target.parseGameTime(startDate.toString(inputFormat), endDate.toString(inputFormat), null)
-        assertEquals(startDate.toString(resultFormat), result.startTime)
-        assertEquals(endDate.toString(resultFormat), result.endTime)
-        assertEquals(expectedDeadline.toString(resultFormat), result.guessDeadline)
+        assertEquals(startDate.toString(resultFormat), result.startAsHumanFriendlyString())
+        assertEquals(endDate.toString(resultFormat), result.endAsHumanFriendlyString())
+        assertEquals(expectedDeadline.toString(resultFormat), result.deadlineAsHumanFriendlyString())
     }
 
     @DisplayName("parseGameTime() A guess with a defined start and end but no deadline should default to five minutes before the StartWindow if StartWindow is closer than an hour from now")
@@ -47,8 +47,8 @@ class GameTimeParserServiceTest {
         val expectedDeadline = DateTime.now().plusMinutes(25);
 
         val result = target.parseGameTime(startDate.toString(inputFormat), endDate.toString(inputFormat), null)
-        assertEquals(startDate.toString(resultFormat), result.startTime)
-        assertEquals(endDate.toString(resultFormat), result.endTime)
-        assertEquals(expectedDeadline.toString(resultFormat), result.guessDeadline)
+        assertEquals(startDate.toString(resultFormat), result.startAsHumanFriendlyString())
+        assertEquals(endDate.toString(resultFormat), result.endAsHumanFriendlyString())
+        assertEquals(expectedDeadline.toString(resultFormat), result.deadlineAsHumanFriendlyString())
     }
 }

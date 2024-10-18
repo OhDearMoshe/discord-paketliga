@@ -14,7 +14,6 @@ class GameTimeParserService {
     private val parser = HawkingTimeParser()
     private val referenceDate = Date()
     private val hawkingConfiguration = HawkingConfiguration()
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
 
     init {
         hawkingConfiguration.timeZone = ZoneId.systemDefault().toString()
@@ -26,9 +25,9 @@ class GameTimeParserService {
         val guessDeadline = resolveCloseTime(startDate, guessesClose)
 
         return GuessWindow(
-            startTime = startDate.toString(dateTimeFormatter),
-            endTime = closeDate.toString(dateTimeFormatter),
-            guessDeadline = guessDeadline.toString(dateTimeFormatter)
+            startTime = startDate.toGregorianCalendar().toZonedDateTime(),
+            endTime = closeDate.toGregorianCalendar().toZonedDateTime(),
+            guessDeadline = guessDeadline.toGregorianCalendar().toZonedDateTime()
         )
 
     }

@@ -9,9 +9,11 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
+import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessWindowValidator
 
 class CreateGameExtension(private val gameUpsertService: GameUpsertService,
                           private val gameTimeParserService: GameTimeParserService,
+                          private val guessWindowValidator: GuessWindowValidator,
                           private val serverId: Snowflake) : Extension() {
     override val name = "createGameExtension"
 
@@ -25,13 +27,20 @@ class CreateGameExtension(private val gameUpsertService: GameUpsertService,
 
             action {
                 val guessWindow = gameTimeParserService.parseGameTime(arguments.startwindow, arguments.closewindow, arguments.guessesclose)
-                val createGameResponse = gameUpsertService.createGame(
-                    arguments.gamename, guessWindow,
-                    user.asUser().id.value.toString(), member?.asMember(), user.asUser().username
-                )
+                val responseMessage: String
+                val validatorResponse = guessWindowValidator.validateGuessWindow(guessWindow)
+                //TODO cleanup assignment
+                if (validatorResponse == null) {
+                    responseMessage = gameUpsertService.createGame(
+                        arguments.gamename, guessWindow,
+                        user.asUser().id.value.toString(), member?.asMember(), user.asUser().username
+                    )
+                } else {
+                    responseMessage = validatorResponse
+                }
 
                 respond {
-                    content = createGameResponse
+                    content = responseMessage
                 }
 
                 //TODO put the logic in try/catch and add logging?
