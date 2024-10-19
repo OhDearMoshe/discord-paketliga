@@ -36,6 +36,8 @@ class GameEndServiceTest {
         every {gameDao.findActiveGameById(0)} returns searchedGame
         every {gameDao.findActiveGameById(1)} returns getGameStubEarly()
         every {gameDao.findActiveGameById(2)} returns getGameStubLate()
+        every {gameDao.findActiveGameById(3)} returns getGameStubLateSameDay()
+        every {gameDao.findActiveGameById(4)} returns getGameStubEarlyAfterWindowClose()
         every {gameDao.finishGame(any(), any())} returns searchedGame
         every {gameDao.voidGameById(any())} returns searchedGame
 
@@ -71,7 +73,7 @@ class GameEndServiceTest {
     @DisplayName("endGame() will void game if late delivery")
     @Test
     fun willVoidGameIAfterDeliveryWindow() {
-        val returned = target.endGame(1, deliveryTime)
+        val returned = target.endGame(2, deliveryTime)
         assertEquals(returned.first, "Delivery time is outside of delivery window game void")
         assertNull(returned.second)
     }
@@ -80,6 +82,24 @@ class GameEndServiceTest {
     @Test
     fun returnNullStringWithWinners() {
         val returned = target.endGame(0, deliveryTime)
+        assertEquals(returned.first, null)
+        assertEquals(returned.second!!.winners.size, 1)
+        assertEquals(returned.second!!.winners[0].userId, "Z")
+    }
+
+    @DisplayName("endGame() will return null string and array of winning guesses if late but same day delivery")
+    @Test
+    fun returnNullStringWithWinnersLateAndSameDay() {
+        val returned = target.endGame(3, deliveryTime)
+        assertEquals(returned.first, null)
+        assertEquals(returned.second!!.winners.size, 1)
+        assertEquals(returned.second!!.winners[0].userId, "Z")
+    }
+
+    @DisplayName("endGame() will return null string and array of winning guesses if early but still below guess close")
+    @Test
+    fun returnNullStringWithWinnersEarlyGuessClose() {
+        val returned = target.endGame(4, deliveryTime)
         assertEquals(returned.first, null)
         assertEquals(returned.second!!.winners.size, 1)
         assertEquals(returned.second!!.winners[0].userId, "Z")
@@ -120,9 +140,22 @@ class GameEndServiceTest {
         return Game(
             gameId = 1,
             gameName = "Testing testing",
-            windowStart = ZonedDateTime.parse("2024-10-15T19:00:01Z"),
+            windowStart = ZonedDateTime.parse("2024-10-15T18:00:01Z"),
             windowClose = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
-            guessesClose = ZonedDateTime.parse("2024-10-15T16:00:00Z"),
+            guessesClose = ZonedDateTime.parse("2024-10-15T19:00:01Z"),
+            deliveryTime = null,
+            userId = "Z",
+            gameActive = true
+        )
+    }
+
+    private fun getGameStubEarlyAfterWindowClose(): Game {
+        return Game(
+            gameId = 1,
+            gameName = "Testing testing",
+            windowStart = ZonedDateTime.parse("2024-10-15T18:00:01Z"),
+            windowClose = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
+            guessesClose = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
             deliveryTime = null,
             userId = "Z",
             gameActive = true
@@ -130,6 +163,19 @@ class GameEndServiceTest {
     }
 
     private fun getGameStubLate(): Game {
+        return Game(
+            gameId = 1,
+            gameName = "Testing testing",
+            windowStart = ZonedDateTime.parse("2024-10-14T18:00:00Z"),
+            windowClose = ZonedDateTime.parse("2024-10-14T18:59:59Z"),
+            guessesClose = ZonedDateTime.parse("2024-10-14T16:00:00Z"),
+            deliveryTime = null,
+            userId = "Z",
+            gameActive = true
+        )
+    }
+
+    private fun getGameStubLateSameDay(): Game {
         return Game(
             gameId = 1,
             gameName = "Testing testing",

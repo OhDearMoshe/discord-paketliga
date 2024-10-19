@@ -47,7 +47,7 @@ class GameEndService(
     }
 
     private fun isGameVoid(game: Game, deliveryTime: DeliveryTime): Boolean {
-        return deliveryTime.deliveryTime < game.windowStart || deliveryTime.deliveryTime > game.windowClose
+        return deliveryTime.deliveryTime < game.guessesClose || deliveryTime.deliveryTime.dayOfYear > game.windowClose.dayOfYear
     }
 
     fun handleExceptions(e: Exception, zonedDeliveryDateTime: ZonedDateTime, gameId: Int): Pair<String?, GameResult?> {
