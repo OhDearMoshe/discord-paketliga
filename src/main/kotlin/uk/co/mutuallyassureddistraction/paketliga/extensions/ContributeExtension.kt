@@ -9,7 +9,7 @@ class ContributeExtension (private val serverId: Snowflake) : Extension() {
     override val name = "contributeExtension"
     override suspend fun setup() {
         publicSlashCommand {
-            name = "pklcontrbiute"
+            name = "pklcontribute"
             description = "Explain how to raise bugs or contribute"
             guild(serverId)
 

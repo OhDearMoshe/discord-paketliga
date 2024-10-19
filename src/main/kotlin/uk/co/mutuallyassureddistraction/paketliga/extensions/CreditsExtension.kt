@@ -6,11 +6,11 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 
 class CreditsExtension (private val serverId: Snowflake) : Extension() {
-    override val name = "creditsExtension"
+    override val name = "creditsextension"
     override suspend fun setup() {
         publicSlashCommand {
-            name = "pklhelp"
-            description = "Explain the rules and general info"
+            name = "pklcredits"
+            description = "Roll credits"
             guild(serverId)
 
             action {
