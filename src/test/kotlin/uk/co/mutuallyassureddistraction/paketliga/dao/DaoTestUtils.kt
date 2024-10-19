@@ -35,33 +35,17 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
     jdbi.withHandle<IntArray, Exception> {
         val batch: Batch = it.createBatch()
         batch.add("""
-            CREATE TABLE GAME (
-                gameId SERIAL PRIMARY KEY,
-                gameName VARCHAR(50) not null,
-                windowStart TIMESTAMPTZ not null,
-                windowClose TIMESTAMPTZ not null,
-                guessesClose TIMESTAMPTZ not null,
-                deliveryTime TIMESTAMPTZ null,
-                userId VARCHAR(50) not null,
-                gameActive BOOLEAN not null
+                CREATE TABLE GAME (
+                      gameId SERIAL PRIMARY KEY,
+                      gameName VARCHAR(50) not null,
+                      windowStart TIMESTAMPTZ not null,
+                      windowClose TIMESTAMPTZ not null,
+                      guessesClose TIMESTAMPTZ not null,
+                      deliveryTime TIMESTAMPTZ null,
+                      userId VARCHAR(50) not null,
+                      gameActive BOOLEAN not null,
+                      gameVoided BOOLEAN not null DEFAULT FALSE
             )
-        """.trimIndent())
-        batch.add("""
-            CREATE OR REPLACE FUNCTION check_game_active_and_userid()
-            RETURNS TRIGGER AS ${'$'}${'$'}
-            BEGIN
-                IF NOT (NEW.deliverytime BETWEEN (SELECT windowstart FROM game WHERE gameid = NEW.gameid) AND (SELECT windowclose FROM game WHERE gameid = NEW.gameid)) THEN
-                    RAISE EXCEPTION 'Delivery time % is not between start and closing window range of the game', NEW.deliverytime USING ERRCODE = 'ERRG0';
-                END IF;
-                RETURN NEW;
-            END;
-            ${'$'}${'$'} LANGUAGE plpgsql;
-        """.trimIndent())
-        batch.add("""
-            CREATE TRIGGER check_game_active_and_userid_trigger
-            BEFORE UPDATE ON GAME
-            FOR EACH ROW
-            EXECUTE FUNCTION check_game_active_and_userid();
         """.trimIndent())
         batch.add("""
             CREATE TABLE GUESS (
@@ -115,13 +99,16 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
             )
         """.trimIndent())
         batch.add("""
-            CREATE TABLE POINT (
-                pointId SERIAL PRIMARY KEY,
-                userId VARCHAR(50) not null,
-                played INT not null,
-                won INT not null,
-                lost INT not null,
-                totalPoint INT not null,
+            CREATE TABLE POINT
+            (
+                pointId    SERIAL PRIMARY KEY,
+                userId     VARCHAR(50) not null,
+                played     INT         not null,
+                won        INT         not null,
+                lost       INT         not null,
+                drawn       INT         not null,
+                bonus       INT         not null,
+                totalPoint DECIMAL(6, 1) not null,
                 CONSTRAINT unique_user_id UNIQUE (userId)
             )
         """.trimIndent())

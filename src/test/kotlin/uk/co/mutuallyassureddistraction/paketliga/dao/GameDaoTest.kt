@@ -9,9 +9,7 @@ import org.postgresql.util.PSQLException
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import java.time.ZonedDateTime
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertNull
+import kotlin.test.*
 
 class GameDaoTest {
     private lateinit var target: GameDao
@@ -140,6 +138,17 @@ class GameDaoTest {
 
         assertEquals(games[0], createdGame)
         assertEquals(games[1], expected)
+    }
+
+    @DisplayName("voidGame() will successfully void a game in the table")
+    @Test
+    fun canSuccessfullyVoidGame() {
+        target.voidGameById(1)
+        val result = testWrapper.executeSimpleQuery<Game>(
+            """SELECT * FROM GAME""".trimIndent()
+        )
+        assertTrue { result.gameVoided }
+        assertFalse { result.gameActive }
     }
 
     private fun createGame(): Game {

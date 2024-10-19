@@ -1,114 +1,72 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
-import com.zoho.hawking.HawkingTimeParser
-import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration
-import com.zoho.hawking.language.english.model.DatesFound
+
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
-import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
-import uk.co.mutuallyassureddistraction.paketliga.dao.WinDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Point
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Win
+import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResult
+import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
+import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTime
 import java.sql.SQLException
-import java.time.Instant
 import java.time.ZonedDateTime
-import java.util.*
-import kotlin.math.log
 
 class GameEndService(
     private val guessDao: GuessDao,
     private val gameDao: GameDao,
-    private val pointDao: PointDao,
-    private val winDao: WinDao,
-    private val gameResultResolver: GameResultResolver) {
-
-    private val parser = HawkingTimeParser()
-    private val referenceDate = Date()
-    private val hawkingConfiguration = HawkingConfiguration()
+    private val gameResultResolver: GameResultResolver,
+    private val pointUpdaterService: PointUpdaterService
+) {
 
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
-    fun endGame(gameId: Int, actualTime: String): Pair<String?, List<Guess>> {
-        var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair("No games found.", arrayListOf())
-        val deliveryDateTimes: DatesFound = parseDate(actualTime)
-        val deliveryDateTime = deliveryDateTimes.parserOutputs[0].dateRange.start
-        val deliveryDateTimeInstant = Instant.ofEpochMilli(deliveryDateTime.millis)
-        val zonedDeliveryDateTime = ZonedDateTime.ofInstant(deliveryDateTimeInstant, searchedGame.windowStart.zone)
+    fun endGame(gameId: Int, deliveryTime: DeliveryTime): Pair<String?, GameResult?> {
+        var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair("No games found.", null)
+
         // 1. we finish the game
         try {
-            searchedGame = gameDao.finishGame(gameId, zonedDeliveryDateTime)
-        } catch (e: Exception) {
-            var errorString = "An error has occurred, please re-check your inputs and try again"
-            when (e) {
-                is UnableToExecuteStatementException -> {
-                    val original = e.cause as SQLException
-                    when (original.sqlState) {
-                        "ERRG0" -> {
-                            errorString =
-                                "Ending game failed, delivery time #$zonedDeliveryDateTime is not between start and closing window of game #$gameId"
-                        }
-                    }
-                }
-
-                else -> {
-                    logger.error("Error while ending a game", e)
-                }
+            if(isGameVoid(searchedGame, deliveryTime)) {
+                //Void the game
+                gameDao.voidGameById(searchedGame.gameId!!)
+                return Pair("Delivery time is outside of delivery window game void", null)
             }
-            return Pair(errorString, arrayListOf())
+            searchedGame = gameDao.finishGame(gameId, deliveryTime.deliveryTime)
+        } catch (e: Exception) {
+           return handleExceptions(e, deliveryTime.deliveryTime, gameId)
         }
 
         // 2. we get the guesses and find the winning guess(es)
         val guesses = guessDao.findGuessesByGameId(gameId)
-        val winningGuesses = gameResultResolver.findWinners(searchedGame, guesses)
-        val losingGuesses = ArrayList<Guess>()
+        val result = gameResultResolver.findWinners(searchedGame, guesses)
 
-        // 3. find losing guesses and update their lost count
-        guesses.forEach {
-            if (!winningGuesses.contains(it)) {
-                losingGuesses.add(it)
-                pointDao.addLost(
-                    Point(
-                        pointId = null,
-                        userId = it.userId,
-                        played = 1,
-                        won = 0,
-                        lost = 1,
-                        totalPoint = 0
-                    )
-                )
-            }
-        }
-
-        // 4. for each winning guesses, add winning guess, win and point to their count
-        winningGuesses.forEach {
-            winDao.addWinningGuess(
-                Win(
-                    winId = null,
-                    gameId = it.gameId,
-                    guessId = it.guessId!!,
-                    date = ZonedDateTime.now()
-                )
-            )
-            pointDao.addWin(
-                Point(
-                    pointId = null,
-                    userId = it.userId,
-                    played = 1,
-                    won = 1,
-                    lost = 0,
-                    totalPoint = 1
-                )
-            )
-        }
-
-        return Pair(null, winningGuesses)
+        // 3. We apply some tasty tasty points
+        pointUpdaterService.applyPoints(result)
+        return Pair(null, result)
     }
 
-    private fun parseDate(dateString: String): DatesFound {
-        return parser.parse(dateString, referenceDate, hawkingConfiguration, "eng")
+    private fun isGameVoid(game: Game, deliveryTime: DeliveryTime): Boolean {
+        return deliveryTime.deliveryTime < game.windowStart || deliveryTime.deliveryTime > game.windowClose
+    }
+
+    fun handleExceptions(e: Exception, zonedDeliveryDateTime: ZonedDateTime, gameId: Int): Pair<String?, GameResult?> {
+        var errorString = "An error has occurred, please re-check your inputs and try again"
+        when (e) {
+            is UnableToExecuteStatementException -> {
+                val original = e.cause as SQLException
+                when (original.sqlState) {
+                    "ERRG0" -> {
+                        errorString =
+                            "Ending game failed, delivery time #$zonedDeliveryDateTime is not between start and closing window of game #$gameId"
+                    }
+                }
+            }
+
+            else -> {
+                logger.error("Error while ending a game", e)
+            }
+        }
+        return Pair(errorString, null)
     }
 }

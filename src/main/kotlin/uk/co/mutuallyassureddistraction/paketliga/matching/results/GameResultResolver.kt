@@ -1,4 +1,4 @@
-package uk.co.mutuallyassureddistraction.paketliga.matching
+package uk.co.mutuallyassureddistraction.paketliga.matching.results
 
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
@@ -7,7 +7,7 @@ import kotlin.math.absoluteValue
 
 @Suppress("MagicNumber")
 class GameResultResolver {
-    fun findWinners(game: Game, guesses: List<Guess>): List<Guess> {
+    fun findWinners(game: Game, guesses: List<Guess>): GameResult {
         var closestGuesses = mutableListOf<Guess>()
         val deliveryTime = game.deliveryTime
         var shortestDistance = 1000000000000000000L
@@ -20,6 +20,15 @@ class GameResultResolver {
                 closestGuesses.add(it)
             }
         }
-        return closestGuesses
+
+        val losers = guesses.filter { !closestGuesses.contains(it) }.toList()
+        val isDraw = closestGuesses.size == 2
+        val awardBonusPoint = shortestDistance == 0L
+
+        return GameResult(winners = closestGuesses,
+            losers = losers,
+            awardBonusPoint = awardBonusPoint,
+            wasDraw = isDraw
+            )
     }
 }

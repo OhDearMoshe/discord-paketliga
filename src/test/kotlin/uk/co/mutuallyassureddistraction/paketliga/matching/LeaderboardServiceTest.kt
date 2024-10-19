@@ -15,12 +15,12 @@ class LeaderboardServiceTest {
     @BeforeEach
     fun setUp() {
         val pointDao = mockk<PointDao>()
-        Point(1,"Z",1,1,1,1)
+        Point(1,"Z",1,1,1,0, 0, 1F)
 
-        every {pointDao.getPointByUserId(any())} returns Point(2,"Y",1,1,1,3)
+        every {pointDao.getPointByUserId(any())} returns Point(2,"Y",1,1,1,0, 0,3F)
         every {pointDao.getPointsSortedByTotalPointsDesc()} returns arrayListOf(
-            Point(2,"Y",1,1,1,3),
-            Point(1,"Z",1,1,1,1)
+            Point(2,"Y",1,1,1,0, 0,3F),
+            Point(1,"Z",1,1,1,0, 0,1F)
         )
 
         target = LeaderboardService(pointDao)

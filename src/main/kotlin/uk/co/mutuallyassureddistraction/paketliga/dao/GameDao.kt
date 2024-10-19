@@ -14,7 +14,8 @@ interface GameDao {
                guessesClose,
                deliveryTime,
                userId,
-               gameActive
+               gameActive,
+               gameVoided
           )
           VALUES (
                :game.gameName,
@@ -23,7 +24,8 @@ interface GameDao {
                :game.guessesClose,
                :game.deliveryTime,
                :game.userId,
-               :game.gameActive
+               :game.gameActive,
+               :game.gameVoided
           )
           RETURNING *
      """)
@@ -66,4 +68,14 @@ interface GameDao {
           AND gameActive = 'TRUE'
      """)
      fun findActiveGames(gameName: String?, userId: String?): List<Game>
+
+     @SqlQuery("""
+          UPDATE Game
+          SET
+               gameActive = 'FALSE',
+               gameVoided = 'TRUE'
+          WHERE gameId = :id
+          RETURNING *
+     """)
+     fun voidGameById(@Bind("id")gameId: Int): Game
 }
