@@ -45,7 +45,7 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         * /voidgame -> Void a game
                         
                         Project:
-                        * Source code is hosted at: https://github.com/OhDearMoshe/discord-paketliga
+                        * Source code is hosted at: <https://github.com/OhDearMoshe/discord-paketliga>
                         * Found a bug? Please raise an issues or a PR
                         * Have a feature request? Please raise an issues or a PR
                         * Want to suggest an improvement? Please raise an issue or PR
