@@ -17,9 +17,7 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                 respond {
                     content = """
                         :postal_horn: Discord guessing game :postal_horn:
-                        
-                        Rules: 
-                        
+                        Rules:
                         1) The addressee must specify the timeframe in which they expect the package to arrive. AKA start: Today 2pm end Today: 3pm 
                         2) Players must guess an exact time of arrival e.g 11:27 or 14:44. Games can span multiple days
                         3) Guesses are accepted up to specified deadline. If no deadline is specified it will default to an hour after game creation, or five minutes before game start if there is not an hour between creation and delivery window
@@ -52,11 +50,6 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         * Have a feature request? Please raise an issues or a PR
                         * Want to suggest an improvement? Please raise an issue or PR
                         * Snark? Direct to OhDearMoshe then go contemplate your life choices
-                        
-                        Credits:
-                        * To Shreddz, whom this bot wishes it could be even half the postmaster general he was
-                        * To Z, who did all the work
-                        * To Mike, who bitched this bot into existence
                     """.trimIndent()
                 }
             }
