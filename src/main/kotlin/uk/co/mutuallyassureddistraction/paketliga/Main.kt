@@ -79,6 +79,9 @@ suspend fun main(args: Array<String>) {
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)
         val helpExtension = HelpExtension(SERVER_ID)
         val voidGameExtension = VoidGameExtension(voidGameService, SERVER_ID)
+        val contributeExtension = ContributeExtension(SERVER_ID)
+        val rulesExtension = RulesExtension(SERVER_ID)
+        val creditsExtension = CreditsExtension(SERVER_ID)
 
 
         logger.info("Creating bot")
@@ -98,6 +101,9 @@ suspend fun main(args: Array<String>) {
                 add { leaderboardExtension }
                 add { helpExtension }
                 add { voidGameExtension }
+                add { contributeExtension }
+                add { rulesExtension }
+                add { creditsExtension }
             }
         }
         logger.info("Starting Bot. Beep boop")
