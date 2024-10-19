@@ -16,7 +16,7 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
             action {
                 respond {
                     content = """
-                        Discord guessing game 
+                        :postal_horn: Discord guessing game :postal_horn:
                         
                         Rules: 
                         
@@ -44,6 +44,13 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         * /leaderboard -> View leaderboards
                         * /pklhelp -> Look at this message
                         * /voidgame -> Void a game
+                        
+                        Project:
+                        * Source code is hosted at: https://github.com/OhDearMoshe/discord-paketliga
+                        * Found a bug? Please raise an issues or a PR
+                        * Have a feature request? Please raise an issues or a PR
+                        * Want to suggest an improvement? Please raise an issue or PR
+                        * Snark? Direct to OhDearMoshe then go contemplate your life choices
                         
                         Credits:
                         * To Shreddz, whom this bot wishes it could be even half the postmaster general he was
