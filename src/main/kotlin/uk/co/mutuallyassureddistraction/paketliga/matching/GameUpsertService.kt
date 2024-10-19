@@ -4,6 +4,8 @@ import dev.kord.core.entity.Member
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 
 class GameUpsertService(

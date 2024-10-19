@@ -16,7 +16,11 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.WinDao
 import uk.co.mutuallyassureddistraction.paketliga.extensions.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.*
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTimeParserService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
+import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -44,20 +48,22 @@ suspend fun main(args: Array<String>) {
         val winDao = jdbi.onDemand<WinDao>()
         logger.info("Init Services")
         val gameValidator = GameValidator()
+        val guessValidator = GuessValidator()
         val gameFinderService = GameFinderService(gameDao)
-        val guessUpsertService = GuessUpsertService(guessDao, gameDao)
+        val guessUpsertService = GuessUpsertService(guessDao, gameDao, guessValidator)
         val guessFinderService = GuessFinderService(guessDao)
         val gameUpsertService = GameUpsertService(gameDao, guessFinderService, gameValidator)
         val gameResultResolver = GameResultResolver()
         val gameEndService = GameEndService(guessDao, gameDao, pointDao, winDao, gameResultResolver)
         val leaderboardService = LeaderboardService(pointDao)
-        val gameTimeParserService = GameTimeParserService()
+        val gameTimeParserService = GameTimeParserService(TimeParser())
+        val guessTimeParserService = GuessTimeParserService(TimeParser())
 
 
         val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, SERVER_ID)
-        val guessGameExtension = GuessGameExtension(guessUpsertService, SERVER_ID)
+        val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)
         val findGuessExtension = FindGuessExtension(guessFinderService, SERVER_ID)
         val endGameExtension = EndGameExtension(gameEndService, SERVER_ID)
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)

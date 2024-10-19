@@ -7,9 +7,8 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
-import uk.co.mutuallyassureddistraction.paketliga.matching.GameTimeParserService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
-import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 
 class CreateGameExtension(private val gameUpsertService: GameUpsertService,
                           private val gameTimeParserService: GameTimeParserService,

@@ -3,8 +3,8 @@ package uk.co.mutuallyassureddistraction.paketliga.matching.validators
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import uk.co.mutuallyassureddistraction.paketliga.matching.GuessWindow
-import uk.co.mutuallyassureddistraction.paketliga.matching.UpdateGuessWindow
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 import java.time.ZonedDateTime
 import kotlin.test.Test
 

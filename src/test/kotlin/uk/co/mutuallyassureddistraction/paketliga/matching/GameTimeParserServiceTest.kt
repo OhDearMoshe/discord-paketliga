@@ -6,12 +6,14 @@ import org.joda.time.format.DateTimeFormatter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.DisplayName
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
 import java.time.ZonedDateTime
 import kotlin.test.assertNull
 
 class GameTimeParserServiceTest {
 
-    val target = GameTimeParserService()
+    val target = GameTimeParserService(TimeParser())
     private val resultFormat: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
     private val inputFormat: DateTimeFormatter = DateTimeFormat.forPattern("dd-MM-yy HH:mm")
 

@@ -9,7 +9,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.types.respondEphemeral
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
-import uk.co.mutuallyassureddistraction.paketliga.matching.GameTimeParserService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 
 class UpdateGameExtension(private val gameUpsertService: GameUpsertService,

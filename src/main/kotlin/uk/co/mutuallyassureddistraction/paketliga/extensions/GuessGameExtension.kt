@@ -8,8 +8,12 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessUpsertService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTimeParserService
 
-class GuessGameExtension(private val guessUpsertService: GuessUpsertService, private val serverId: Snowflake): Extension() {
+class GuessGameExtension(private val guessUpsertService: GuessUpsertService,
+                         private val guessTimeParserService: GuessTimeParserService,
+                         private val serverId: Snowflake
+                         ): Extension() {
     override val name = "guessExtension"
 
     override suspend fun setup() {
@@ -21,20 +25,13 @@ class GuessGameExtension(private val guessUpsertService: GuessUpsertService, pri
 
             action {
                 val gameId = arguments.gameid
-                val guessTime = arguments.guesstime
                 val userId = user.asUser().id.value.toString()
-
-                val guessGameResponse = guessUpsertService.guessGame(gameId, guessTime, userId)
-
-                val respondMessage = if(!guessGameResponse.success) {
-                    guessGameResponse.failMessage!!
-                } else {
-                    "Guess created by " + user.asUser().mention +
-                            " for game #" + gameId + " with time " + guessGameResponse.guessTime
-                }
+                val mention = user.asUser().mention
+                val guessTime = guessTimeParserService.parseToGuessTime(arguments.guesstime)
+                val guessGameResponse = guessUpsertService.guessGame(gameId, guessTime, userId, mention)
 
                 respond {
-                    content = respondMessage
+                    content = guessGameResponse
                 }
             }
         }

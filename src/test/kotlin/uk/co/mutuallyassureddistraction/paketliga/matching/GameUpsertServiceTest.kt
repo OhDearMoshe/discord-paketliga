@@ -3,13 +3,12 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 import dev.kord.core.entity.Member
 import io.mockk.every
 import io.mockk.mockk
-import org.joda.time.LocalDateTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 import java.time.ZonedDateTime
 import kotlin.test.Test

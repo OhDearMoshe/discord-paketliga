@@ -1,6 +1,6 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao.entity
 
-import uk.co.mutuallyassureddistraction.paketliga.matching.GuessWindow
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import java.time.ZonedDateTime
 
 data class Game(

@@ -1,24 +1,21 @@
-package uk.co.mutuallyassureddistraction.paketliga.matching
+package uk.co.mutuallyassureddistraction.paketliga.matching.time
 
 import java.time.*
-import java.time.format.DateTimeFormatter
-
-private val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm")
 
 data class GuessWindow(val startTime: ZonedDateTime,
                        val endTime: ZonedDateTime,
                         val guessDeadline: ZonedDateTime){
 
     fun startAsHumanFriendlyString(): String {
-        return startTime.format(dtf)
+        return toUserFriendlyString(startTime)
     }
 
     fun endAsHumanFriendlyString(): String {
-        return endTime.format(dtf)
+        return toUserFriendlyString(endTime)
     }
 
     fun deadlineAsHumanFriendlyString(): String {
-        return guessDeadline.format(dtf)
+        return toUserFriendlyString(guessDeadline)
     }
 }
 

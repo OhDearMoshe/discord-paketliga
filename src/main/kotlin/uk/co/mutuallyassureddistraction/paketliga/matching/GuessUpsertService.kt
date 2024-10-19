@@ -1,60 +1,43 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
-import com.zoho.hawking.HawkingTimeParser
-import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration
-import com.zoho.hawking.language.english.model.DatesFound
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
+import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
 import java.sql.SQLException
-import java.time.ZonedDateTime
-import java.util.*
 
-class GuessUpsertService(private val guessDao: GuessDao, private val gameDao: GameDao) {
+class GuessUpsertService(private val guessDao: GuessDao,
+                         private val gameDao: GameDao,
+                         private val guessValidator: GuessValidator) {
 
-    private val parser = HawkingTimeParser()
-    private val referenceDate = Date()
-    private val hawkingConfiguration = HawkingConfiguration()
-    private val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
-    private val javaDtf: java.time.format.DateTimeFormatter = java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm")
     private val logger = LoggerFactory.getLogger(GuessUpsertService::class.java)
 
-    fun guessGame(gameId: Int, guessTime: String, userId: String): GuessGameResponse {
-        val guessDates: DatesFound = parseDate(guessTime)
-        val guessDate = guessDates.parserOutputs[0].dateRange.start
-        val guessDateString = guessDate.toString(dtf)
+    fun guessGame(gameId: Int, guessTime: GuessTime, userId: String, userMention: String): String {
 
         try {
             val searchedGame = gameDao.findActiveGameById(gameId)
-                ?: return GuessGameResponse(false,
-                    "Guessing failed, there is no active game with game ID #$gameId",
-                    gameId, userId, guessTime)
-
-            if(ZonedDateTime.now() > searchedGame.guessesClose) {
-                val guessesCloseString = searchedGame.guessesClose.format(javaDtf)
-                return GuessGameResponse(false,
-                    "Guessing failed, guessing deadline for game #$gameId has passed, guessing deadline was at $guessesCloseString",
-                    gameId, userId, guessTime)
+            val errorMessage = guessValidator.validateGuess(searchedGame, gameId, userId, guessTime)
+            if(errorMessage != null) {
+                return errorMessage
             }
-
             guessDao.createGuess(
                 Guess(
                     guessId = null,
                     gameId = gameId,
-                    guessTime = guessDate.toGregorianCalendar().toZonedDateTime(),
+                    guessTime = guessTime.guessTime,
                     userId = userId
                 )
             )
+            return "Guess created by $userMention for game #$gameId with time ${guessTime.toHumanString()}"
 
-            return GuessGameResponse(true, null, gameId, userId, guessDateString)
         } catch (e: Exception) {
             var errorString = "An error has occurred, please re-check your inputs and try again"
             when(e) {
                 is UnableToExecuteStatementException -> {
+                    // TODO: Create sql code error resolver. Also move some of the validations out into triggers
                     val original = e.cause as SQLException
                     when (original.sqlState) {
                         "23505" -> {
@@ -69,20 +52,7 @@ class GuessUpsertService(private val guessDao: GuessDao, private val gameDao: Ga
                     logger.error("Error while guessing ${e.message} ${e.stackTrace}")
                 }
             }
-
-            return GuessGameResponse(false, errorString, gameId, userId, guessTime)
+            return errorString
         }
-    }
-
-    class GuessGameResponse(
-        val success: Boolean,
-        val failMessage: String?,
-        val gameId: Int,
-        val userId: String,
-        val guessTime: String,
-    )
-
-    private fun parseDate(dateString: String): DatesFound {
-        return parser.parse(dateString, referenceDate, hawkingConfiguration, "eng")
     }
 }
