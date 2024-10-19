@@ -66,6 +66,7 @@ suspend fun main(args: Array<String>) {
         val pointUpdaterService = PointUpdaterService(pointDao, winDao)
         val gameEndService = GameEndService(guessDao, gameDao, gameResultResolver, pointUpdaterService)
         val leaderboardService = LeaderboardService(pointDao)
+        val voidGameService = VoidGameService(gameDao)
 
 
         logger.info("Creating Extensions")
@@ -77,6 +78,8 @@ suspend fun main(args: Array<String>) {
         val endGameExtension = EndGameExtension(gameEndService, deliveryTimeParser, SERVER_ID)
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)
         val helpExtension = HelpExtension(SERVER_ID)
+        val voidGameExtension = VoidGameExtension(voidGameService, SERVER_ID)
+
 
         logger.info("Creating bot")
         val bot = ExtensibleBot(BOT_TOKEN) {
@@ -94,6 +97,7 @@ suspend fun main(args: Array<String>) {
                 add { endGameExtension }
                 add { leaderboardExtension }
                 add { helpExtension }
+                add { voidGameExtension }
             }
         }
         logger.info("Starting Bot. Beep boop")

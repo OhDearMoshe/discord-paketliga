@@ -43,6 +43,7 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         * /endgame -> Finish a game
                         * /leaderboard -> View leaderboards
                         * /pklhelp -> Look at this message
+                        * /voidgame -> Void a game
                         
                         Credits:
                         * To Shreddz, whom this bot wishes it could be even half the postmaster general he was
