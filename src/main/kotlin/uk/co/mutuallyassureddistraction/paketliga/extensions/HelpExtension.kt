@@ -26,7 +26,7 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         6) An additional BONUS point is awarded on guessing exact time of delivery
                         7) In the event of a DRAW e.g two players are an equal number of minutes from time of delivery. Points are split
                         8) If the addressee parcel arrives before the guess deadline. Game is void
-                        9) If the addressee parcel arrives after the end of the delivery window. Game is void
+                        9) If the addressee parcel arrives the day after the end of the delivery window. Game is void
                         10) The addressee may update the delivery window if it is delayed
                         11) Deliveroo, Uber Eats, Just Eat etc Deliveries are not allowed. Grocery deliveries (Sainsbury's, Ocado) are though
                         13) Sniping is permitted
