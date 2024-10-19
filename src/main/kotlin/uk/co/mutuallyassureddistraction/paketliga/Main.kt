@@ -76,6 +76,7 @@ suspend fun main(args: Array<String>) {
         val findGuessExtension = FindGuessExtension(guessFinderService, SERVER_ID)
         val endGameExtension = EndGameExtension(gameEndService, deliveryTimeParser, SERVER_ID)
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)
+        val helpExtension = HelpExtension(SERVER_ID)
 
         logger.info("Creating bot")
         val bot = ExtensibleBot(BOT_TOKEN) {
@@ -92,6 +93,7 @@ suspend fun main(args: Array<String>) {
                 add { findGuessExtension }
                 add { endGameExtension }
                 add { leaderboardExtension }
+                add { helpExtension }
             }
         }
         logger.info("Starting Bot. Beep boop")
