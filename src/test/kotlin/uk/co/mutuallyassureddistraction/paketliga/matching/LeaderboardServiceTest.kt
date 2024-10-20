@@ -18,7 +18,7 @@ class LeaderboardServiceTest {
         Point(1,"Z",1,1,1,0, 0, 1F)
 
         every {pointDao.getPointByUserId(any())} returns Point(2,"Y",1,1,1,0, 0,3F)
-        every {pointDao.getPointsSortedByTotalPointsDesc()} returns arrayListOf(
+        every {pointDao.getPointsSortedByTotalPointsDesc(null)} returns arrayListOf(
             Point(2,"Y",1,1,1,0, 0,3F),
             Point(1,"Z",1,1,1,0, 0,1F)
         )
@@ -29,7 +29,7 @@ class LeaderboardServiceTest {
     @DisplayName("getLeaderboard() with userid will return one point")
     @Test
     fun whenGetWithUserIdReturnOnePoint() {
-        val points = target.getLeaderboard("Y")
+        val points = target.getLeaderboard("Y", null)
         assertEquals(points.size, 1)
         assertEquals(points[0].userId, "Y")
     }
@@ -37,7 +37,7 @@ class LeaderboardServiceTest {
     @DisplayName("getLeaderboard() with null userid will return all points")
     @Test
     fun whenGetWithoutUserIdReturnAllPoints() {
-        val points = target.getLeaderboard(null)
+        val points = target.getLeaderboard(null, null)
         assertEquals(points.size, 2)
         assertEquals(points[0].userId, "Y")
         assertEquals(points[1].userId, "Z")

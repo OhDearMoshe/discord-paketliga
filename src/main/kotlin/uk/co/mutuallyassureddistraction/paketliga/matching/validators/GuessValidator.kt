@@ -12,9 +12,9 @@ class GuessValidator {
             return "Guessing failed, there is no active game with game ID #$gameId"
         }
 
-        if(game.userId == userId) {
-            return "Mr Pump forbids you from guessing in your own game."
-        }
+//        if(game.userId == userId) {
+//            return "Mr Pump forbids you from guessing in your own game."
+//        }
 
         if(ZonedDateTime.now() >= game.guessesClose) {
             val guessesCloseString = toUserFriendlyString(game.guessesClose)

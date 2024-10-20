@@ -123,9 +123,10 @@ interface PointDao {
 
     @SqlQuery("""
         SELECT * FROM POINT
-        ORDER BY totalPoint DESC;
+        ORDER BY totalPoint DESC
+        LIMIT :limit;
     """)
-    fun getPointsSortedByTotalPointsDesc(): List<Point>
+    fun getPointsSortedByTotalPointsDesc(limit: Int?): List<Point>
 
     @SqlQuery("""
         SELECT * FROM POINT

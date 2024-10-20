@@ -30,6 +30,9 @@ import java.sql.DriverManager
 val PG_JDBC_URL = env("POSTGRES_JDBC_URL")
 val PG_USERNAME = env("POSTGRES_USERNAME")
 val PG_PASSWORD = env("POSTGRES_PASSWORD")
+val TOP_OF_LEADERBOARD_ROLE = Snowflake(
+    env("TOP_OF_LEADERBOARD_ROLE")
+)
 val SERVER_ID = Snowflake(
     env("SERVER_ID").toLong()  // Get the test server ID from the env vars or a .env file
 )
@@ -75,13 +78,15 @@ suspend fun main(args: Array<String>) {
         val findGamesExtension = FindGamesExtension(gameFinderService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)
         val findGuessExtension = FindGuessExtension(guessFinderService, SERVER_ID)
-        val endGameExtension = EndGameExtension(gameEndService, deliveryTimeParser, SERVER_ID)
+        val endGameExtension = EndGameExtension(gameEndService, leaderboardService,
+            deliveryTimeParser, TOP_OF_LEADERBOARD_ROLE, SERVER_ID)
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)
         val helpExtension = HelpExtension(SERVER_ID)
         val voidGameExtension = VoidGameExtension(voidGameService, SERVER_ID)
         val contributeExtension = ContributeExtension(SERVER_ID)
         val rulesExtension = RulesExtension(SERVER_ID)
         val creditsExtension = CreditsExtension(SERVER_ID)
+        val assignRoleExtension = AssignRoleExtension(SERVER_ID)
 
 
         logger.info("Creating bot")
@@ -104,6 +109,7 @@ suspend fun main(args: Array<String>) {
                 add { contributeExtension }
                 add { rulesExtension }
                 add { creditsExtension }
+                add { assignRoleExtension }
             }
         }
         logger.info("Starting Bot. Beep boop")
