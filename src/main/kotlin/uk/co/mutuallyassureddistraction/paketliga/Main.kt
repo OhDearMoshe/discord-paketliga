@@ -26,6 +26,7 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValida
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
 import java.sql.Connection
 import java.sql.DriverManager
+import java.util.*
 
 val PG_JDBC_URL = env("POSTGRES_JDBC_URL")
 val PG_USERNAME = env("POSTGRES_USERNAME")
@@ -38,6 +39,9 @@ private val BOT_TOKEN = env("BOT_TOKEN") // Get the bot' token from the env vars
 private class PKLBOT {}
 
 suspend fun main(args: Array<String>) {
+
+    TimeZone.setDefault(TimeZone.getTimeZone("Europe/London"));
+
     val logger = LoggerFactory.getLogger(PKLBOT::class.java)
     logger.info("Initialising database")
     val connection = DriverManager.getConnection(PG_JDBC_URL, PG_USERNAME, PG_PASSWORD)
