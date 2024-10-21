@@ -86,7 +86,6 @@ suspend fun main(args: Array<String>) {
         val contributeExtension = ContributeExtension(SERVER_ID)
         val rulesExtension = RulesExtension(SERVER_ID)
         val creditsExtension = CreditsExtension(SERVER_ID)
-        val assignRoleExtension = AssignRoleExtension(SERVER_ID)
 
 
         logger.info("Creating bot")
@@ -109,7 +108,6 @@ suspend fun main(args: Array<String>) {
                 add { contributeExtension }
                 add { rulesExtension }
                 add { creditsExtension }
-                add { assignRoleExtension }
             }
         }
         logger.info("Starting Bot. Beep boop")
