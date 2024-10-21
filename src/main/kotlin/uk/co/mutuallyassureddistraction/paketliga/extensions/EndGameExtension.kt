@@ -34,8 +34,9 @@ class EndGameExtension(private val gameEndService: GameEndService,
                 val gameId = arguments.gameid
                 val deliveryTime = deliveryTimeParser.parse(arguments.deliverytime)
 
-//                val (response) = leaderboardService
+                val pastWinner = leaderboardService.getLeaderboard(null, 1)
                 val (responseString, result) = gameEndService.endGame(gameId, deliveryTime)
+                val currentWinner = leaderboardService.getLeaderboard(null, 1)
 
                 try {
                     val kord = this@EndGameExtension.kord
@@ -67,6 +68,20 @@ class EndGameExtension(private val gameEndService: GameEndService,
                         respond {
                             content = mentionContent
                         }
+
+                        if(currentWinner.isNotEmpty()) {
+                            val roleContent = resolveRole(
+                                currentWinner.first().userId,
+                                currentWinner.first().totalPoint,
+                                pastWinner.firstOrNull()?.userId,
+                                topOfLeaderBoardRole,
+                                kord
+                            )
+
+                            respond {
+                                content = roleContent
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -76,17 +91,24 @@ class EndGameExtension(private val gameEndService: GameEndService,
         }
     }
 
-    private suspend fun resolveRole(currentWinner: String, currentWinnerPoint: Int,
-                                    pastWinner: String, kord: Kord): String {
+    private suspend fun resolveRole(currentWinner: String, currentWinnerPoint: Float, pastWinner: String?,
+                                    topOfLeaderBoardRole: Snowflake, kord: Kord): String {
         val currentWinnerMember = MemberBehavior(serverId, Snowflake(currentWinner), kord)
-        if(currentWinner == pastWinner) {
-            return currentWinnerMember.asMember().mention + " is still on top the leaderboard with " +
+        currentWinnerMember.asMember().addRole(topOfLeaderBoardRole)
+
+        if(pastWinner == null || currentWinner == pastWinner) {
+            return currentWinnerMember.asMember().mention + " is on top the leaderboard with " +
                     currentWinnerPoint + " points"
         }
 
+        // If there is a past rank 1 / change of top of leaderboard:
+
         val pastWinnerMember = MemberBehavior(serverId, Snowflake(pastWinner), kord)
+        pastWinnerMember.asMember().removeRole(topOfLeaderBoardRole)
+
         return currentWinnerMember.asMember().mention + " is now on top the leaderboard with " +
-                currentWinnerPoint + " points, sorry " +
+                currentWinnerPoint + " points, sorry " + pastWinnerMember.asMember().mention +
+                " better luck next time."
     }
 
     inner class EndGameArgs : Arguments() {
