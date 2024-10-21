@@ -131,19 +131,31 @@ class PointDaoTest {
         assertEquals(secondResult.lost, 2)
     }
 
-    @DisplayName("getPointsSortedByTotalPointsDesc() will return all points sorted descending")
+    @DisplayName("getPointsSortedByTotalPointsDesc(null) will return all points sorted descending")
     @Test
     fun canSuccessfullyGetPointsDescFromTable() {
         target.addWin(Point(1,"Z",1,1,1,0, 0,1F))
         target.addWin(Point(2,"Y",1,1,1,0, 0,3F))
         target.addWin(Point(3,"X",1,1,1,0, 0,2F))
-        val points = target.getPointsSortedByTotalPointsDesc()
+        val points = target.getPointsSortedByTotalPointsDesc(null)
         assertEquals(points[0].userId, "Y")
         assertEquals(points[1].userId, "X")
         assertEquals(points[2].userId, "Z")
         assertEquals(points[0].totalPoint, 3F)
         assertEquals(points[1].totalPoint, 2F)
         assertEquals(points[2].totalPoint, 1F)
+    }
+
+    @DisplayName("getPointsSortedByTotalPointsDesc(1) will return the top point user")
+    @Test
+    fun canSuccessfullyGetPointsDescFromTableWithLimitOne() {
+        target.addWin(Point(1,"Z",1,1,1,0, 0,1F))
+        target.addWin(Point(2,"Y",1,1,1,0, 0,3F))
+        target.addWin(Point(3,"X",1,1,1,0, 0,2F))
+        val points = target.getPointsSortedByTotalPointsDesc(null)
+        assertEquals(points.size, 1)
+        assertEquals(points[0].userId, "Y")
+        assertEquals(points[0].totalPoint, 3F)
     }
 
     @DisplayName("getPointByUserId() will return point by user id")

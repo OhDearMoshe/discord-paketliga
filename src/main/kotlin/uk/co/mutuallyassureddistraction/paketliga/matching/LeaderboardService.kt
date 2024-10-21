@@ -7,10 +7,10 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Point
 class LeaderboardService(private val pointDao: PointDao) {
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
-    fun getLeaderboard(userId: String?): List<Point> {
+    fun getLeaderboard(userId: String?, limit: Int?): List<Point> {
         try {
             if (userId == null) {
-                return pointDao.getPointsSortedByTotalPointsDesc()
+                return pointDao.getPointsSortedByTotalPointsDesc(limit)
             }
 
             val userPoint = pointDao.getPointByUserId(userId)

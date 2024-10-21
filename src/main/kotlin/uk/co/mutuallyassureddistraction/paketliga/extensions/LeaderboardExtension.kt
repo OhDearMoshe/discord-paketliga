@@ -24,7 +24,7 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
             action {
                 val userId = arguments.userId?.asUser()?.id?.value?.toString()
 
-                val leaderboard = leaderboardService.getLeaderboard(userId)
+                val leaderboard = leaderboardService.getLeaderboard(userId, null)
 
                 if(leaderboard.isEmpty()) {
                     respondEphemeral {
