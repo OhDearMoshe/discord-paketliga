@@ -3,28 +3,28 @@
 # PKL - Paketliga for Discord
 ![img.png](img.png)
 
-PKL is a bot for guessing package delivery.
+PKL is a bot for gamifying package deliveries.
 
 ## Usage
-
 Replace the placeholder in `.env` file, namely the `BOT_TOKEN`, `SERVER_ID`,`POSTGRES_USERNAME`, `POSTGRES_JDBC_URL` and `POSTGRES_PASSWORD`. As this is not a global bot (for now?) and we haven't really configure it to have different database for different servers, then the settings should really be personalised for each server that is going to use the bot, hence, different database as well.
 
 Afterwards, just run up `Main.kt` and the bot will be good to go.
 
 ### Local running
-
 Assuming you are using the docker compose file configs for postgres you can use the following command to run the migration
 ```./gradlew flywayMigrate -Dflyway.url=jdbc:postgresql://127.0.0.1:666/PKL -Dflyway.user=mypreciousadmin -Dflyway.password=localtestingonlypassword -Dflyway.locations=filesystem:migrations```
 
-## Commands
+## Parameter info
+
+### Date Format
 Note: Any time-related parameters are equipped with Natural Language date/time parser. While it is possible to just go with "<b>18:00</b>" as input, the bot would prefer a much verbose input. Here are some examples:
-- "Today 18:00" - Will translated to today's date at 18:00
-- "24 May 2023 at 18:00" - Self-explanatory
-- "18:00" - Ambiguous, could be for tomorrow or today depends on whether the time has passed or not
-- "24 May at 19:00" - If the month has passed, this could be May next year
+- <b>"Today 18:00"</b> - Will translate to today's date at 18:00
+- <b>"24 May 2023 at 18:00"</b> - Self-explanatory
+- <b>"18:00"</b> - Ambiguous, could be for tomorrow or today depends on whether the time has passed or not
+- <b>"24 May at 19:00"</b> - If the month has passed, this could be May next year
 - etc, try it yourself, the result may be different depends on your input
 
-List of available commands goes below. <br/>
+## List of available commands
 
 ### `/paketliga`
 Create a PKL game, with parameters:
