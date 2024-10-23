@@ -17,8 +17,8 @@ class CreateGameExtension(private val gameUpsertService: GameUpsertService,
 
     override suspend fun setup() {
         publicSlashCommand(::PaketGameArgs) {  // Public slash commands have public responses
-            name = "paketliga"
-            description = "Ask the bot to create a game of PKL"
+            name = "pkl"
+            description = "Start a game"
 
             // Use guild commands for testing, global ones take up to an hour to update
             guild(serverId)
@@ -47,23 +47,23 @@ class CreateGameExtension(private val gameUpsertService: GameUpsertService,
      */
     inner class PaketGameArgs : Arguments() {
         val startwindow by string {
-            name = "startwindow"
-            description = "Start window time inputted by user"
+            name = "delivery-from"
+            description = "Start of delivery window"
         }
 
         val closewindow by string {
-            name = "closewindow"
-            description = "Close window time inputted by user"
+            name = "delivery-by"
+            description = "End of delivery window"
         }
 
         val guessesclose by optionalString {
-            name = "guessesclose"
-            description = "Close window time inputted by user"
+            name = "guesses-until"
+            description = "(Optional) Deadline for guesses"
         }
 
         val gamename by optionalString {
-            name = "gamename"
-            description = "Game name inputted by user"
+            name = "description"
+            description = "(Optional) A short description of the game"
         }
     }
 }
