@@ -31,20 +31,20 @@ class GuessUpsertService(private val guessDao: GuessDao,
                     userId = userId
                 )
             )
-            return "Guess created by $userMention for game #$gameId with time ${guessTime.toHumanString()}"
+            return ":sickos: $userMention has guessed ${guessTime.toHumanString()} for game ID #$gameId"
 
         } catch (e: Exception) {
-            var errorString = "An error has occurred, please re-check your inputs and try again"
+            var errorString = ":pressf: You done goofed. Check your inputs and try again."
             when(e) {
                 is UnableToExecuteStatementException -> {
                     // TODO: Create sql code error resolver. Also move some of the validations out into triggers
                     val original = e.cause as SQLException
                     when (original.sqlState) {
                         "23505" -> {
-                            errorString = "Guessing failed, there is already a guess with time $guessTime"
+                            errorString = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
                         }
                         "ERRA1" -> {
-                            errorString = "Guessing failed, guess time is not between start and closing window of game #$gameId"
+                            errorString = "*\\*womp-womp*\\* Game ID #$gameId is not valid or is no longer active "
                         }
                     }
                 }

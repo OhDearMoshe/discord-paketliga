@@ -32,7 +32,7 @@ class GuessUpsertServiceTest {
 
 
         val response = target.guessGame(1, guessTime, "Z", mention)
-        val expectedString = "Guess created by @OhDearMoshe for game #1 with time 15-Oct-24 19:00"
+        val expectedString = ":sickos: @OhDearMoshe has guessed 15-Oct-24 19:00 for game ID #1"
         assertEquals(expectedString, response)
     }
 
@@ -68,7 +68,7 @@ class GuessUpsertServiceTest {
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
 
         val response = target.guessGame(2, guessTime, "Z", mention)
-        val expectedString = "Guessing failed, there is already a guess with time GuessTime(guessTime=2024-10-15T19:00Z)"
+        val expectedString = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
         assertEquals(expectedString, response)
     }
 
@@ -86,7 +86,7 @@ class GuessUpsertServiceTest {
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
 
         val response = target.guessGame(4, guessTime, "Z", mention)
-        val expectedString = "Guessing failed, guess time is not between start and closing window of game #4"
+        val expectedString = "*\\*womp-womp*\\* Game ID #4 is not valid or is no longer active "
         assertEquals(expectedString, response)
     }
 

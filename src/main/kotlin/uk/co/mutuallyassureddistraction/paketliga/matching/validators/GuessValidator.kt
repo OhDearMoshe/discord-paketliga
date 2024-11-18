@@ -17,8 +17,7 @@ class GuessValidator {
         }
 
         if(ZonedDateTime.now() >= game.guessesClose) {
-            val guessesCloseString = toUserFriendlyString(game.guessesClose)
-            return "Guessing failed, guessing deadline for game #$gameId has passed, guessing deadline was at $guessesCloseString"
+            return "*\\*womp-womp*\\* Too late, the guessing window has closed for game ID #$gameId"
         }
 
         if(guessTime.guessTime < game.windowStart || guessTime.guessTime > game.windowClose) {

@@ -18,8 +18,8 @@ class GuessGameExtension(private val guessUpsertService: GuessUpsertService,
 
     override suspend fun setup() {
         publicSlashCommand(::GuessGameArgs) {
-            name = "guessgame"
-            description = "Guess the delivery time of a game"
+            name = "pklguess"
+            description = "Submit a delivery time guess"
 
             guild(serverId)
 
@@ -40,11 +40,11 @@ class GuessGameExtension(private val guessUpsertService: GuessUpsertService,
     inner class GuessGameArgs : Arguments() {
         val gameid by int {
             name = "gameid"
-            description = "Game id inputted by user"
+            description = "Include the game ID announced by Dr Pakidge when the game was created"
         }
         val guesstime by string {
             name = "guesstime"
-            description = "Time guessed by user for the delivery time of the game"
+            description = "Go on, give us your guess"
         }
     }
 }
