@@ -32,17 +32,17 @@ class GameValidator {
 
     fun validateGameUpdate(game: Game?, userId: String, updateGuessWindow: UpdateGuessWindow): String? {
         if(game == null) {
-            return "Wrong Game ID, please check your gameId input and try again"
+            return "Inactive or invalid game ID. Double-check and try again "
         }
         if (game.userId != userId) {
             return "Mr Pump stops you from interfering with another persons mail"
         }
         if(!game.gameActive) {
-            return "Game is already over. Should have sent this update first class"
+            return "Game (already) over, man. Should have sent this update first class"
         }
 
         if(updateGuessWindow.startTime == null && updateGuessWindow.endTime == null && updateGuessWindow.guessDeadline == null) {
-            return "You appear to have forgotten to actually update anything"
+            return ":thonk: You didn't change anything"
         }
         return validateGuessWindow(updatedGuessWindowToGuessWindow(updateGuessWindow, game))
     }

@@ -41,9 +41,8 @@ class GameUpsertService(
                     gameActive = true
                 )
             )
-
             val gameNameString = gameNameStringMaker(gameName, member, username, createdGame.gameId!!)
-            return "$gameNameString : package arriving between ${guessWindow.startAsHumanFriendlyString()} and " +
+            return ":postal_horn: $gameNameString | package is arriving between  ${guessWindow.startAsHumanFriendlyString()} and " +
                     "${guessWindow.endAsHumanFriendlyString()}." +
                     " Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
@@ -86,7 +85,7 @@ class GameUpsertService(
             return Pair(arrayOf(gameUpdatedString), userIds)
         } catch (e: Exception) {
             logger.error("Error while updating game", e)
-            return Pair(arrayOf("An error has occurred, please re-check your inputs and try again"), arrayListOf())
+            return Pair(arrayOf(":pressf: You done goofed. Check your inputs and try again. "), arrayListOf())
         }
     }
 

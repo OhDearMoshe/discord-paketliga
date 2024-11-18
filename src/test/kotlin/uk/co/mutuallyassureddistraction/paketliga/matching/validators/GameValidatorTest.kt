@@ -66,7 +66,7 @@ class GameValidatorTest {
             guessDeadline = null
         )
         assertEquals(
-            "Wrong Game ID, please check your gameId input and try again",
+            "Inactive or invalid game ID. Double-check and try again ",
             target.validateGameUpdate(null, "123", updateGuessWindow)
         )
     }
@@ -114,7 +114,7 @@ class GameValidatorTest {
             gameActive = false
         )
         assertEquals(
-            "Game is already over. Should have sent this update first class",
+            "Game (already) over, man. Should have sent this update first class",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -138,7 +138,7 @@ class GameValidatorTest {
             gameActive = true
         )
         assertEquals(
-            "You appear to have forgotten to actually update anything",
+            ":thonk: You didn't change anything",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }

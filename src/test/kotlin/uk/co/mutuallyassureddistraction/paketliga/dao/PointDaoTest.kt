@@ -153,7 +153,7 @@ class PointDaoTest {
         target.addWin(Point(2,"Y",1,1,1,0, 0,3F))
         target.addWin(Point(3,"X",1,1,1,0, 0,2F))
         val points = target.getPointsSortedByTotalPointsDesc(null)
-        assertEquals(points.size, 1)
+        assertEquals(points.size, 3)
         assertEquals(points[0].userId, "Y")
         assertEquals(points[0].totalPoint, 3F)
     }

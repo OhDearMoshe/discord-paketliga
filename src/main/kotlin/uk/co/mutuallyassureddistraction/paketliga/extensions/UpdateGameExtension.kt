@@ -34,9 +34,9 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
                         content = ":thonk: You didn't change anything"
                     }
                 } else {
-                    val uddateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
+                    val updateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
                     val (responseString, userIds) = gameUpsertService.updateGame(
-                        gameId, user.asUser().id.value.toString(), uddateWindow
+                        gameId, user.asUser().id.value.toString(), updateWindow
                     )
 
                     respond {

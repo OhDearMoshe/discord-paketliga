@@ -73,7 +73,7 @@ class GameUpsertServiceTest {
 
         val returnedString = target.createGame(gameName, guessWindow, "1234", member, "ZLX")
         val expectedString =
-            "Random Amazon package (#1) by Z : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
+            ":postal_horn: Random Amazon package (#1) by Z | package is arriving between  15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(expectedString, returnedString)
     }
 
@@ -82,7 +82,7 @@ class GameUpsertServiceTest {
     fun returnStringWithNullGameNameAndMember() {
         val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
         val expectedString =
-            "Game (#1) by ZLX : package arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
+            ":postal_horn: Game (#1) by ZLX | package is arriving between  15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(expectedString, returnedString)
     }
 
