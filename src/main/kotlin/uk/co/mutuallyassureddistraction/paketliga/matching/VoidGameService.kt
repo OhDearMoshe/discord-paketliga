@@ -12,7 +12,7 @@ class VoidGameService(private val gameDao: GameDao) {
         }
 
         if(game.userId != userId) {
-            return "Mr Pump says you cannot interfere with another game"
+            return "Mr Pump prevents you from interfering with another game"
         }
         gameDao.voidGameById(gameId)
         return "Game $gameId has been voided"

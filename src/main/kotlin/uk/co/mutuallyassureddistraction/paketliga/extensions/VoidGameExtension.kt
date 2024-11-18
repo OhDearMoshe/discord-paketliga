@@ -14,8 +14,8 @@ class VoidGameExtension(private val voidGameService: VoidGameService,
 
     override suspend fun setup() {
         publicSlashCommand(::VoidGameArguments) {
-            name = "voidgame"
-            description = "Voids an active game"
+            name = "pklvoid"
+            description = "Void an active game"
 
             guild(serverId)
 
@@ -32,7 +32,7 @@ class VoidGameExtension(private val voidGameService: VoidGameService,
     inner class VoidGameArguments : Arguments() {
         val gameid by int {
             name = "gameid"
-            description = "Game id inputted by user"
+            description = "The game ID announced by Dr Pakidge when the game was created"
         }
     }
 }
