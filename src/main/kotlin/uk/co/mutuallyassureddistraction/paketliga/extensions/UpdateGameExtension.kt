@@ -18,8 +18,8 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
     override val name = "updateGameExtension"
     override suspend fun setup() {
         publicSlashCommand(::UpdateGameArgs) {
-            name = "updategame"
-            description = "Ask the bot to update a game of PKL"
+            name = "pklupdate"
+            description = "Edit the details of an active game"
 
             guild(serverId)
 
@@ -31,7 +31,7 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
 
                 if(startWindow == null && closeWindow == null && guessesClose == null) {
                     respondEphemeral {
-                        content = "No time specified, the game will not be updated"
+                        content = ":thonk: You didn't change anything"
                     }
                 } else {
                     val uddateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
@@ -65,22 +65,22 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
     inner class UpdateGameArgs : Arguments() {
         val gameid by int {
             name = "gameid"
-            description = "Game id inputted by user"
+            description = "The game ID announced by Dr Pakidge when the game was created"
         }
 
         val startwindow by optionalString {
-            name = "startwindow"
-            description = "Start window time inputted by user"
+            name = "delivery-from"
+            description = "New start of delivery window"
         }
 
         val closewindow by optionalString {
-            name = "closewindow"
-            description = "Close window time inputted by user"
+            name = "delivery-by"
+            description = "New end of delivery window"
         }
 
         val guessesclose by optionalString {
-            name = "guessesclose"
-            description = "Close window time inputted by user"
+            name = "guesses-until"
+            description = "New deadline for guesses"
         }
     }
 
