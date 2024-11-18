@@ -16,8 +16,8 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
 
     override suspend fun setup() {
         publicSlashCommand(::LeaderboardArgs) {
-            name = "leaderboard"
-            description = "Get leaderboard"
+            name = "pklrank"
+            description = "View the PaketLiga Leaderboard"
 
             guild(serverId)
 
@@ -68,7 +68,7 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
     inner class LeaderboardArgs : Arguments() {
         val userId by optionalUser {
             name = "username"
-            description = "Username inputted by the user"
+            description = "Filter by username"
         }
     }
 }
