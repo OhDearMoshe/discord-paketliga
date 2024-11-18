@@ -17,15 +17,15 @@ class GameValidator {
         val now = ZonedDateTime.now()
 
         if(startTime >= endTime) {
-            return "Start time must be before end time"
+            return ":notstonks: Start of the delivery window must be before the end of the delivery window"
         }
 
         if(guessDeadline >= startTime) {
-            return "Deadline for guessing should be before the start window"
+            return ":ohno: Deadline for guesses must be before the delivery window opens"
         }
 
         if(guessDeadline < now) {
-            return "Game can not be in the past"
+            return ":pikachu: Deadline for guesses can't be in the past."
         }
         return null;
     }

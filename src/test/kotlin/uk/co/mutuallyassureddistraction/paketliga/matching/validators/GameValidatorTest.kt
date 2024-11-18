@@ -32,7 +32,7 @@ class GameValidatorTest {
             endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
             guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
         )
-        assertEquals("Start time must be before end time", target.validateGameCreate(guessWindow))
+        assertEquals(":notstonks: Start of the delivery window must be before the end of the delivery window", target.validateGameCreate(guessWindow))
     }
 
     @DisplayName("validateGameCreate() if start is after the end then return error message")
@@ -43,7 +43,7 @@ class GameValidatorTest {
             endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
             guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
         )
-        assertEquals("Start time must be before end time", target.validateGameCreate(guessWindow))
+        assertEquals(":notstonks: Start of the delivery window must be before the end of the delivery window", target.validateGameCreate(guessWindow))
     }
 
     @DisplayName("validateGameCreate() if the guess deadline is in the past return an error message")
@@ -54,7 +54,7 @@ class GameValidatorTest {
             endTime = ZonedDateTime.parse("2024-10-15T21:00:00Z"),
             guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
         )
-        assertEquals("Game can not be in the past", target.validateGameCreate(guessWindow))
+        assertEquals(":pikachu: Deadline for guesses can't be in the past.", target.validateGameCreate(guessWindow))
     }
 
     @DisplayName("validateGameUpdate() if game null return error message")
@@ -165,7 +165,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Start time must be before end time",
+            ":notstonks: Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -192,7 +192,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Start time must be before end time",
+            ":notstonks: Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -219,7 +219,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Start time must be before end time",
+            ":notstonks: Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -246,7 +246,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Start time must be before end time",
+            ":notstonks: Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -273,7 +273,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Start time must be before end time",
+            ":notstonks: Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -300,7 +300,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Start time must be before end time",
+            ":notstonks: Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -327,7 +327,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Deadline for guessing should be before the start window",
+            ":ohno: Deadline for guesses must be before the delivery window opens",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -354,7 +354,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Deadline for guessing should be before the start window",
+            ":ohno: Deadline for guesses must be before the delivery window opens",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }
@@ -381,7 +381,7 @@ class GameValidatorTest {
         )
 
         assertEquals(
-            "Game can not be in the past",
+            ":pikachu: Deadline for guesses can't be in the past.",
             target.validateGameUpdate(game, "123", updateGuessWindow)
         )
     }

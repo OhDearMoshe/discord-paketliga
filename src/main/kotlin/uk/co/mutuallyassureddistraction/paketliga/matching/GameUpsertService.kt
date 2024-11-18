@@ -49,7 +49,7 @@ class GameUpsertService(
 
         } catch (e: Exception) {
             logger.error("Error while creating game", e)
-            return "An error has occurred, please re-check your inputs and try again"
+            return ":pressf: You done goofed. Check your inputs and try again. "
         }
     }
 
