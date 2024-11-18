@@ -16,8 +16,8 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
     override val name = "findGuessExtension"
     override suspend fun setup() {
         publicSlashCommand(::FindGuessArgs) {
-            name = "findguess"
-            description = "Ask the bot to find PKL guesses"
+            name = "pklfindguess"
+            description = "Search for guesses"
 
             guild(serverId)
             action {
@@ -26,7 +26,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
                 if(gameId == null && guessId == null) {
                     respondEphemeral {
-                        content = "No params specified, nothing to be searched."
+                        content = "You didn't enter any search terms"
                     }
                 } else {
                     val responseList: List<GuessFinderService.FindGuessesResponse> = guessFinderService.findGuesses(gameId, guessId)
@@ -35,7 +35,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
                     if (responseList.isEmpty()) {
                         respond {
-                            content = "No guesses found."
+                            content = "Nothing found for those details"
                         }
                     } else {
                         val paginator = respondingPaginator {
@@ -45,14 +45,12 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                                     val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
 
                                     val field = EmbedBuilder.Field()
-                                    field.name =
-                                        "Guess #" + it.guessId.toString() + ": Guess by " + memberBehavior.asMember().displayName
-                                    field.value = "Guess time is " + it.guessTime
+                                    field.name = "Guess #${guessId.toString()}: ${it.guessTime} by ${memberBehavior.asMember().displayName}"
                                     guessFields.add(field)
                                 }
 
                                 page {
-                                    title = if(arguments.gameid != null) { "List of PKL guesses for game ID #" + arguments.gameid + ": " }
+                                    title = if(arguments.gameid != null) { "Active guesses for game ID #$gameId: " }
                                             else { "PKL guess for guess ID #" + arguments.guessid + ":" }
                                     fields = guessFields
                                 }
@@ -72,12 +70,12 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
     inner class FindGuessArgs : Arguments() {
         val guessid by optionalInt {
             name = "guessid"
-            description = "ID of the PKL guess from a certain PKL game"
+            description = "The guess ID provided by Dr Pakidge when you submitted your guess"
         }
 
         val gameid by optionalInt {
             name = "gameid"
-            description = "ID of the PKL game"
+            description = "The game ID announced by Dr Pakidge when the game was created "
         }
     }
 }
