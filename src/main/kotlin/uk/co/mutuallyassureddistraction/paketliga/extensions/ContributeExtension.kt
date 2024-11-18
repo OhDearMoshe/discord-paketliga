@@ -5,8 +5,9 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 
-class ContributeExtension (private val serverId: Snowflake) : Extension() {
+class ContributeExtension(private val serverId: Snowflake) : Extension() {
     override val name = "contributeExtension"
+
     override suspend fun setup() {
         publicSlashCommand {
             name = "pklcontribute"
@@ -15,7 +16,8 @@ class ContributeExtension (private val serverId: Snowflake) : Extension() {
 
             action {
                 respond {
-                    content = """
+                    content =
+                        """
                         :postal_horn: Discord guessing game. How to contribute :postal_horn:
                         
                         * Source code is hosted at: <https://github.com/OhDearMoshe/discord-paketliga>
@@ -23,7 +25,8 @@ class ContributeExtension (private val serverId: Snowflake) : Extension() {
                         * Have a feature request? Please raise an issues or a PR
                         * Want to suggest an improvement? Please raise an issue or PR
                         * Snark? Direct to OhDearMoshe then go contemplate your life choices
-                    """.trimIndent()
+                    """
+                            .trimIndent()
                 }
             }
         }

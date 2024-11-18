@@ -3,6 +3,9 @@ package uk.co.mutuallyassureddistraction.paketliga
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.utils.env
 import dev.kord.common.entity.Snowflake
+import java.sql.Connection
+import java.sql.DriverManager
+import java.util.*
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
@@ -24,31 +27,28 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTimeParserS
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
-import java.sql.Connection
-import java.sql.DriverManager
-import java.util.*
 
 val PG_JDBC_URL = env("POSTGRES_JDBC_URL")
 val PG_USERNAME = env("POSTGRES_USERNAME")
 val PG_PASSWORD = env("POSTGRES_PASSWORD")
-val TOP_OF_LEADERBOARD_ROLE = Snowflake(
-    env("TOP_OF_LEADERBOARD_ROLE")
-)
-val SERVER_ID = Snowflake(
-    env("SERVER_ID").toLong()  // Get the test server ID from the env vars or a .env file
-)
+val TOP_OF_LEADERBOARD_ROLE = Snowflake(env("TOP_OF_LEADERBOARD_ROLE"))
+val SERVER_ID =
+    Snowflake(
+        env("SERVER_ID").toLong() // Get the test server ID from the env vars or a .env file
+    )
 
 private val BOT_TOKEN = env("BOT_TOKEN") // Get the bot' token from the env vars or a .env file
+
 private class PKLBOT {}
 
 suspend fun main(args: Array<String>) {
 
-    TimeZone.setDefault(TimeZone.getTimeZone("Europe/London"));
+    TimeZone.setDefault(TimeZone.getTimeZone("Europe/London"))
 
     val logger = LoggerFactory.getLogger(PKLBOT::class.java)
     logger.info("Initialising database")
     val connection = DriverManager.getConnection(PG_JDBC_URL, PG_USERNAME, PG_PASSWORD)
-    if(connection.isValid(0)) {
+    if (connection.isValid(0)) {
         val jdbi = getJdbi(connection)
         logger.info("Init DAO's")
         // initialise GameDao and GameExtension
@@ -57,7 +57,7 @@ suspend fun main(args: Array<String>) {
         val pointDao = jdbi.onDemand<PointDao>()
         val winDao = jdbi.onDemand<WinDao>()
         logger.info("Init Services")
-        //Validators
+        // Validators
         val gameValidator = GameValidator()
         val guessValidator = GuessValidator()
         // Time parsers
@@ -75,15 +75,14 @@ suspend fun main(args: Array<String>) {
         val leaderboardService = LeaderboardService(pointDao)
         val voidGameService = VoidGameService(gameDao)
 
-
         logger.info("Creating Extensions")
         val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)
         val findGuessExtension = FindGuessExtension(guessFinderService, SERVER_ID)
-        val endGameExtension = EndGameExtension(gameEndService, leaderboardService,
-            deliveryTimeParser, TOP_OF_LEADERBOARD_ROLE, SERVER_ID)
+        val endGameExtension =
+            EndGameExtension(gameEndService, leaderboardService, deliveryTimeParser, TOP_OF_LEADERBOARD_ROLE, SERVER_ID)
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)
         val helpExtension = HelpExtension(SERVER_ID)
         val voidGameExtension = VoidGameExtension(voidGameService, SERVER_ID)
@@ -91,29 +90,29 @@ suspend fun main(args: Array<String>) {
         val rulesExtension = RulesExtension(SERVER_ID)
         val creditsExtension = CreditsExtension(SERVER_ID)
 
-
         logger.info("Creating bot")
-        val bot = ExtensibleBot(BOT_TOKEN) {
-            chatCommands {
-                enabled = true
-                prefix { _ -> "?" }
-            }
+        val bot =
+            ExtensibleBot(BOT_TOKEN) {
+                chatCommands {
+                    enabled = true
+                    prefix { _ -> "?" }
+                }
 
-            extensions {
-                add { createGameExtension }
-                add { updateGameExtension }
-                add { findGamesExtension }
-                add { guessGameExtension }
-                add { findGuessExtension }
-                add { endGameExtension }
-                add { leaderboardExtension }
-                add { helpExtension }
-                add { voidGameExtension }
-                add { contributeExtension }
-                add { rulesExtension }
-                add { creditsExtension }
+                extensions {
+                    add { createGameExtension }
+                    add { updateGameExtension }
+                    add { findGamesExtension }
+                    add { guessGameExtension }
+                    add { findGuessExtension }
+                    add { endGameExtension }
+                    add { leaderboardExtension }
+                    add { helpExtension }
+                    add { voidGameExtension }
+                    add { contributeExtension }
+                    add { rulesExtension }
+                    add { creditsExtension }
+                }
             }
-        }
         logger.info("Starting Bot. Beep boop")
         bot.start()
     }

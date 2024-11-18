@@ -1,6 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
-
+import java.sql.SQLException
+import java.time.ZonedDateTime
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
@@ -10,14 +11,12 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResult
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTime
-import java.sql.SQLException
-import java.time.ZonedDateTime
 
 class GameEndService(
     private val guessDao: GuessDao,
     private val gameDao: GameDao,
     private val gameResultResolver: GameResultResolver,
-    private val pointUpdaterService: PointUpdaterService
+    private val pointUpdaterService: PointUpdaterService,
 ) {
 
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
@@ -27,14 +26,14 @@ class GameEndService(
 
         // 1. we finish the game
         try {
-            if(isGameVoid(searchedGame, deliveryTime)) {
-                //Void the game
+            if (isGameVoid(searchedGame, deliveryTime)) {
+                // Void the game
                 gameDao.voidGameById(searchedGame.gameId!!)
                 return Pair("Delivery time is outside of delivery window game void", null)
             }
             searchedGame = gameDao.finishGame(gameId, deliveryTime.deliveryTime)
         } catch (e: Exception) {
-           return handleExceptions(e, deliveryTime.deliveryTime, gameId)
+            return handleExceptions(e, deliveryTime.deliveryTime, gameId)
         }
 
         // 2. we get the guesses and find the winning guess(es)
@@ -47,7 +46,8 @@ class GameEndService(
     }
 
     private fun isGameVoid(game: Game, deliveryTime: DeliveryTime): Boolean {
-        return deliveryTime.deliveryTime < game.guessesClose || deliveryTime.deliveryTime.dayOfYear > game.windowClose.dayOfYear
+        return deliveryTime.deliveryTime < game.guessesClose ||
+            deliveryTime.deliveryTime.dayOfYear > game.windowClose.dayOfYear
     }
 
     fun handleExceptions(e: Exception, zonedDeliveryDateTime: ZonedDateTime, gameId: Int): Pair<String?, GameResult?> {

@@ -3,6 +3,9 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 import dev.kord.core.entity.Member
 import io.mockk.every
 import io.mockk.mockk
+import java.time.ZonedDateTime
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
@@ -10,9 +13,6 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
-import java.time.ZonedDateTime
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class GameUpsertServiceTest {
 
@@ -20,17 +20,19 @@ class GameUpsertServiceTest {
     private val gameValidator: GameValidator = mockk<GameValidator>()
     private val activeGame = mockk<Game>()
 
-    val guessWindow = GuessWindow(
-        startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
-        endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
-        guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
-    )
+    val guessWindow =
+        GuessWindow(
+            startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
+            endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
+            guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z"),
+        )
 
-    val updateGuessWindow = UpdateGuessWindow(
-        startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
-        endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
-        guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z")
-    )
+    val updateGuessWindow =
+        UpdateGuessWindow(
+            startTime = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
+            endTime = ZonedDateTime.parse("2024-10-15T20:00:00Z"),
+            guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z"),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -42,14 +44,15 @@ class GameUpsertServiceTest {
         every { gameValidator.validateGameCreate(any()) } returns null
         every { gameValidator.validateGameUpdate(any(), any(), any()) } returns null
 
-        val guessesResponse = arrayListOf(
-            GuessFinderService.FindGuessesResponse(
-                guessId = 1,
-                gameId = 1,
-                userId = "Z",
-                guessTime = "\"2023-04-10T10:00:00.000Z[Europe/London]"
+        val guessesResponse =
+            arrayListOf(
+                GuessFinderService.FindGuessesResponse(
+                    guessId = 1,
+                    gameId = 1,
+                    userId = "Z",
+                    guessTime = "\"2023-04-10T10:00:00.000Z[Europe/London]",
+                )
             )
-        )
         every { guessFinderService.findGuesses(any(), any()) } returns guessesResponse
 
         target = GameUpsertService(gameDao, guessFinderService, gameValidator)
@@ -77,7 +80,9 @@ class GameUpsertServiceTest {
         assertEquals(expectedString, returnedString)
     }
 
-    @DisplayName("createGame() will return string with default 'Game' string and username if game name and member are null")
+    @DisplayName(
+        "createGame() will return string with default 'Game' string and username if game name and member are null"
+    )
     @Test
     fun returnStringWithNullGameNameAndMember() {
         val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
@@ -94,7 +99,6 @@ class GameUpsertServiceTest {
         val (updateString, _) = target.updateGame(1, "OhDear", updateGuessWindow)
 
         assertEquals(updateString[0], expectedString)
-
     }
 
     @DisplayName("updateGame() will return updated game string and correct user IDS")
@@ -102,7 +106,8 @@ class GameUpsertServiceTest {
     fun returnStringWithUpdatedGameInfo() {
         val (updateString, userIds) = target.updateGame(1, "OhDear", updateGuessWindow)
 
-        val expectedString = "Game #1  updated: package now arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
+        val expectedString =
+            "Game #1  updated: package now arriving between 15-Oct-24 19:00 and 15-Oct-24 20:00. Guesses accepted until 15-Oct-24 18:00"
         assertEquals(updateString[0], expectedString)
         assertEquals(userIds[0], "Z")
     }
@@ -116,7 +121,7 @@ class GameUpsertServiceTest {
             guessesClose = guessWindow.guessDeadline,
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 
@@ -129,7 +134,7 @@ class GameUpsertServiceTest {
             guessesClose = ZonedDateTime.now().withHour(14).withMinute(0),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 }

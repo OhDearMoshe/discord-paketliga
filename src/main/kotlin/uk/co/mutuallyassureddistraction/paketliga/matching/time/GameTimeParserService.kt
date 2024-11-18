@@ -1,7 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching.time
 
-import org.joda.time.DateTime
 import java.time.ZonedDateTime
+import org.joda.time.DateTime
 
 class GameTimeParserService(private val timeParser: TimeParser) {
 
@@ -10,7 +10,7 @@ class GameTimeParserService(private val timeParser: TimeParser) {
         return GuessWindow(
             startTime = startDate,
             endTime = timeParser.parseDate(closeWindow),
-            guessDeadline = resolveCloseTime(startDate, guessesClose)
+            guessDeadline = resolveCloseTime(startDate, guessesClose),
         )
     }
 
@@ -18,13 +18,13 @@ class GameTimeParserService(private val timeParser: TimeParser) {
         return UpdateGuessWindow(
             startTime = startWindow?.let { timeParser.parseDate(it) },
             endTime = closeWindow?.let { timeParser.parseDate(it) },
-            guessDeadline = guessesClose?.let { timeParser.parseDate(it) }
+            guessDeadline = guessesClose?.let { timeParser.parseDate(it) },
         )
     }
 
-    private fun resolveCloseTime(startDate: ZonedDateTime, guessesClose: String? ): ZonedDateTime {
+    private fun resolveCloseTime(startDate: ZonedDateTime, guessesClose: String?): ZonedDateTime {
         return if (guessesClose == null) {
-           getDefaultCloseTime(startDate)
+            getDefaultCloseTime(startDate)
         } else {
             timeParser.parseDate(guessesClose)
         }

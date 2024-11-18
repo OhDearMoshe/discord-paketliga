@@ -7,6 +7,7 @@ import dev.kord.common.entity.Snowflake
 
 class HelpExtension(private val serverId: Snowflake) : Extension() {
     override val name = "helpExtension"
+
     override suspend fun setup() {
         publicSlashCommand {
             name = "pklhelp"
@@ -15,7 +16,8 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
 
             action {
                 respond {
-                    content = """
+                    content =
+                        """
                         :postal_horn: Discord guessing game :postal_horn:
                         
                         Commands:
@@ -32,7 +34,8 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         * /pklcontribute -> Raise bugs. See how to contribute
                         * /pklcredits -> View credits
 
-                    """.trimIndent()
+                    """
+                            .trimIndent()
                 }
             }
         }

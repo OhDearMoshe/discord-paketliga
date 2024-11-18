@@ -5,7 +5,8 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Point
 
 interface PointDao {
-    @SqlUpdate("""
+    @SqlUpdate(
+        """
         INSERT INTO POINT as pnt(
             userId,
             played,
@@ -31,10 +32,12 @@ interface PointDao {
                 won = pnt.won + 1
             WHERE pnt.userId = :point.userId
         RETURNING *
-    """)
+    """
+    )
     fun addWin(point: Point)
 
-    @SqlUpdate("""
+    @SqlUpdate(
+        """
         INSERT INTO POINT as pnt(
             userId,
             played,
@@ -61,10 +64,12 @@ interface PointDao {
                 bonus = pnt.bonus + 1
             WHERE pnt.userId = :point.userId
         RETURNING *
-    """)
+    """
+    )
     fun addBonusWin(point: Point)
 
-    @SqlUpdate("""
+    @SqlUpdate(
+        """
         INSERT INTO POINT as pnt(
             userId,
             played,
@@ -90,10 +95,12 @@ interface PointDao {
                 drawn = pnt.drawn + 1
             WHERE pnt.userId = :point.userId
         RETURNING *
-    """)
+    """
+    )
     fun addDraw(point: Point)
 
-    @SqlUpdate("""
+    @SqlUpdate(
+        """
         INSERT INTO POINT as pnt(
             userId,
             played,
@@ -118,19 +125,24 @@ interface PointDao {
                 lost = pnt.lost + 1
             WHERE pnt.userId = :point.userId
         RETURNING *
-    """)
+    """
+    )
     fun addLost(point: Point)
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT * FROM POINT
         ORDER BY totalPoint DESC
         LIMIT :limit;
-    """)
+    """
+    )
     fun getPointsSortedByTotalPointsDesc(limit: Int?): List<Point>
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT * FROM POINT
         WHERE userId = :userId
-    """)
+    """
+    )
     fun getPointByUserId(userId: String): Point
 }

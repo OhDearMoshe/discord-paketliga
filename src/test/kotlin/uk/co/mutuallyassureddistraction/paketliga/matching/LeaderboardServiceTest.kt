@@ -2,12 +2,12 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Point
-import kotlin.test.assertEquals
 
 class LeaderboardServiceTest {
     private lateinit var target: LeaderboardService
@@ -15,13 +15,11 @@ class LeaderboardServiceTest {
     @BeforeEach
     fun setUp() {
         val pointDao = mockk<PointDao>()
-        Point(1,"Z",1,1,1,0, 0, 1F)
+        Point(1, "Z", 1, 1, 1, 0, 0, 1F)
 
-        every {pointDao.getPointByUserId(any())} returns Point(2,"Y",1,1,1,0, 0,3F)
-        every {pointDao.getPointsSortedByTotalPointsDesc(null)} returns arrayListOf(
-            Point(2,"Y",1,1,1,0, 0,3F),
-            Point(1,"Z",1,1,1,0, 0,1F)
-        )
+        every { pointDao.getPointByUserId(any()) } returns Point(2, "Y", 1, 1, 1, 0, 0, 3F)
+        every { pointDao.getPointsSortedByTotalPointsDesc(null) } returns
+            arrayListOf(Point(2, "Y", 1, 1, 1, 0, 0, 3F), Point(1, "Z", 1, 1, 1, 0, 0, 1F))
 
         target = LeaderboardService(pointDao)
     }

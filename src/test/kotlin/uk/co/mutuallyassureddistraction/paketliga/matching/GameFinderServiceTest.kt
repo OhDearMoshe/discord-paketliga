@@ -2,6 +2,10 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import io.mockk.every
 import io.mockk.mockk
+import java.time.ZonedDateTime
+import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -10,10 +14,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import java.time.ZonedDateTime
-import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class GameFinderServiceTest {
     private lateinit var target: GameFinderService
@@ -23,8 +23,8 @@ class GameFinderServiceTest {
     @BeforeEach
     fun setUp() {
         val gameDao = mockk<GameDao>()
-        every {gameDao.findActiveGameById(any())} returns expectedGame
-        every {gameDao.findActiveGames(any(), any()) } returns listOf(expectedGame)
+        every { gameDao.findActiveGameById(any()) } returns expectedGame
+        every { gameDao.findActiveGames(any(), any()) } returns listOf(expectedGame)
         target = GameFinderService(gameDao)
     }
 
@@ -47,12 +47,12 @@ class GameFinderServiceTest {
         assertEquals(returnedList[0].userId, expectedGame.userId)
         assertEquals(returnedList[0].windowStart, zonedDateTimeToString(expectedGame.windowStart))
         assertEquals(returnedList[0].windowClose, zonedDateTimeToString(expectedGame.windowClose))
-        assertEquals(returnedList[0].guessesClose,zonedDateTimeToString(expectedGame.guessesClose))
+        assertEquals(returnedList[0].guessesClose, zonedDateTimeToString(expectedGame.guessesClose))
     }
 
-    private fun zonedDateTimeToString(dtz : ZonedDateTime): String {
-        return DateTime(dtz.toInstant().toEpochMilli(),
-            DateTimeZone.forTimeZone(TimeZone.getTimeZone(dtz.zone))).toString(dtf)
+    private fun zonedDateTimeToString(dtz: ZonedDateTime): String {
+        return DateTime(dtz.toInstant().toEpochMilli(), DateTimeZone.forTimeZone(TimeZone.getTimeZone(dtz.zone)))
+            .toString(dtf)
     }
 
     private fun getGameStub(): Game {
@@ -64,7 +64,7 @@ class GameFinderServiceTest {
             guessesClose = ZonedDateTime.now().withHour(14).withMinute(0),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 }

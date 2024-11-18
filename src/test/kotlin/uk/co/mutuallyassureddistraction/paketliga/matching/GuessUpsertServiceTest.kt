@@ -2,6 +2,9 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import io.mockk.every
 import io.mockk.mockk
+import java.sql.SQLException
+import java.time.ZonedDateTime
+import kotlin.test.*
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
@@ -9,9 +12,6 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
-import java.sql.SQLException
-import java.time.ZonedDateTime
-import kotlin.test.*
 
 class GuessUpsertServiceTest {
     private lateinit var target: GuessUpsertService
@@ -23,13 +23,12 @@ class GuessUpsertServiceTest {
     @Test
     fun returnCreateGuessWithSuccessTrue() {
         val guessDao = mockk<GuessDao>()
-        every {guessDao.createGuess(any())} returns Unit
+        every { guessDao.createGuess(any()) } returns Unit
         val gameDao = mockk<GameDao>()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
-        every {gameDao.findActiveGameById(any())} returns getGameStub()
+        every { gameDao.findActiveGameById(any()) } returns getGameStub()
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
-
 
         val response = target.guessGame(1, guessTime, "Z", mention)
         val expectedString = ":sickos: @OhDearMoshe has guessed 15-Oct-24 19:00 for game ID #1"
@@ -42,9 +41,9 @@ class GuessUpsertServiceTest {
         val guessDao = mockk<GuessDao>()
         val sqlException = SQLException("Guess time is not between start and closing window range of the game", "ERRA1")
         val exception = UnableToExecuteStatementException(sqlException, null)
-        every {guessDao.createGuess(any())} throws exception
+        every { guessDao.createGuess(any()) } throws exception
         val gameDao = mockk<GameDao>()
-        every {gameDao.findActiveGameById(any())} returns getGameStub()
+        every { gameDao.findActiveGameById(any()) } returns getGameStub()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns "Error message"
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
@@ -60,9 +59,9 @@ class GuessUpsertServiceTest {
         val guessDao = mockk<GuessDao>()
         val sqlException = SQLException("Guess time has already exist", "23505")
         val exception = UnableToExecuteStatementException(sqlException, null)
-        every {guessDao.createGuess(any())} throws exception
+        every { guessDao.createGuess(any()) } throws exception
         val gameDao = mockk<GameDao>()
-        every {gameDao.findActiveGameById(any())} returns getGameStub()
+        every { gameDao.findActiveGameById(any()) } returns getGameStub()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
@@ -78,9 +77,9 @@ class GuessUpsertServiceTest {
         val guessDao = mockk<GuessDao>()
         val sqlException = SQLException("Guess time is not between start and closing window range of the game", "ERRA1")
         val exception = UnableToExecuteStatementException(sqlException, null)
-        every {guessDao.createGuess(any())} throws exception
+        every { guessDao.createGuess(any()) } throws exception
         val gameDao = mockk<GameDao>()
-        every {gameDao.findActiveGameById(any())} returns getGameStub()
+        every { gameDao.findActiveGameById(any()) } returns getGameStub()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
@@ -89,7 +88,6 @@ class GuessUpsertServiceTest {
         val expectedString = "*\\*womp-womp*\\* Game ID #4 is not valid or is no longer active "
         assertEquals(expectedString, response)
     }
-
 
     private fun getGameStub(): Game {
         return Game(
@@ -100,7 +98,7 @@ class GuessUpsertServiceTest {
             guessesClose = ZonedDateTime.now().withHour(18).withMinute(0),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 }

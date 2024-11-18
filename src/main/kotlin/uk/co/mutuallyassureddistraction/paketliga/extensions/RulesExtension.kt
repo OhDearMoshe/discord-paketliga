@@ -5,8 +5,9 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 
-class RulesExtension (private val serverId: Snowflake) : Extension() {
+class RulesExtension(private val serverId: Snowflake) : Extension() {
     override val name = "rulesExtension"
+
     override suspend fun setup() {
         publicSlashCommand {
             name = "pklrules"
@@ -15,7 +16,8 @@ class RulesExtension (private val serverId: Snowflake) : Extension() {
 
             action {
                 respond {
-                    content = """
+                    content =
+                        """
                         :postal_horn: Discord guessing game :postal_horn:
                         Rules:
                         1. The addressee must specify the timeframe in which they expect the package to arrive. AKA start: Today 2pm end Today: 3pm 
@@ -32,7 +34,8 @@ class RulesExtension (private val serverId: Snowflake) : Extension() {
                         13. Sniping is permitted
                         14. You cannot submit a time already submitted
                         15. Any talk of collusion will be swiftly dealt with. Violently.
-                    """.trimIndent()
+                    """
+                            .trimIndent()
                 }
             }
         }
