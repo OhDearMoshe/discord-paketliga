@@ -1,5 +1,6 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
+import java.sql.SQLException
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
@@ -7,11 +8,12 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
-import java.sql.SQLException
 
-class GuessUpsertService(private val guessDao: GuessDao,
-                         private val gameDao: GameDao,
-                         private val guessValidator: GuessValidator) {
+class GuessUpsertService(
+    private val guessDao: GuessDao,
+    private val gameDao: GameDao,
+    private val guessValidator: GuessValidator,
+) {
 
     private val logger = LoggerFactory.getLogger(GuessUpsertService::class.java)
 
@@ -20,22 +22,16 @@ class GuessUpsertService(private val guessDao: GuessDao,
         try {
             val searchedGame = gameDao.findActiveGameById(gameId)
             val errorMessage = guessValidator.validateGuess(searchedGame, gameId, userId, guessTime)
-            if(errorMessage != null) {
+            if (errorMessage != null) {
                 return errorMessage
             }
             guessDao.createGuess(
-                Guess(
-                    guessId = null,
-                    gameId = gameId,
-                    guessTime = guessTime.guessTime,
-                    userId = userId
-                )
+                Guess(guessId = null, gameId = gameId, guessTime = guessTime.guessTime, userId = userId)
             )
             return ":sickos: $userMention has guessed ${guessTime.toHumanString()} for game ID #$gameId"
-
         } catch (e: Exception) {
             var errorString = ":pressf: You done goofed. Check your inputs and try again."
-            when(e) {
+            when (e) {
                 is UnableToExecuteStatementException -> {
                     // TODO: Create sql code error resolver. Also move some of the validations out into triggers
                     val original = e.cause as SQLException

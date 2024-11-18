@@ -6,5 +6,5 @@ data class GameResult(
     val winners: List<Guess>,
     val losers: List<Guess>,
     val awardBonusPoint: Boolean,
-    val wasDraw: Boolean
+    val wasDraw: Boolean,
 )

@@ -10,10 +10,11 @@ import dev.kord.common.entity.Snowflake
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessUpsertService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTimeParserService
 
-class GuessGameExtension(private val guessUpsertService: GuessUpsertService,
-                         private val guessTimeParserService: GuessTimeParserService,
-                         private val serverId: Snowflake
-                         ): Extension() {
+class GuessGameExtension(
+    private val guessUpsertService: GuessUpsertService,
+    private val guessTimeParserService: GuessTimeParserService,
+    private val serverId: Snowflake,
+) : Extension() {
     override val name = "guessExtension"
 
     override suspend fun setup() {
@@ -30,9 +31,7 @@ class GuessGameExtension(private val guessUpsertService: GuessUpsertService,
                 val guessTime = guessTimeParserService.parseToGuessTime(arguments.guesstime)
                 val guessGameResponse = guessUpsertService.guessGame(gameId, guessTime, userId, mention)
 
-                respond {
-                    content = guessGameResponse
-                }
+                respond { content = guessGameResponse }
             }
         }
     }

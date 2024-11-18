@@ -8,8 +8,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 import uk.co.mutuallyassureddistraction.paketliga.matching.VoidGameService
 
-class VoidGameExtension(private val voidGameService: VoidGameService,
-                        private val serverId: Snowflake) : Extension() {
+class VoidGameExtension(private val voidGameService: VoidGameService, private val serverId: Snowflake) : Extension() {
     override val name = "voidGame"
 
     override suspend fun setup() {
@@ -21,12 +20,9 @@ class VoidGameExtension(private val voidGameService: VoidGameService,
 
             action {
                 val resultMessage = voidGameService.voidGame(arguments.gameid, user.asUser().id.value.toString())
-                respond {
-                    content = resultMessage
-                }
+                respond { content = resultMessage }
             }
         }
-
     }
 
     inner class VoidGameArguments : Arguments() {

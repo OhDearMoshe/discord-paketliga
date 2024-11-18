@@ -9,17 +9,19 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.MemberBehavior
+import java.util.logging.Logger
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameEndService
 import uk.co.mutuallyassureddistraction.paketliga.matching.LeaderboardService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTimeParser
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
-import java.util.logging.Logger
 
-class EndGameExtension(private val gameEndService: GameEndService,
-                       private val leaderboardService: LeaderboardService,
-                       private val deliveryTimeParser: DeliveryTimeParser,
-                       private val topOfLeaderBoardRole: Snowflake,
-                       private val serverId: Snowflake) : Extension() {
+class EndGameExtension(
+    private val gameEndService: GameEndService,
+    private val leaderboardService: LeaderboardService,
+    private val deliveryTimeParser: DeliveryTimeParser,
+    private val topOfLeaderBoardRole: Snowflake,
+    private val serverId: Snowflake,
+) : Extension() {
     override val name = "endGameExtension"
     private val LOGGER = Logger.getLogger(EndGameExtension::class.java.name)
 
@@ -41,14 +43,10 @@ class EndGameExtension(private val gameEndService: GameEndService,
                 try {
                     val kord = this@EndGameExtension.kord
 
-                    if (responseString != null ) {
-                        respond {
-                            content = responseString
-                        }
-                    } else if(result != null) {
-                        respond {
-                            content = "Game #$gameId ended with delivery time: ${deliveryTime.toHumanTime()}"
-                        }
+                    if (responseString != null) {
+                        respond { content = responseString }
+                    } else if (result != null) {
+                        respond { content = "Game #$gameId ended with delivery time: ${deliveryTime.toHumanTime()}" }
                         var mentionContent = "We have a winner:"
                         if (result.winners.isEmpty()) {
                             mentionContent = "No one guessed the time, so no winners at this game."
@@ -65,22 +63,19 @@ class EndGameExtension(private val gameEndService: GameEndService,
                             if (guessesIterator.hasNext()) mentionContent += ", "
                         }
 
-                        respond {
-                            content = mentionContent
-                        }
+                        respond { content = mentionContent }
 
-                        if(currentWinner.isNotEmpty()) {
-                            val roleContent = resolveRole(
-                                currentWinner.first().userId,
-                                currentWinner.first().totalPoint,
-                                pastWinner.firstOrNull()?.userId,
-                                topOfLeaderBoardRole,
-                                kord
-                            )
+                        if (currentWinner.isNotEmpty()) {
+                            val roleContent =
+                                resolveRole(
+                                    currentWinner.first().userId,
+                                    currentWinner.first().totalPoint,
+                                    pastWinner.firstOrNull()?.userId,
+                                    topOfLeaderBoardRole,
+                                    kord,
+                                )
 
-                            respond {
-                                content = roleContent
-                            }
+                            respond { content = roleContent }
                         }
                     }
                 } catch (e: Exception) {
@@ -91,14 +86,21 @@ class EndGameExtension(private val gameEndService: GameEndService,
         }
     }
 
-    private suspend fun resolveRole(currentWinner: String, currentWinnerPoint: Float, pastWinner: String?,
-                                    topOfLeaderBoardRole: Snowflake, kord: Kord): String {
+    private suspend fun resolveRole(
+        currentWinner: String,
+        currentWinnerPoint: Float,
+        pastWinner: String?,
+        topOfLeaderBoardRole: Snowflake,
+        kord: Kord,
+    ): String {
         val currentWinnerMember = MemberBehavior(serverId, Snowflake(currentWinner), kord)
         currentWinnerMember.asMember().addRole(topOfLeaderBoardRole)
 
-        if(pastWinner == null || currentWinner == pastWinner) {
-            return currentWinnerMember.asMember().mention + " is on top the leaderboard with " +
-                    currentWinnerPoint + " points"
+        if (pastWinner == null || currentWinner == pastWinner) {
+            return currentWinnerMember.asMember().mention +
+                " is on top the leaderboard with " +
+                currentWinnerPoint +
+                " points"
         }
 
         // If there is a past rank 1 / change of top of leaderboard:
@@ -106,9 +108,12 @@ class EndGameExtension(private val gameEndService: GameEndService,
         val pastWinnerMember = MemberBehavior(serverId, Snowflake(pastWinner), kord)
         pastWinnerMember.asMember().removeRole(topOfLeaderBoardRole)
 
-        return currentWinnerMember.asMember().mention + " is now on top the leaderboard with " +
-                currentWinnerPoint + " points, sorry " + pastWinnerMember.asMember().mention +
-                " better luck next time."
+        return currentWinnerMember.asMember().mention +
+            " is now on top the leaderboard with " +
+            currentWinnerPoint +
+            " points, sorry " +
+            pastWinnerMember.asMember().mention +
+            " better luck next time."
     }
 
     inner class EndGameArgs : Arguments() {

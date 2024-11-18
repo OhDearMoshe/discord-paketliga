@@ -1,5 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao
 
+import java.time.ZonedDateTime
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -7,8 +9,6 @@ import org.junit.jupiter.api.Test
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Win
-import java.time.ZonedDateTime
-import kotlin.test.assertEquals
 
 class WinDaoTest {
     private lateinit var gameDao: GameDao
@@ -29,7 +29,7 @@ class WinDaoTest {
                 guessesClose = ZonedDateTime.parse("2023-04-07T12:00:00.000Z[Europe/London]"),
                 deliveryTime = null,
                 userId = "Z",
-                gameActive = true
+                gameActive = true,
             )
         )
         guessDao = testWrapper.buildDao(GuessDao::class.java)
@@ -38,7 +38,7 @@ class WinDaoTest {
                 guessId = 1,
                 gameId = 1,
                 userId = "PostMasterGeneral",
-                guessTime = ZonedDateTime.parse("2023-04-07T16:00:00.000Z[Europe/London]")
+                guessTime = ZonedDateTime.parse("2023-04-07T16:00:00.000Z[Europe/London]"),
             )
         )
 
@@ -56,19 +56,18 @@ class WinDaoTest {
         val expected = createWin()
         target.addWinningGuess(expected)
 
-        val result = testWrapper.executeSimpleQuery<Win>(
-            """SELECT * FROM WIN""".trimIndent()
-        )
+        val result = testWrapper.executeSimpleQuery<Win>("""SELECT * FROM WIN""".trimIndent())
         assertEquals(expected, result)
     }
 
     private fun createWin(): Win {
-        val expected = Win(
-            winId = 1,
-            gameId = 1,
-            guessId = 1,
-            date = ZonedDateTime.parse("2023-04-07T12:00:00.000Z[Europe/London]")
-        )
+        val expected =
+            Win(
+                winId = 1,
+                gameId = 1,
+                guessId = 1,
+                date = ZonedDateTime.parse("2023-04-07T12:00:00.000Z[Europe/London]"),
+            )
 
         return expected
     }

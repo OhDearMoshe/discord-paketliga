@@ -2,6 +2,10 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import io.mockk.every
 import io.mockk.mockk
+import java.time.ZonedDateTime
+import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -10,10 +14,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
-import java.time.ZonedDateTime
-import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class GuessFinderServiceTest {
     private lateinit var target: GuessFinderService
@@ -23,8 +23,8 @@ class GuessFinderServiceTest {
     @BeforeEach
     fun setUp() {
         val guessDao = mockk<GuessDao>()
-        every {guessDao.findGuessByGuessId(any())} returns expectedGuess
-        every {guessDao.findGuessesByGameId(any())} returns listOf(expectedGuess)
+        every { guessDao.findGuessByGuessId(any()) } returns expectedGuess
+        every { guessDao.findGuessesByGameId(any()) } returns listOf(expectedGuess)
         target = GuessFinderService(guessDao)
     }
 
@@ -46,17 +46,12 @@ class GuessFinderServiceTest {
         assertEquals(returnedList[0].guessTime, zonedDateTimeToString(expectedGuess.guessTime))
     }
 
-    private fun zonedDateTimeToString(zdt : ZonedDateTime): String {
-        return DateTime(zdt.toInstant().toEpochMilli(),
-            DateTimeZone.forTimeZone(TimeZone.getTimeZone(zdt.zone))).toString(dtf)
+    private fun zonedDateTimeToString(zdt: ZonedDateTime): String {
+        return DateTime(zdt.toInstant().toEpochMilli(), DateTimeZone.forTimeZone(TimeZone.getTimeZone(zdt.zone)))
+            .toString(dtf)
     }
 
     private fun getGuessStub(): Guess {
-        return Guess (
-            guessId = 1,
-            gameId = 1,
-            userId = "Z",
-            guessTime = ZonedDateTime.now().withHour(14).withMinute(38)
-        )
+        return Guess(guessId = 1, gameId = 1, userId = "Z", guessTime = ZonedDateTime.now().withHour(14).withMinute(38))
     }
 }

@@ -9,6 +9,7 @@ plugins {
     id 'application'
     id 'org.jetbrains.kotlin.jvm' version '2.0.21'
     id "org.flywaydb.flyway" version "10.0.0"
+    id "com.ncorti.ktfmt.gradle" version "0.21.0"
 }
 group = 'uk.co.mutuallyassureddistraction'
 version = '1.0-SNAPSHOT'
@@ -68,4 +69,9 @@ kotlin {
 
 application {
     mainClassName = 'uk.co.mutuallyassureddistraction.paketliga.MainKt'
+}
+
+ktfmt {
+    kotlinLangStyle()
+    maxWidth.set(120)
 }
