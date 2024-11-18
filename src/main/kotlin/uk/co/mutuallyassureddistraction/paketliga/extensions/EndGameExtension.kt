@@ -25,8 +25,8 @@ class EndGameExtension(private val gameEndService: GameEndService,
 
     override suspend fun setup() {
         publicSlashCommand(::EndGameArgs) {
-            name = "endgame"
-            description = "Ask the bot to end a game of PKL"
+            name = "pklend"
+            description = "Finalise an open game"
 
             guild(serverId)
 
@@ -114,12 +114,12 @@ class EndGameExtension(private val gameEndService: GameEndService,
     inner class EndGameArgs : Arguments() {
         val gameid by int {
             name = "gameid"
-            description = "Game id inputted by user"
+            description = "The game ID announced by Dr Pakidge when the game was created "
         }
 
         val deliverytime by string {
             name = "deliverytime"
-            description = "Actual delivery time inputted by user"
+            description = "What time the package arrived"
         }
     }
 }

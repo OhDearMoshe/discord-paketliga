@@ -51,7 +51,7 @@ class GameEndService(
     }
 
     fun handleExceptions(e: Exception, zonedDeliveryDateTime: ZonedDateTime, gameId: Int): Pair<String?, GameResult?> {
-        var errorString = "An error has occurred, please re-check your inputs and try again"
+        var errorString = "Something went wrong. Check your inputs and try again, or just shout at @OhDearMoshe"
         when (e) {
             is UnableToExecuteStatementException -> {
                 val original = e.cause as SQLException
