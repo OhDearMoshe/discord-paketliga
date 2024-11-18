@@ -2,7 +2,7 @@
 <Configuration status="WARN">
 
     <Appenders>
-        <File name="File" fileName="${filename}">
+        <File name="File" fileName="packidg.log">
             <PatternLayout>
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
             </PatternLayout>
