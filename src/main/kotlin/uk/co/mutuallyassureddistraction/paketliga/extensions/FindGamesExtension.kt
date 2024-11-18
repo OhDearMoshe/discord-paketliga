@@ -19,8 +19,8 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
 
     override suspend fun setup() {
         publicSlashCommand(::FindGamesArgs) {
-            name = "findgames"
-            description = "Ask the bot to find PKL games"
+            name = "pklfindgames"
+            description = "Get a list of active games"
 
             guild(serverId)
 
@@ -35,7 +35,7 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
 
                 if (responseList.isEmpty()) {
                     respond {
-                        content = "No games found."
+                        content = "No games found"
                     }
                 } else {
                     val paginator = respondingPaginator {
@@ -54,7 +54,7 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
                             }
 
                             page {
-                                title = "List of PKL games: "
+                                title = "List of active games: "
                                 fields = pageFields
                             }
                         }
@@ -72,17 +72,17 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
     inner class FindGamesArgs : Arguments() {
         val gamecreator by optionalUser {
             name = "gamecreator"
-            description = "Creator of the games"
+            description = "Filter by creator name"
         }
 
         val gameid by optionalInt {
             name = "gameid"
-            description = "ID of the PKL game"
+            description = "Filter by Game ID"
         }
 
         val gamename by optionalString {
-            name = "gamename"
-            description = "Name of the game"
+            name = "description"
+            description = "Filter by description"
         }
     }
 }
