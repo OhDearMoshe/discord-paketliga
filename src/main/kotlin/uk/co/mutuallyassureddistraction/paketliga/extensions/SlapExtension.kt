@@ -12,11 +12,7 @@ class SlapExtension : Extension() {
             name = "slap"
             description = "Get slapped!"
 
-            action {
-                message.respond(
-                    "*slaps you with a large, smelly trout!*"
-                )
-            }
+            action { message.respond("*slaps you with a large, smelly trout!*") }
         }
     }
 }

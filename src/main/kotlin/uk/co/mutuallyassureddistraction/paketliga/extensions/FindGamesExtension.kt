@@ -14,7 +14,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameFinderService
 
-class FindGamesExtension(private val gameFinderService: GameFinderService, private val serverId: Snowflake) : Extension() {
+class FindGamesExtension(private val gameFinderService: GameFinderService, private val serverId: Snowflake) :
+    Extension() {
     override val name = "findGamesExtension"
 
     override suspend fun setup() {
@@ -34,9 +35,7 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
                 val kord = this@FindGamesExtension.kord
 
                 if (responseList.isEmpty()) {
-                    respond {
-                        content = "No games found"
-                    }
+                    respond { content = "No games found" }
                 } else {
                     val paginator = respondingPaginator {
                         responseList.chunked(5).map { response ->
@@ -46,10 +45,19 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
 
                                 val field = EmbedBuilder.Field()
                                 field.name =
-                                    "ID #" + it.gameId.toString() + ": Game by " + memberBehavior.asMember().displayName +
-                                            " - " + it.gameName
-                                field.value = "Arriving between " + it.windowStart + " and " + it.windowClose +
-                                        ".\n Guesses accepted until " + it.guessesClose
+                                    "ID #" +
+                                        it.gameId.toString() +
+                                        ": Game by " +
+                                        memberBehavior.asMember().displayName +
+                                        " - " +
+                                        it.gameName
+                                field.value =
+                                    "Arriving between " +
+                                        it.windowStart +
+                                        " and " +
+                                        it.windowClose +
+                                        ".\n Guesses accepted until " +
+                                        it.guessesClose
                                 pageFields.add(field)
                             }
 

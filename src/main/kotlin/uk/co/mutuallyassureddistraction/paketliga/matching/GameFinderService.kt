@@ -1,12 +1,12 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
+import java.util.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import java.util.*
 
 class GameFinderService(private val gameDao: GameDao) {
 
@@ -14,14 +14,14 @@ class GameFinderService(private val gameDao: GameDao) {
 
     fun findGames(userId: String?, gameName: String?, gameId: Int?): List<FindGamesResponse> {
         val gamesResponseList = ArrayList<FindGamesResponse>()
-        if(gameId != null) {
+        if (gameId != null) {
             val searchedGame: Game? = gameDao.findActiveGameById(gameId)
-            if(searchedGame != null) {
+            if (searchedGame != null) {
                 gamesResponseList.add(buildResponse(searchedGame))
             }
         } else {
             val searchedGames: List<Game> = gameDao.findActiveGames(gameName, userId)
-            for(searchedGame in searchedGames) {
+            for (searchedGame in searchedGames) {
                 gamesResponseList.add(buildResponse(searchedGame))
             }
         }
@@ -30,12 +30,24 @@ class GameFinderService(private val gameDao: GameDao) {
     }
 
     private fun buildResponse(game: Game): FindGamesResponse {
-        val startDateString = DateTime(game.windowStart.toInstant().toEpochMilli(),
-            DateTimeZone.forTimeZone(TimeZone.getTimeZone(game.windowStart.zone))).toString(dtf)
-        val closeDateString = DateTime(game.windowClose.toInstant().toEpochMilli(),
-            DateTimeZone.forTimeZone(TimeZone.getTimeZone(game.windowClose.zone))).toString(dtf)
-        val guessesCloseDateString = DateTime(game.guessesClose.toInstant().toEpochMilli(),
-            DateTimeZone.forTimeZone(TimeZone.getTimeZone(game.guessesClose.zone))).toString(dtf)
+        val startDateString =
+            DateTime(
+                    game.windowStart.toInstant().toEpochMilli(),
+                    DateTimeZone.forTimeZone(TimeZone.getTimeZone(game.windowStart.zone)),
+                )
+                .toString(dtf)
+        val closeDateString =
+            DateTime(
+                    game.windowClose.toInstant().toEpochMilli(),
+                    DateTimeZone.forTimeZone(TimeZone.getTimeZone(game.windowClose.zone)),
+                )
+                .toString(dtf)
+        val guessesCloseDateString =
+            DateTime(
+                    game.guessesClose.toInstant().toEpochMilli(),
+                    DateTimeZone.forTimeZone(TimeZone.getTimeZone(game.guessesClose.zone)),
+                )
+                .toString(dtf)
 
         return FindGamesResponse(
             game.gameId!!,
@@ -43,7 +55,7 @@ class GameFinderService(private val gameDao: GameDao) {
             game.userId,
             startDateString,
             closeDateString,
-            guessesCloseDateString
+            guessesCloseDateString,
         )
     }
 }
@@ -56,4 +68,3 @@ class FindGamesResponse(
     val windowClose: String,
     val guessesClose: String,
 )
-

@@ -4,10 +4,10 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
-import java.util.*
 
 interface GuessDao {
-    @SqlUpdate("""
+    @SqlUpdate(
+        """
             INSERT INTO GUESS as gss(
                 gameId,
                 userId,
@@ -22,10 +22,12 @@ interface GuessDao {
                 SET 
                     guessTime = :guess.guessTime
                 WHERE gss.userId = :guess.userId
-        """)
+        """
+    )
     fun createGuess(guess: Guess)
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT 
                 guessId,
                 gameId,
@@ -33,12 +35,15 @@ interface GuessDao {
                 guessTime
                 FROM GUESS
                 WHERE guessId = :id
-    """)
+    """
+    )
     fun findGuessByGuessId(@Bind("id") guessId: Int): Guess
 
-    @SqlQuery("""
+    @SqlQuery(
+        """
         SELECT * FROM GUESS
         WHERE gameId = :id
-    """)
+    """
+    )
     fun findGuessesByGameId(@Bind("id") gameId: Int): List<Guess>
 }

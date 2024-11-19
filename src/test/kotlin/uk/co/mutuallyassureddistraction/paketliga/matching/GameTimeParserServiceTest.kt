@@ -1,15 +1,15 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
+import java.time.ZonedDateTime
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
-import java.time.ZonedDateTime
-import kotlin.test.assertNull
 
 class GameTimeParserServiceTest {
 
@@ -30,12 +30,14 @@ class GameTimeParserServiceTest {
         assertEquals("15-Oct-24 18:00", result.deadlineAsHumanFriendlyString())
     }
 
-    @DisplayName("parseGameTime() A guess with a defined start and end but no deadline should default the deadline to an hour from now")
+    @DisplayName(
+        "parseGameTime() A guess with a defined start and end but no deadline should default the deadline to an hour from now"
+    )
     @Test
     fun missingDeadlineWillDefaultToAnHourFromNow() {
         val startDate = DateTime.now().plusHours(2)
         val endDate = DateTime.now().plusHours(3)
-        val expectedDeadline = DateTime.now().plusHours(1);
+        val expectedDeadline = DateTime.now().plusHours(1)
 
         val result = target.parseGameTime(startDate.toString(inputFormat), endDate.toString(inputFormat), null)
         assertEquals(startDate.toString(resultFormat), result.startAsHumanFriendlyString())
@@ -43,12 +45,14 @@ class GameTimeParserServiceTest {
         assertEquals(expectedDeadline.toString(resultFormat), result.deadlineAsHumanFriendlyString())
     }
 
-    @DisplayName("parseGameTime() A guess with a defined start and end but no deadline should default to five minutes before the StartWindow if StartWindow is closer than an hour from now")
+    @DisplayName(
+        "parseGameTime() A guess with a defined start and end but no deadline should default to five minutes before the StartWindow if StartWindow is closer than an hour from now"
+    )
     @Test
     fun missingDeadlineWillDefaultToFiveMinsBeforeStartWindow() {
         val startDate = DateTime.now().plusMinutes(30)
         val endDate = DateTime.now().plusHours(3)
-        val expectedDeadline = DateTime.now().plusMinutes(25);
+        val expectedDeadline = DateTime.now().plusMinutes(25)
 
         val result = target.parseGameTime(startDate.toString(inputFormat), endDate.toString(inputFormat), null)
         assertEquals(startDate.toString(resultFormat), result.startAsHumanFriendlyString())

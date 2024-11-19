@@ -9,13 +9,16 @@ import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.types.respondEphemeral
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 
-class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
-                          private val gameTimeParserService: GameTimeParserService,
-                          private val serverId: Snowflake) : Extension() {
+class UpdateGameExtension(
+    private val gameUpsertService: GameUpsertService,
+    private val gameTimeParserService: GameTimeParserService,
+    private val serverId: Snowflake,
+) : Extension() {
     override val name = "updateGameExtension"
+
     override suspend fun setup() {
         publicSlashCommand(::UpdateGameArgs) {
             name = "pklupdate"
@@ -29,21 +32,16 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
                 val closeWindow = arguments.closewindow
                 val guessesClose = arguments.guessesclose
 
-                if(startWindow == null && closeWindow == null && guessesClose == null) {
-                    respondEphemeral {
-                        content = ":thonk: You didn't change anything"
-                    }
+                if (startWindow == null && closeWindow == null && guessesClose == null) {
+                    respondEphemeral { content = ":thonk: You didn't change anything" }
                 } else {
                     val updateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
-                    val (responseString, userIds) = gameUpsertService.updateGame(
-                        gameId, user.asUser().id.value.toString(), updateWindow
-                    )
+                    val (responseString, userIds) =
+                        gameUpsertService.updateGame(gameId, user.asUser().id.value.toString(), updateWindow)
 
-                    respond {
-                        content = responseString[0]
-                    }
+                    respond { content = responseString[0] }
 
-                    if(userIds.isNotEmpty()) {
+                    if (userIds.isNotEmpty()) {
                         val kord = this@UpdateGameExtension.kord
                         var mentionContent = "Mentioning users that have guessed:"
                         userIds.forEach {
@@ -51,11 +49,10 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
                             mentionContent += " " + memberBehavior.asMember().mention
                         }
 
-                        mentionContent += " " + "as a notice that a game has been updated and possibly the time has changed"
+                        mentionContent +=
+                            " " + "as a notice that a game has been updated and possibly the time has changed"
 
-                        respond {
-                            content = mentionContent
-                        }
+                        respond { content = mentionContent }
                     }
                 }
             }
@@ -83,5 +80,4 @@ class UpdateGameExtension(private val gameUpsertService: GameUpsertService,
             description = "New deadline for guesses"
         }
     }
-
 }

@@ -12,8 +12,10 @@ import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessFinderService
 
-class FindGuessExtension(private val guessFinderService: GuessFinderService, private val serverId: Snowflake) : Extension() {
+class FindGuessExtension(private val guessFinderService: GuessFinderService, private val serverId: Snowflake) :
+    Extension() {
     override val name = "findGuessExtension"
+
     override suspend fun setup() {
         publicSlashCommand(::FindGuessArgs) {
             name = "pklfindguess"
@@ -24,19 +26,16 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                 val gameId = arguments.gameid
                 val guessId = arguments.guessid
 
-                if(gameId == null && guessId == null) {
-                    respondEphemeral {
-                        content = "You didn't enter any search terms"
-                    }
+                if (gameId == null && guessId == null) {
+                    respondEphemeral { content = "You didn't enter any search terms" }
                 } else {
-                    val responseList: List<GuessFinderService.FindGuessesResponse> = guessFinderService.findGuesses(gameId, guessId)
+                    val responseList: List<GuessFinderService.FindGuessesResponse> =
+                        guessFinderService.findGuesses(gameId, guessId)
 
                     val kord = this@FindGuessExtension.kord
 
                     if (responseList.isEmpty()) {
-                        respond {
-                            content = "Nothing found for those details"
-                        }
+                        respond { content = "Nothing found for those details" }
                     } else {
                         val paginator = respondingPaginator {
                             responseList.chunked(5).map { response ->
@@ -45,13 +44,18 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                                     val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
 
                                     val field = EmbedBuilder.Field()
-                                    field.name = "Guess #${guessId.toString()}: ${it.guessTime} by ${memberBehavior.asMember().displayName}"
+                                    field.name =
+                                        "Guess #${guessId.toString()}: ${it.guessTime} by ${memberBehavior.asMember().displayName}"
                                     guessFields.add(field)
                                 }
 
                                 page {
-                                    title = if(arguments.gameid != null) { "Active guesses for game ID #$gameId: " }
-                                            else { "PKL guess for guess ID #" + arguments.guessid + ":" }
+                                    title =
+                                        if (arguments.gameid != null) {
+                                            "Active guesses for game ID #$gameId: "
+                                        } else {
+                                            "PKL guess for guess ID #" + arguments.guessid + ":"
+                                        }
                                     fields = guessFields
                                 }
                             }

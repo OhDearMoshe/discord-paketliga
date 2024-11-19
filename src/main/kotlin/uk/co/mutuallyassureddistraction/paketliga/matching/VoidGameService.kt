@@ -7,11 +7,11 @@ class VoidGameService(private val gameDao: GameDao) {
     fun voidGame(gameId: Int, userId: String): String {
         val game = gameDao.findActiveGameById(gameId)
 
-        if(game == null) {
+        if (game == null) {
             return "Game $gameId was not found"
         }
 
-        if(game.userId != userId) {
+        if (game.userId != userId) {
             return "Mr Pump prevents you from interfering with another game"
         }
         gameDao.voidGameById(gameId)

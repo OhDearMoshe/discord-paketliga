@@ -9,32 +9,31 @@ import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.testcontainers.containers.JdbcDatabaseContainer
 import org.testcontainers.containers.PostgreSQLContainer
 
-
 fun initTests(): DaoTestWrapper {
-    val postgresContainer = PostgreSQLContainer("postgres:11.1")
-        .withDatabaseName("integration-tests-db")
-        .withUsername("sa")
-        .withPassword("sa")
+    val postgresContainer =
+        PostgreSQLContainer("postgres:11.1")
+            .withDatabaseName("integration-tests-db")
+            .withUsername("sa")
+            .withPassword("sa")
 
     postgresContainer.start()
-    val jdbi = Jdbi.create(postgresContainer.createConnection("?")).apply {
-        installPlugin(PostgresPlugin())
-            .installPlugin(SqlObjectPlugin())
-            .installPlugin(KotlinPlugin())
-            .installPlugin(KotlinSqlObjectPlugin())
-    }
+    val jdbi =
+        Jdbi.create(postgresContainer.createConnection("?")).apply {
+            installPlugin(PostgresPlugin())
+                .installPlugin(SqlObjectPlugin())
+                .installPlugin(KotlinPlugin())
+                .installPlugin(KotlinSqlObjectPlugin())
+        }
     setUpDatabaseTables(jdbi)
     return DaoTestWrapper(jdbi, postgresContainer as PostgreSQLContainer<Nothing>)
 }
 
-/**
- * Final Structure and database itself is pretty undefined, so for
- * now simple and basic only
- */
+/** Final Structure and database itself is pretty undefined, so for now simple and basic only */
 fun setUpDatabaseTables(jdbi: Jdbi) {
     jdbi.withHandle<IntArray, Exception> {
         val batch: Batch = it.createBatch()
-        batch.add("""
+        batch.add(
+            """
                 CREATE TABLE GAME (
                       gameId SERIAL PRIMARY KEY,
                       gameName VARCHAR(50) not null,
@@ -46,8 +45,11 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
                       gameActive BOOLEAN not null,
                       gameVoided BOOLEAN not null DEFAULT FALSE
             )
-        """.trimIndent())
-        batch.add("""
+        """
+                .trimIndent()
+        )
+        batch.add(
+            """
             CREATE TABLE GUESS (
                 guessId SERIAL PRIMARY KEY,
                 gameId INT not null,
@@ -60,8 +62,11 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
                 CONSTRAINT game_and_guess_time UNIQUE (gameId, guessTime),
                 CONSTRAINT game_and_user_id UNIQUE (gameId, userId)
             )
-        """.trimIndent())
-        batch.add("""
+        """
+                .trimIndent()
+        )
+        batch.add(
+            """
             CREATE OR REPLACE FUNCTION check_gameid_and_guesstime()
             RETURNS TRIGGER AS ${'$'}${'$'}
             BEGIN
@@ -74,14 +79,20 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
                 RETURN NEW;
             END;
             ${'$'}${'$'} LANGUAGE plpgsql;
-        """.trimIndent())
-        batch.add("""
+        """
+                .trimIndent()
+        )
+        batch.add(
+            """
             CREATE TRIGGER check_gameid_and_guesstime_trigger
             BEFORE INSERT ON GUESS
             FOR EACH ROW
             EXECUTE FUNCTION check_gameid_and_guesstime();
-        """.trimIndent())
-        batch.add("""
+        """
+                .trimIndent()
+        )
+        batch.add(
+            """
             CREATE TABLE WIN (
                 winId SERIAL PRIMARY KEY,
                 gameId INT not null,
@@ -97,8 +108,11 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
                         ON DELETE CASCADE,
                 CONSTRAINT game_and_guess_unique UNIQUE (gameId, guessId)
             )
-        """.trimIndent())
-        batch.add("""
+        """
+                .trimIndent()
+        )
+        batch.add(
+            """
             CREATE TABLE POINT
             (
                 pointId    SERIAL PRIMARY KEY,
@@ -111,34 +125,28 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
                 totalPoint DECIMAL(6, 1) not null,
                 CONSTRAINT unique_user_id UNIQUE (userId)
             )
-        """.trimIndent())
+        """
+                .trimIndent()
+        )
         batch.execute()
     }
 }
 
-/**
- * Test wrapper can wrap a few basic functions
- */
-class DaoTestWrapper(val jdbi: Jdbi,
-                     val container: JdbcDatabaseContainer<Nothing>
-) {
+/** Test wrapper can wrap a few basic functions */
+class DaoTestWrapper(val jdbi: Jdbi, val container: JdbcDatabaseContainer<Nothing>) {
 
     fun executeSimpleUpdate(simpleUpdate: String) {
-        jdbi.withHandle<Int, Exception> {
-            it.createUpdate(simpleUpdate).execute()
-        }
+        jdbi.withHandle<Int, Exception> { it.createUpdate(simpleUpdate).execute() }
     }
 
     inline fun <reified T> executeSimpleQuery(simpleQuery: String): T {
-        return jdbi.withHandle<T, Exception> {
-            it.createQuery(simpleQuery)
-                .mapTo(T::class.java)
-                .first()
-        }
+        return jdbi.withHandle<T, Exception> { it.createQuery(simpleQuery).mapTo(T::class.java).first() }
     }
-   fun stopContainers() {
-       container.stop()
-   }
+
+    fun stopContainers() {
+        container.stop()
+    }
+
     fun <E> buildDao(dao: Class<E>): E {
         return jdbi.onDemand(dao)
     }

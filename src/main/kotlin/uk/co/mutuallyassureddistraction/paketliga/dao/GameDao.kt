@@ -1,12 +1,13 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao
 
+import java.time.ZonedDateTime
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import java.time.ZonedDateTime
 
 interface GameDao {
-     @SqlQuery("""
+    @SqlQuery(
+        """
           INSERT INTO GAME(
                gameName,
                windowStart,
@@ -28,10 +29,12 @@ interface GameDao {
                :game.gameVoided
           )
           RETURNING *
-     """)
-     fun createGame(game: Game): Game
+     """
+    )
+    fun createGame(game: Game): Game
 
-     @SqlQuery("""
+    @SqlQuery(
+        """
           UPDATE GAME
           SET 
                windowStart = COALESCE(:windowStart, windowStart),
@@ -39,43 +42,55 @@ interface GameDao {
                guessesClose = COALESCE(:guessesClose, windowClose)
           WHERE gameId = :id
           RETURNING *
-     """)
-     fun updateGameTimes(@Bind("id")gameId: Int, @Bind("windowStart") windowStart: ZonedDateTime?,
-                         @Bind("windowClose") windowClose: ZonedDateTime?,
-                         @Bind("guessesClose") guessesClose: ZonedDateTime?): Game
+     """
+    )
+    fun updateGameTimes(
+        @Bind("id") gameId: Int,
+        @Bind("windowStart") windowStart: ZonedDateTime?,
+        @Bind("windowClose") windowClose: ZonedDateTime?,
+        @Bind("guessesClose") guessesClose: ZonedDateTime?,
+    ): Game
 
-     @SqlQuery("""
+    @SqlQuery(
+        """
           UPDATE Game
           SET
                deliveryTime = :deliveryTime,
                gameActive = 'FALSE'
           WHERE gameId = :id
           RETURNING *
-     """)
-     fun finishGame(@Bind("id")gameId: Int, @Bind("deliveryTime")deliveryTime: ZonedDateTime): Game
+     """
+    )
+    fun finishGame(@Bind("id") gameId: Int, @Bind("deliveryTime") deliveryTime: ZonedDateTime): Game
 
-     @SqlQuery("""
+    @SqlQuery(
+        """
           SELECT * FROM GAME
           WHERE gameId = :id
           AND gameActive = 'TRUE'
-     """)
-     fun findActiveGameById(@Bind("id")gameId: Int): Game?
+     """
+    )
+    fun findActiveGameById(@Bind("id") gameId: Int): Game?
 
-     @SqlQuery("""
+    @SqlQuery(
+        """
           SELECT * FROM GAME
           WHERE (:gameName IS NULL OR gameName LIKE concat('%',:gameName,'%'))
           AND (:userId is NULL OR userId = :userId)
           AND gameActive = 'TRUE'
-     """)
-     fun findActiveGames(gameName: String?, userId: String?): List<Game>
+     """
+    )
+    fun findActiveGames(gameName: String?, userId: String?): List<Game>
 
-     @SqlQuery("""
+    @SqlQuery(
+        """
           UPDATE Game
           SET
                gameActive = 'FALSE',
                gameVoided = 'TRUE'
           WHERE gameId = :id
           RETURNING *
-     """)
-     fun voidGameById(@Bind("id")gameId: Int): Game
+     """
+    )
+    fun voidGameById(@Bind("id") gameId: Int): Game
 }

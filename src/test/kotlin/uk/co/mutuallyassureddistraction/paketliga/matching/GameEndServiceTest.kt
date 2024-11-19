@@ -2,6 +2,9 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import io.mockk.every
 import io.mockk.mockk
+import java.time.ZonedDateTime
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -13,9 +16,6 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResult
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTime
-import java.time.ZonedDateTime
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class GameEndServiceTest {
     private lateinit var target: GameEndService
@@ -29,25 +29,30 @@ class GameEndServiceTest {
         val losingGuess = getLosingGuessStub()
         val searchedGame = getGameStub()
 
-        gameResult = GameResult(winners = listOf(winningGuess), losers = listOf(losingGuess), awardBonusPoint = false, wasDraw = false )
+        gameResult =
+            GameResult(
+                winners = listOf(winningGuess),
+                losers = listOf(losingGuess),
+                awardBonusPoint = false,
+                wasDraw = false,
+            )
 
         val gameDao = mockk<GameDao>()
-        every {gameDao.findActiveGameById(999)} returns null
-        every {gameDao.findActiveGameById(0)} returns searchedGame
-        every {gameDao.findActiveGameById(1)} returns getGameStubEarly()
-        every {gameDao.findActiveGameById(2)} returns getGameStubLate()
-        every {gameDao.findActiveGameById(3)} returns getGameStubLateSameDay()
-        every {gameDao.findActiveGameById(4)} returns getGameStubEarlyAfterWindowClose()
-        every {gameDao.finishGame(any(), any())} returns searchedGame
-        every {gameDao.voidGameById(any())} returns searchedGame
+        every { gameDao.findActiveGameById(999) } returns null
+        every { gameDao.findActiveGameById(0) } returns searchedGame
+        every { gameDao.findActiveGameById(1) } returns getGameStubEarly()
+        every { gameDao.findActiveGameById(2) } returns getGameStubLate()
+        every { gameDao.findActiveGameById(3) } returns getGameStubLateSameDay()
+        every { gameDao.findActiveGameById(4) } returns getGameStubEarlyAfterWindowClose()
+        every { gameDao.finishGame(any(), any()) } returns searchedGame
+        every { gameDao.voidGameById(any()) } returns searchedGame
 
         val guessDao = mockk<GuessDao>()
-        every {guessDao.findGuessesByGameId(any())} returns arrayListOf(winningGuess, losingGuess)
-
+        every { guessDao.findGuessesByGameId(any()) } returns arrayListOf(winningGuess, losingGuess)
 
         val gameResultResolver = mockk<GameResultResolver>()
 
-        every {gameResultResolver.findWinners(any(), any()) } returns gameResult
+        every { gameResultResolver.findWinners(any(), any()) } returns gameResult
 
         every { pointUpdaterService.applyPoints(any()) } returns Unit
 
@@ -106,21 +111,11 @@ class GameEndServiceTest {
     }
 
     private fun getWinningGuessStub(): Guess {
-        return Guess (
-            guessId = 1,
-            gameId = 1,
-            userId = "Z",
-            guessTime = ZonedDateTime.now().withHour(14).withMinute(38)
-        )
+        return Guess(guessId = 1, gameId = 1, userId = "Z", guessTime = ZonedDateTime.now().withHour(14).withMinute(38))
     }
 
     private fun getLosingGuessStub(): Guess {
-        return Guess (
-            guessId = 2,
-            gameId = 1,
-            userId = "X",
-            guessTime = ZonedDateTime.now().withHour(20).withMinute(38)
-        )
+        return Guess(guessId = 2, gameId = 1, userId = "X", guessTime = ZonedDateTime.now().withHour(20).withMinute(38))
     }
 
     private fun getGameStub(): Game {
@@ -132,7 +127,7 @@ class GameEndServiceTest {
             guessesClose = ZonedDateTime.parse("2024-10-15T16:00:00Z"),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 
@@ -145,7 +140,7 @@ class GameEndServiceTest {
             guessesClose = ZonedDateTime.parse("2024-10-15T19:00:01Z"),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 
@@ -158,7 +153,7 @@ class GameEndServiceTest {
             guessesClose = ZonedDateTime.parse("2024-10-15T19:00:00Z"),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 
@@ -171,7 +166,7 @@ class GameEndServiceTest {
             guessesClose = ZonedDateTime.parse("2024-10-14T16:00:00Z"),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 
@@ -184,7 +179,7 @@ class GameEndServiceTest {
             guessesClose = ZonedDateTime.parse("2024-10-15T16:00:00Z"),
             deliveryTime = null,
             userId = "Z",
-            gameActive = true
+            gameActive = true,
         )
     }
 }

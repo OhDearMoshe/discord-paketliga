@@ -11,7 +11,8 @@ import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
 import uk.co.mutuallyassureddistraction.paketliga.matching.LeaderboardService
 
-class LeaderboardExtension(private val leaderboardService: LeaderboardService, private val serverId: Snowflake): Extension() {
+class LeaderboardExtension(private val leaderboardService: LeaderboardService, private val serverId: Snowflake) :
+    Extension() {
     override val name = "leaderboardExtension"
 
     override suspend fun setup() {
@@ -26,10 +27,8 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
 
                 val leaderboard = leaderboardService.getLeaderboard(userId, null)
 
-                if(leaderboard.isEmpty()) {
-                    respondEphemeral {
-                        content = "No data found"
-                    }
+                if (leaderboard.isEmpty()) {
+                    respondEphemeral { content = "No data found" }
                 } else {
                     val kord = this@LeaderboardExtension.kord
 
@@ -42,8 +41,13 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
 
                                 val field = EmbedBuilder.Field()
                                 field.name =
-                                    "# " + counter + " : " + memberBehavior.asMember().displayName +
-                                            " | " + it.totalPoint + " points"
+                                    "# " +
+                                        counter +
+                                        " : " +
+                                        memberBehavior.asMember().displayName +
+                                        " | " +
+                                        it.totalPoint +
+                                        " points"
                                 field.value = "Played: " + it.played + " - Won: " + it.won + " - Lost: " + it.lost
                                 pageFields.add(field)
                                 counter++

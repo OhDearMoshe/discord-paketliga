@@ -2,10 +2,10 @@ package uk.co.mutuallyassureddistraction.paketliga.matching.time
 
 import com.zoho.hawking.HawkingTimeParser
 import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration
-import org.joda.time.DateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
+import org.joda.time.DateTime
 
 class TimeParser {
 
@@ -18,9 +18,7 @@ class TimeParser {
 
     fun parseDate(dateString: String): ZonedDateTime {
         val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
-        //2024-10-15T19:00:00
         return fromParsedHawkingString(parsedDate.parserOutputs.first().dateRange.startDateFormat)
-//        return parsedDate.parserOutputs[0].dateRange.start.toGregorianCalendar().toZonedDateTime()
     }
 
     // Yum Consistency
