@@ -18,7 +18,9 @@ class TimeParser {
 
     fun parseDate(dateString: String): ZonedDateTime {
         val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
-        return parsedDate.parserOutputs[0].dateRange.start.toGregorianCalendar().toZonedDateTime()
+        //2024-10-15T19:00:00
+        return fromParsedHawkingString(parsedDate.parserOutputs.first().dateRange.startDateFormat)
+//        return parsedDate.parserOutputs[0].dateRange.start.toGregorianCalendar().toZonedDateTime()
     }
 
     // Yum Consistency
