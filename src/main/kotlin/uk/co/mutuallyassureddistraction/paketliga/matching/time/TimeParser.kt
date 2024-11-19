@@ -14,11 +14,13 @@ class TimeParser {
 
     init {
         hawkingConfiguration.timeZone = ZoneId.systemDefault().toString()
+        hawkingConfiguration.minuteSpan = 1
     }
 
     fun parseDate(dateString: String): ZonedDateTime {
         val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
-        return fromParsedHawkingString(parsedDate.parserOutputs.first().dateRange.startDateFormat)
+        val dateText = parsedDate.parserOutputs.first().dateRange.startDateFormat
+        return fromParsedHawkingString(dateText)
     }
 
     // Yum Consistency
