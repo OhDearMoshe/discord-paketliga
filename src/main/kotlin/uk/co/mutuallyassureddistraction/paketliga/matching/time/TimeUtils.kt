@@ -11,7 +11,7 @@ fun toUserFriendlyString(time: ZonedDateTime): String {
     return time.format(toStringFormatter)
 }
 
-fun fromParsedHawkingString(dateTime: String): ZonedDateTime  {
+fun fromParsedHawkingString(dateTime: String): ZonedDateTime {
     val zonedId = ZoneId.of("Europe/London")
     val ldt = LocalDateTime.parse(dateTime)
     return ZonedDateTime.ofInstant(ldt.toInstant(zonedId.rules.getOffset(ldt)), zonedId)

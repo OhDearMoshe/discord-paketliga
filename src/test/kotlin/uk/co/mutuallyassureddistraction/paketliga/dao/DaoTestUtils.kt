@@ -15,7 +15,6 @@ fun initTests(): DaoTestWrapper {
             .withDatabaseName("integration-tests-db")
             .withUsername("sa")
             .withPassword("sa")
-
     postgresContainer.start()
     val jdbi =
         Jdbi.create(postgresContainer.createConnection("?")).apply {
@@ -32,6 +31,7 @@ fun initTests(): DaoTestWrapper {
 fun setUpDatabaseTables(jdbi: Jdbi) {
     jdbi.withHandle<IntArray, Exception> {
         val batch: Batch = it.createBatch()
+        batch.add("SET timezone TO 'Europe/London'")
         batch.add(
             """
                 CREATE TABLE GAME (
