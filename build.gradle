@@ -7,7 +7,7 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.0-RC2'
     id "org.flywaydb.flyway" version "10.0.0"
     id "com.ncorti.ktfmt.gradle" version "0.21.0"
 }
@@ -69,6 +69,20 @@ kotlin {
 
 application {
     mainClassName = 'uk.co.mutuallyassureddistraction.paketliga.MainKt'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    // To avoid the duplicate handling strategy error
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // To add all of the dependencies
+    from(sourceSets.main.output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 ktfmt {
