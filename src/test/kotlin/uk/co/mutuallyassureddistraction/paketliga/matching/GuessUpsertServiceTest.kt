@@ -31,7 +31,7 @@ class GuessUpsertServiceTest {
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
 
         val response = target.guessGame(1, guessTime, "Z", mention)
-        val expectedString = ":sickos: @OhDearMoshe has guessed 15-Oct-24 19:00 for game ID #1"
+        val expectedString = "<:sickos:918170456190775348> @OhDearMoshe has guessed 15-Oct-24 19:00 for game ID #1"
         assertEquals(expectedString, response)
     }
 

@@ -51,7 +51,7 @@ class GameUpsertService(
                 " Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
         } catch (e: Exception) {
             logger.error("Error while creating game", e)
-            return ":pressf: You done goofed. Check your inputs and try again. "
+            return "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
         }
     }
 
@@ -87,7 +87,10 @@ class GameUpsertService(
             return Pair(arrayOf(gameUpdatedString), userIds)
         } catch (e: Exception) {
             logger.error("Error while updating game", e)
-            return Pair(arrayOf(":pressf: You done goofed. Check your inputs and try again. "), arrayListOf())
+            return Pair(
+                arrayOf("<:pressf:692833208382914571> You done goofed. Check your inputs and try again. "),
+                arrayListOf(),
+            )
         }
     }
 

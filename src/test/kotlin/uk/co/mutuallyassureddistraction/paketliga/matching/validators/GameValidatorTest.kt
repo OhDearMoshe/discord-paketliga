@@ -31,7 +31,7 @@ class GameValidatorTest {
                 guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z"),
             )
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameCreate(guessWindow),
         )
     }
@@ -46,7 +46,7 @@ class GameValidatorTest {
                 guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z"),
             )
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameCreate(guessWindow),
         )
     }
@@ -60,7 +60,10 @@ class GameValidatorTest {
                 endTime = ZonedDateTime.parse("2024-10-15T21:00:00Z"),
                 guessDeadline = ZonedDateTime.parse("2024-10-15T18:00:00Z"),
             )
-        assertEquals(":pikachu: Deadline for guesses can't be in the past.", target.validateGameCreate(guessWindow))
+        assertEquals(
+            "<:pikachu:918170411605327924> Deadline for guesses can't be in the past.",
+            target.validateGameCreate(guessWindow),
+        )
     }
 
     @DisplayName("validateGameUpdate() if game null return error message")
@@ -130,7 +133,10 @@ class GameValidatorTest {
                 userId = "123",
                 gameActive = true,
             )
-        assertEquals(":thonk: You didn't change anything", target.validateGameUpdate(game, "123", updateGuessWindow))
+        assertEquals(
+            "<:thonk:344120216227414018> You didn't change anything",
+            target.validateGameUpdate(game, "123", updateGuessWindow),
+        )
     }
 
     @DisplayName("validateGameUpdate() if start time is updated to end time fail")
@@ -152,7 +158,7 @@ class GameValidatorTest {
         val updateGuessWindow = UpdateGuessWindow(startTime = game.windowClose, endTime = null, guessDeadline = null)
 
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -177,7 +183,7 @@ class GameValidatorTest {
             UpdateGuessWindow(startTime = game.windowClose.plusSeconds(1), endTime = null, guessDeadline = null)
 
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -206,7 +212,7 @@ class GameValidatorTest {
             )
 
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -235,7 +241,7 @@ class GameValidatorTest {
             )
 
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -259,7 +265,7 @@ class GameValidatorTest {
         val updateGuessWindow = UpdateGuessWindow(startTime = null, endTime = game.windowStart, guessDeadline = null)
 
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -284,7 +290,7 @@ class GameValidatorTest {
             UpdateGuessWindow(startTime = null, endTime = game.windowStart.minusSeconds(1), guessDeadline = null)
 
         assertEquals(
-            ":notstonks: Start of the delivery window must be before the end of the delivery window",
+            "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -308,7 +314,7 @@ class GameValidatorTest {
         val updateGuessWindow = UpdateGuessWindow(startTime = null, endTime = null, guessDeadline = game.windowStart)
 
         assertEquals(
-            ":ohno: Deadline for guesses must be before the delivery window opens",
+            "<:ohno:760904962108162069> Deadline for guesses must be before the delivery window opens",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -333,7 +339,7 @@ class GameValidatorTest {
             UpdateGuessWindow(startTime = null, endTime = null, guessDeadline = game.windowStart.plusSeconds(1))
 
         assertEquals(
-            ":ohno: Deadline for guesses must be before the delivery window opens",
+            "<:ohno:760904962108162069> Deadline for guesses must be before the delivery window opens",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }
@@ -357,7 +363,7 @@ class GameValidatorTest {
         val updateGuessWindow = UpdateGuessWindow(startTime = null, endTime = null, guessDeadline = now.minusSeconds(1))
 
         assertEquals(
-            ":pikachu: Deadline for guesses can't be in the past.",
+            "<:pikachu:918170411605327924> Deadline for guesses can't be in the past.",
             target.validateGameUpdate(game, "123", updateGuessWindow),
         )
     }

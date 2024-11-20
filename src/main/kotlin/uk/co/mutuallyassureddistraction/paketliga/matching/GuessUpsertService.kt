@@ -28,9 +28,9 @@ class GuessUpsertService(
             guessDao.createGuess(
                 Guess(guessId = null, gameId = gameId, guessTime = guessTime.guessTime, userId = userId)
             )
-            return ":sickos: $userMention has guessed ${guessTime.toHumanString()} for game ID #$gameId"
+            return "<:sickos:918170456190775348> $userMention has guessed ${guessTime.toHumanString()} for game ID #$gameId"
         } catch (e: Exception) {
-            var errorString = ":pressf: You done goofed. Check your inputs and try again."
+            var errorString = "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
             when (e) {
                 is UnableToExecuteStatementException -> {
                     // TODO: Create sql code error resolver. Also move some of the validations out into triggers

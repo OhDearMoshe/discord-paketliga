@@ -18,15 +18,15 @@ class GameValidator {
         val now = ZonedDateTime.now()
 
         if (startTime >= endTime) {
-            return ":notstonks: Start of the delivery window must be before the end of the delivery window"
+            return "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window"
         }
 
         if (guessDeadline >= startTime) {
-            return ":ohno: Deadline for guesses must be before the delivery window opens"
+            return "<:ohno:760904962108162069> Deadline for guesses must be before the delivery window opens"
         }
 
         if (guessDeadline < now) {
-            return ":pikachu: Deadline for guesses can't be in the past."
+            return "<:pikachu:918170411605327924> Deadline for guesses can't be in the past."
         }
         return null
     }
@@ -47,7 +47,7 @@ class GameValidator {
                 updateGuessWindow.endTime == null &&
                 updateGuessWindow.guessDeadline == null
         ) {
-            return ":thonk: You didn't change anything"
+            return "<:thonk:344120216227414018> You didn't change anything"
         }
         return validateGuessWindow(updatedGuessWindowToGuessWindow(updateGuessWindow, game))
     }

@@ -33,7 +33,7 @@ class UpdateGameExtension(
                 val guessesClose = arguments.guessesclose
 
                 if (startWindow == null && closeWindow == null && guessesClose == null) {
-                    respondEphemeral { content = ":thonk: You didn't change anything" }
+                    respondEphemeral { content = "<:thonk:344120216227414018> You didn't change anything" }
                 } else {
                     val updateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
                     val (responseString, userIds) =
