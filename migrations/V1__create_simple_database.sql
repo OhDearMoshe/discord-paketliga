@@ -7,7 +7,8 @@ CREATE TABLE GAME (
                       deliveryTime TIMESTAMPTZ null,
                       userId VARCHAR(50) not null,
                       gameActive BOOLEAN not null,
-                      gameVoided BOOLEAN not null DEFAULT FALSE
+                      gameVoided BOOLEAN not null DEFAULT FALSE,
+                      voidedReason VARCHAR(50)
 );
 
 CREATE TABLE GUESS (

@@ -2,6 +2,7 @@ package uk.co.mutuallyassureddistraction.paketliga.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.int
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
@@ -19,7 +20,8 @@ class VoidGameExtension(private val voidGameService: VoidGameService, private va
             guild(serverId)
 
             action {
-                val resultMessage = voidGameService.voidGame(arguments.gameid, user.asUser().id.value.toString())
+                val resultMessage =
+                    voidGameService.voidGame(arguments.gameid, arguments.reason, user.asUser().id.value.toString())
                 respond { content = resultMessage }
             }
         }
@@ -29,6 +31,10 @@ class VoidGameExtension(private val voidGameService: VoidGameService, private va
         val gameid by int {
             name = "gameid"
             description = "The game ID announced by Dr Pakidge when the game was created"
+        }
+        val reason by optionalString {
+            name = "reason"
+            description = "The reason you want to void this game"
         }
     }
 }

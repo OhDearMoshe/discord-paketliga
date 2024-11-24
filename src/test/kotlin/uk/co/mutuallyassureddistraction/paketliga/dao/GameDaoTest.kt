@@ -137,9 +137,10 @@ class GameDaoTest {
     @DisplayName("voidGame() will successfully void a game in the table")
     @Test
     fun canSuccessfullyVoidGame() {
-        target.voidGameById(1)
+        target.voidGameById(1, "Test")
         val result = testWrapper.executeSimpleQuery<Game>("""SELECT * FROM GAME""".trimIndent())
         assertTrue { result.gameVoided }
+        assertEquals("Test", result.voidedReason)
         assertFalse { result.gameActive }
     }
 
