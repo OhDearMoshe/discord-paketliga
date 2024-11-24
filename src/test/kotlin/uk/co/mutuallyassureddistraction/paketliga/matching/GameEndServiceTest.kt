@@ -45,7 +45,7 @@ class GameEndServiceTest {
         every { gameDao.findActiveGameById(3) } returns getGameStubLateSameDay()
         every { gameDao.findActiveGameById(4) } returns getGameStubEarlyAfterWindowClose()
         every { gameDao.finishGame(any(), any()) } returns searchedGame
-        every { gameDao.voidGameById(any()) } returns searchedGame
+        every { gameDao.voidGameById(any(), any()) } returns searchedGame
 
         val guessDao = mockk<GuessDao>()
         every { guessDao.findGuessesByGameId(any()) } returns arrayListOf(winningGuess, losingGuess)
@@ -128,6 +128,7 @@ class GameEndServiceTest {
             deliveryTime = null,
             userId = "Z",
             gameActive = true,
+            voidedReason = null,
         )
     }
 

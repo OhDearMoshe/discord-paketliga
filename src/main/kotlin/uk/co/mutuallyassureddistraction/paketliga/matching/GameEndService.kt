@@ -28,7 +28,7 @@ class GameEndService(
         try {
             if (isGameVoid(searchedGame, deliveryTime)) {
                 // Void the game
-                gameDao.voidGameById(searchedGame.gameId!!)
+                gameDao.voidGameById(searchedGame.gameId!!, "Delivery time is outside of delivery window")
                 return Pair("Delivery time is outside of delivery window game void", null)
             }
             searchedGame = gameDao.finishGame(gameId, deliveryTime.deliveryTime)

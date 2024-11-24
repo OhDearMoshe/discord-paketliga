@@ -13,6 +13,7 @@ data class Game(
     val userId: String,
     val gameActive: Boolean,
     val gameVoided: Boolean = false,
+    val voidedReason: String? = null,
 ) {
     fun getGuessWindow(): GuessWindow {
         return GuessWindow(startTime = windowStart, endTime = windowClose, guessDeadline = guessesClose)

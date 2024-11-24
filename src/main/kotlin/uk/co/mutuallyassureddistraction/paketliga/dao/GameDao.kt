@@ -87,10 +87,11 @@ interface GameDao {
           UPDATE Game
           SET
                gameActive = 'FALSE',
-               gameVoided = 'TRUE'
+               gameVoided = 'TRUE',
+               voidedReason = :voidedReason
           WHERE gameId = :id
           RETURNING *
      """
     )
-    fun voidGameById(@Bind("id") gameId: Int): Game
+    fun voidGameById(@Bind("id") gameId: Int, @Bind("voidedReason") voidedReason: String?): Game
 }
