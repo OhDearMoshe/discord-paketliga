@@ -9,8 +9,7 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 
 class GameValidatorTest {
-
-    val target = GameValidator()
+    private val target = GameValidator()
 
     @DisplayName("validateGameCreate() returns null if window is valid")
     @Test

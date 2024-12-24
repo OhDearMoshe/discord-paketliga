@@ -12,6 +12,7 @@ class GuessValidator {
 
             game.userId == userId -> "Mr Pump forbids you from guessing in your own game."
 
+            // TODO: guessing window usage here referring to deadline is inconsistent
             ZonedDateTime.now() >= game.guessesClose ->
                 "*\\*womp-womp*\\* Too late, the guessing window has closed for game ID #$gameId"
 
