@@ -49,7 +49,11 @@ class GameEndService(
         deliveryTime.deliveryTime < game.guessesClose ||
             deliveryTime.deliveryTime.dayOfYear > game.windowClose.dayOfYear
 
-    private fun handleExceptions(e: Exception, zonedDeliveryDateTime: ZonedDateTime, gameId: Int): Pair<String?, GameResult?> {
+    private fun handleExceptions(
+        e: Exception,
+        zonedDeliveryDateTime: ZonedDateTime,
+        gameId: Int,
+    ): Pair<String?, GameResult?> {
         var errorString = "Something went wrong. Check your inputs and try again, or just shout at @OhDearMoshe"
         when (e) {
             is UnableToExecuteStatementException -> {

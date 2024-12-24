@@ -1,4 +1,4 @@
-package uk.co.mutuallyassureddistraction.paketliga.matching
+package uk.co.mutuallyassureddistraction.paketliga.matching.results
 
 import java.time.ZonedDateTime
 import kotlin.test.Test
@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
-import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
 
 // TODO: Add losers and booleans into the tests
 class GameResultResolverTest {
@@ -68,12 +67,11 @@ class GameResultResolverTest {
         assertEquals(closestGuess, results.winners[0])
     }
 
-    private fun buildGuess(guessTime: String): Guess {
-        return Guess(guessId = 1, gameId = 1, userId = "PostMasterGeneral", guessTime = ZonedDateTime.parse(guessTime))
-    }
+    private fun buildGuess(guessTime: String) =
+        Guess(guessId = 1, gameId = 1, userId = "PostMasterGeneral", guessTime = ZonedDateTime.parse(guessTime))
 
-    private fun buildGame(): Game {
-        return Game(
+    private fun buildGame() =
+        Game(
             gameId = 1,
             gameName = "Testing testing",
             windowStart = ZonedDateTime.now(),
@@ -83,5 +81,4 @@ class GameResultResolverTest {
             userId = "SomeHumanMaybe",
             gameActive = true,
         )
-    }
 }

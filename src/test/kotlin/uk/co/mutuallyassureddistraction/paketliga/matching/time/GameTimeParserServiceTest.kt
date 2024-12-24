@@ -1,4 +1,4 @@
-package uk.co.mutuallyassureddistraction.paketliga.matching
+package uk.co.mutuallyassureddistraction.paketliga.matching.time
 
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -7,8 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import org.junit.jupiter.api.DisplayName
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
 
 class GameTimeParserServiceTest {
 
