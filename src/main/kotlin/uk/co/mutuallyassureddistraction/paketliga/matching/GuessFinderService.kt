@@ -1,17 +1,9 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
-import java.util.*
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 
 class GuessFinderService(private val guessDao: GuessDao) {
-
-    private val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
-
     fun findGuesses(gameId: Int?, guessId: Int?): List<FindGuessesResponse> {
         val guessResponseList = ArrayList<FindGuessesResponse>()
         if (gameId == null && guessId == null) {
@@ -31,16 +23,6 @@ class GuessFinderService(private val guessDao: GuessDao) {
         return guessResponseList
     }
 
-    private fun buildResponse(guess: Guess): FindGuessesResponse {
-        val guessTimeString =
-            DateTime(
-                    guess.guessTime.toInstant().toEpochMilli(),
-                    DateTimeZone.forTimeZone(TimeZone.getTimeZone(guess.guessTime.zone)),
-                )
-                .toString(dtf)
-
-        return FindGuessesResponse(guess.guessId!!, guess.gameId, guess.userId, guessTimeString)
-    }
-
-    class FindGuessesResponse(val guessId: Int, val gameId: Int, val userId: String, val guessTime: String)
+    private fun buildResponse(guess: Guess): FindGuessesResponse =
+        FindGuessesResponse(guess.guessId!!, guess.gameId, guess.userId, guess.guessTime)
 }

@@ -71,7 +71,7 @@ class GameValidatorTest {
     fun ifGameNullReturnMessage() {
         val updateGuessWindow = UpdateGuessWindow(startTime = null, endTime = null, guessDeadline = null)
         assertEquals(
-            "Inactive or invalid game ID. Double-check and try again ",
+            "Inactive or invalid game ID. Double-check and try again",
             target.validateGameUpdate(null, "123", updateGuessWindow),
         )
     }

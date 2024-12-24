@@ -15,7 +15,5 @@ data class Game(
     val gameVoided: Boolean = false,
     val voidedReason: String? = null,
 ) {
-    fun getGuessWindow(): GuessWindow {
-        return GuessWindow(startTime = windowStart, endTime = windowClose, guessDeadline = guessesClose)
-    }
+    fun getGuessWindow() = GuessWindow(startTime = windowStart, endTime = windowClose, guessDeadline = guessesClose)
 }

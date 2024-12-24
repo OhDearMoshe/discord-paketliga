@@ -7,56 +7,46 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindo
 
 class GameValidator {
 
-    fun validateGameCreate(guessWindow: GuessWindow): String? {
-        return validateGuessWindow(guessWindow)
-    }
+    fun validateGameCreate(guessWindow: GuessWindow): String? = validateGuessWindow(guessWindow)
 
-    fun validateGuessWindow(guessWindow: GuessWindow): String? {
+    private fun validateGuessWindow(guessWindow: GuessWindow): String? {
         val startTime = guessWindow.startTime
         val endTime = guessWindow.endTime
         val guessDeadline = guessWindow.guessDeadline
         val now = ZonedDateTime.now()
 
-        if (startTime >= endTime) {
-            return "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window"
-        }
+        return when {
+            startTime >= endTime ->
+                "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window"
 
-        if (guessDeadline >= startTime) {
-            return "<:ohno:760904962108162069> Deadline for guesses must be before the delivery window opens"
-        }
+            guessDeadline >= startTime ->
+                "<:ohno:760904962108162069> Deadline for guesses must be before the delivery window opens"
 
-        if (guessDeadline < now) {
-            return "<:pikachu:918170411605327924> Deadline for guesses can't be in the past."
+            guessDeadline < now -> "<:pikachu:918170411605327924> Deadline for guesses can't be in the past."
+
+            else -> null
         }
-        return null
     }
 
-    fun validateGameUpdate(game: Game?, userId: String, updateGuessWindow: UpdateGuessWindow): String? {
-        if (game == null) {
-            return "Inactive or invalid game ID. Double-check and try again "
-        }
-        if (game.userId != userId) {
-            return "Mr Pump stops you from interfering with another persons mail"
-        }
-        if (!game.gameActive) {
-            return "Game (already) over, man. Should have sent this update first class"
-        }
+    fun validateGameUpdate(game: Game?, userId: String, updateGuessWindow: UpdateGuessWindow): String? =
+        when {
+            game == null -> "Inactive or invalid game ID. Double-check and try again"
 
-        if (
+            game.userId != userId -> "Mr Pump stops you from interfering with another persons mail"
+
+            !game.gameActive -> "Game (already) over, man. Should have sent this update first class"
+
             updateGuessWindow.startTime == null &&
                 updateGuessWindow.endTime == null &&
-                updateGuessWindow.guessDeadline == null
-        ) {
-            return "<:thonk:344120216227414018> You didn't change anything"
-        }
-        return validateGuessWindow(updatedGuessWindowToGuessWindow(updateGuessWindow, game))
-    }
+                updateGuessWindow.guessDeadline == null -> "<:thonk:344120216227414018> You didn't change anything"
 
-    fun updatedGuessWindowToGuessWindow(updateGuessWindow: UpdateGuessWindow, originalGame: Game): GuessWindow {
-        return GuessWindow(
+            else -> validateGuessWindow(updatedGuessWindowToGuessWindow(updateGuessWindow, game))
+        }
+
+    private fun updatedGuessWindowToGuessWindow(updateGuessWindow: UpdateGuessWindow, originalGame: Game) =
+        GuessWindow(
             startTime = updateGuessWindow.startTime ?: originalGame.windowStart,
             endTime = updateGuessWindow.endTime ?: originalGame.windowClose,
             guessDeadline = updateGuessWindow.guessDeadline ?: originalGame.guessesClose,
         )
-    }
 }

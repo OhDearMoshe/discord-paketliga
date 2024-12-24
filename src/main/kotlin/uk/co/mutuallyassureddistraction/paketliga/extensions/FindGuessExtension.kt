@@ -10,7 +10,9 @@ import com.kotlindiscord.kord.extensions.types.respondingPaginator
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
+import uk.co.mutuallyassureddistraction.paketliga.matching.FindGuessesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessFinderService
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
 
 class FindGuessExtension(private val guessFinderService: GuessFinderService, private val serverId: Snowflake) :
     Extension() {
@@ -29,8 +31,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                 if (gameId == null && guessId == null) {
                     respondEphemeral { content = "You didn't enter any search terms" }
                 } else {
-                    val responseList: List<GuessFinderService.FindGuessesResponse> =
-                        guessFinderService.findGuesses(gameId, guessId)
+                    val responseList: List<FindGuessesResponse> = guessFinderService.findGuesses(gameId, guessId)
 
                     val kord = this@FindGuessExtension.kord
 
@@ -45,7 +46,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
                                     val field = EmbedBuilder.Field()
                                     field.name =
-                                        "Guess #${guessId.toString()}: ${it.guessTime} by ${memberBehavior.asMember().displayName}"
+                                        "Guess #${guessId.toString()}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().displayName}"
                                     guessFields.add(field)
                                 }
 
@@ -79,7 +80,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
         val gameid by optionalInt {
             name = "gameid"
-            description = "The game ID announced by Dr Pakidge when the game was created "
+            description = "The game ID announced by Dr Pakidge when the game was created"
         }
     }
 }

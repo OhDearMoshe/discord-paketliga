@@ -3,13 +3,8 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 import io.mockk.every
 import io.mockk.mockk
 import java.time.ZonedDateTime
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
@@ -18,7 +13,6 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 class GuessFinderServiceTest {
     private lateinit var target: GuessFinderService
     private val expectedGuess: Guess = getGuessStub()
-    private val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
 
     @BeforeEach
     fun setUp() {
@@ -32,26 +26,24 @@ class GuessFinderServiceTest {
     @Test
     fun returnListOfResponseWhenSearchingWithGameId() {
         val returnedList = target.findGuesses(1, null)
-        assertEquals(returnedList[0].gameId, expectedGuess.gameId)
-        assertEquals(returnedList[0].userId, expectedGuess.userId)
-        assertEquals(returnedList[0].guessTime, zonedDateTimeToString(expectedGuess.guessTime))
+        with(returnedList[0]) {
+            assertEquals(gameId, expectedGuess.gameId)
+            assertEquals(userId, expectedGuess.userId)
+            assertEquals(guessTime, expectedGuess.guessTime)
+        }
     }
 
     @DisplayName("findGuesses() with guessId param will return searched guess")
     @Test
     fun returnListOfResponseWhenSearchingWithGuessId() {
         val returnedList = target.findGuesses(null, 1)
-        assertEquals(returnedList[0].gameId, expectedGuess.gameId)
-        assertEquals(returnedList[0].userId, expectedGuess.userId)
-        assertEquals(returnedList[0].guessTime, zonedDateTimeToString(expectedGuess.guessTime))
+        with(returnedList[0]) {
+            assertEquals(gameId, expectedGuess.gameId)
+            assertEquals(userId, expectedGuess.userId)
+            assertEquals(guessTime, expectedGuess.guessTime)
+        }
     }
 
-    private fun zonedDateTimeToString(zdt: ZonedDateTime): String {
-        return DateTime(zdt.toInstant().toEpochMilli(), DateTimeZone.forTimeZone(TimeZone.getTimeZone(zdt.zone)))
-            .toString(dtf)
-    }
-
-    private fun getGuessStub(): Guess {
-        return Guess(guessId = 1, gameId = 1, userId = "Z", guessTime = ZonedDateTime.now().withHour(14).withMinute(38))
-    }
+    private fun getGuessStub() =
+        Guess(guessId = 1, gameId = 1, userId = "Z", guessTime = ZonedDateTime.now().withHour(14).withMinute(38))
 }
