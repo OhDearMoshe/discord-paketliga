@@ -20,7 +20,7 @@ class TimeParser {
     fun parseDate(dateString: String): ZonedDateTime {
         val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
         val dateText = parsedDate.parserOutputs.first().dateRange.startDateFormat
-        return fromParsedHawkingString(dateText)
+        return fromParsedHawkingString(dateText).withSecond(0)
     }
 
     // Yum Consistency
