@@ -95,4 +95,17 @@ class GameTimeParserServiceTest {
         assertNull(result.endTime)
         assertEquals(expectedTime, result.guessDeadline)
     }
+
+    @DisplayName("parseGameTime() A guess with seconds has the seconds part trimmed")
+    @Test
+    fun guessWithSecondsShouldHaveSecondsTrimmed() {
+        val startTime = "15/10/2024 19:00:15"
+        val endTime = "15/10/2024 22:00:30"
+        val deadline = "15/10/2024 18:00:45"
+
+        val result = target.parseGameTime(startTime, endTime, deadline)
+        assertEquals(0, result.startTime.second)
+        assertEquals(0, result.endTime.second)
+        assertEquals(0, result.guessDeadline.second)
+    }
 }
