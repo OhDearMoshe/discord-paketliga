@@ -1,11 +1,11 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching.results
 
-import org.junit.jupiter.api.DisplayName
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.junit.jupiter.api.DisplayName
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 
 class GameResultResolverTest {
     val target = GameResultResolver()
@@ -18,12 +18,7 @@ class GameResultResolverTest {
         val results = target.findWinners(buildGame(), losingGuesses + closestGuess)
         assertEquals(
             results,
-            GameResult(
-                winners = listOf(closestGuess),
-                losers = losingGuesses,
-                awardBonusPoint = false,
-                wasDraw = false
-            )
+            GameResult(winners = listOf(closestGuess), losers = losingGuesses, awardBonusPoint = false, wasDraw = false),
         )
     }
 
@@ -35,12 +30,7 @@ class GameResultResolverTest {
         val results = target.findWinners(buildGame(), losingGuesses + closestGuess)
         assertEquals(
             results,
-            GameResult(
-                winners = listOf(closestGuess),
-                losers = losingGuesses,
-                awardBonusPoint = false,
-                wasDraw = false
-            )
+            GameResult(winners = listOf(closestGuess), losers = losingGuesses, awardBonusPoint = false, wasDraw = false),
         )
     }
 
@@ -51,11 +41,7 @@ class GameResultResolverTest {
     fun guessesOfEqualDistanceBothReturned() {
         val closestGuessBefore = buildGuess("2023-03-03T20:52:00Z")
         val closestGuessAfter = buildGuess("2023-03-03T21:08:00Z")
-        val losingGuesses =
-            listOf(
-                buildGuess("2023-03-03T20:50:00Z"),
-                buildGuess("2023-03-03T21:12:00Z"),
-            )
+        val losingGuesses = listOf(buildGuess("2023-03-03T20:50:00Z"), buildGuess("2023-03-03T21:12:00Z"))
         val results = target.findWinners(buildGame(), losingGuesses + closestGuessBefore + closestGuessAfter)
         assertEquals(
             results,
@@ -63,8 +49,8 @@ class GameResultResolverTest {
                 winners = listOf(closestGuessBefore, closestGuessAfter),
                 losers = losingGuesses,
                 awardBonusPoint = false,
-                wasDraw = true
-            )
+                wasDraw = true,
+            ),
         )
     }
 
@@ -72,20 +58,16 @@ class GameResultResolverTest {
     @Test
     fun guessThatMatchesDeliveryTimeIsReturned() {
         val closestGuess = buildGuess("2023-03-03T21:00:00Z")
-        val losingGuesses = listOf(
-            buildGuess("2023-03-03T20:52:00Z"),
-            buildGuess("2023-03-03T20:50:00Z"),
-            buildGuess("2023-03-03T21:12:00Z"),
-        )
+        val losingGuesses =
+            listOf(
+                buildGuess("2023-03-03T20:52:00Z"),
+                buildGuess("2023-03-03T20:50:00Z"),
+                buildGuess("2023-03-03T21:12:00Z"),
+            )
         val results = target.findWinners(buildGame(), losingGuesses + closestGuess)
         assertEquals(
             results,
-            GameResult(
-                winners = listOf(closestGuess),
-                losers = losingGuesses,
-                awardBonusPoint = true,
-                wasDraw = false
-            )
+            GameResult(winners = listOf(closestGuess), losers = losingGuesses, awardBonusPoint = true, wasDraw = false),
         )
     }
 
