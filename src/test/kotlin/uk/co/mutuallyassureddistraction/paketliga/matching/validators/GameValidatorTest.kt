@@ -9,8 +9,7 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 
 class GameValidatorTest {
-
-    val target = GameValidator()
+    private val target = GameValidator()
 
     @DisplayName("validateGameCreate() returns null if window is valid")
     @Test
@@ -71,7 +70,7 @@ class GameValidatorTest {
     fun ifGameNullReturnMessage() {
         val updateGuessWindow = UpdateGuessWindow(startTime = null, endTime = null, guessDeadline = null)
         assertEquals(
-            "Inactive or invalid game ID. Double-check and try again ",
+            "Inactive or invalid game ID. Double-check and try again",
             target.validateGameUpdate(null, "123", updateGuessWindow),
         )
     }

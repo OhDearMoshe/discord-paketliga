@@ -14,9 +14,9 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 
 class GuessDaoTest {
-    lateinit var gameDao: GameDao
-    lateinit var target: GuessDao
-    lateinit var testWrapper: DaoTestWrapper
+    private lateinit var gameDao: GameDao
+    private lateinit var target: GuessDao
+    private lateinit var testWrapper: DaoTestWrapper
 
     @BeforeEach
     fun setUp() {

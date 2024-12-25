@@ -5,11 +5,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-private val toStringFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm")
+private val toStringFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE dd MMM HH:mm")
 
-fun toUserFriendlyString(time: ZonedDateTime): String {
-    return time.format(toStringFormatter)
-}
+fun ZonedDateTime.toUserFriendlyString(): String = this.format(toStringFormatter)
 
 fun fromParsedHawkingString(dateTime: String): ZonedDateTime {
     val zonedId = ZoneId.of("Europe/London")

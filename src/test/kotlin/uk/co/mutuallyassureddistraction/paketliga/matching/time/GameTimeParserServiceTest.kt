@@ -1,21 +1,18 @@
-package uk.co.mutuallyassureddistraction.paketliga.matching
+package uk.co.mutuallyassureddistraction.paketliga.matching.time
 
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.junit.jupiter.api.DisplayName
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
 
 class GameTimeParserServiceTest {
 
     val target = GameTimeParserService(TimeParser())
-    private val resultFormat: DateTimeFormatter = DateTimeFormat.forPattern("dd-MMM-yy HH:mm")
-    private val inputFormat: DateTimeFormatter = DateTimeFormat.forPattern("dd-MM-yy HH:mm")
+    private val resultFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE dd MMM HH:mm")
+    private val inputFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
     @DisplayName("parseGameTime() A guess with a defined start, end and deadline should create a guessWindow")
     @Test
@@ -25,9 +22,9 @@ class GameTimeParserServiceTest {
         val deadline = "15/10/2024 18:00"
 
         val result = target.parseGameTime(startTime, endTime, deadline)
-        assertEquals("15-Oct-24 19:00", result.startAsHumanFriendlyString())
-        assertEquals("15-Oct-24 22:00", result.endAsHumanFriendlyString())
-        assertEquals("15-Oct-24 18:00", result.deadlineAsHumanFriendlyString())
+        assertEquals("Tue 15 Oct 19:00", result.startAsHumanFriendlyString())
+        assertEquals("Tue 15 Oct 22:00", result.endAsHumanFriendlyString())
+        assertEquals("Tue 15 Oct 18:00", result.deadlineAsHumanFriendlyString())
     }
 
     @DisplayName(
@@ -35,14 +32,14 @@ class GameTimeParserServiceTest {
     )
     @Test
     fun missingDeadlineWillDefaultToAnHourFromNow() {
-        val startDate = DateTime.now().plusHours(2)
-        val endDate = DateTime.now().plusHours(3)
-        val expectedDeadline = DateTime.now().plusHours(1)
+        val startDate = LocalDateTime.now().plusHours(2)
+        val endDate = LocalDateTime.now().plusHours(3)
+        val expectedDeadline = LocalDateTime.now().plusHours(1)
 
-        val result = target.parseGameTime(startDate.toString(inputFormat), endDate.toString(inputFormat), null)
-        assertEquals(startDate.toString(resultFormat), result.startAsHumanFriendlyString())
-        assertEquals(endDate.toString(resultFormat), result.endAsHumanFriendlyString())
-        assertEquals(expectedDeadline.toString(resultFormat), result.deadlineAsHumanFriendlyString())
+        val result = target.parseGameTime(startDate.format(inputFormat), endDate.format(inputFormat), null)
+        assertEquals(startDate.format(resultFormat), result.startAsHumanFriendlyString())
+        assertEquals(endDate.format(resultFormat), result.endAsHumanFriendlyString())
+        assertEquals(expectedDeadline.format(resultFormat), result.deadlineAsHumanFriendlyString())
     }
 
     @DisplayName(
@@ -50,14 +47,14 @@ class GameTimeParserServiceTest {
     )
     @Test
     fun missingDeadlineWillDefaultToFiveMinsBeforeStartWindow() {
-        val startDate = DateTime.now().plusMinutes(30)
-        val endDate = DateTime.now().plusHours(3)
-        val expectedDeadline = DateTime.now().plusMinutes(25)
+        val startDate = LocalDateTime.now().plusMinutes(30)
+        val endDate = LocalDateTime.now().plusHours(3)
+        val expectedDeadline = LocalDateTime.now().plusMinutes(25)
 
-        val result = target.parseGameTime(startDate.toString(inputFormat), endDate.toString(inputFormat), null)
-        assertEquals(startDate.toString(resultFormat), result.startAsHumanFriendlyString())
-        assertEquals(endDate.toString(resultFormat), result.endAsHumanFriendlyString())
-        assertEquals(expectedDeadline.toString(resultFormat), result.deadlineAsHumanFriendlyString())
+        val result = target.parseGameTime(startDate.format(inputFormat), endDate.format(inputFormat), null)
+        assertEquals(startDate.format(resultFormat), result.startAsHumanFriendlyString())
+        assertEquals(endDate.format(resultFormat), result.endAsHumanFriendlyString())
+        assertEquals(expectedDeadline.format(resultFormat), result.deadlineAsHumanFriendlyString())
     }
 
     @DisplayName("parseGameUpdateTime() A guess just a start returns only that")

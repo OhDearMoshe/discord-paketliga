@@ -1,24 +1,11 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching.time
 
-import java.time.*
+import java.time.ZonedDateTime
 
 data class GuessWindow(val startTime: ZonedDateTime, val endTime: ZonedDateTime, val guessDeadline: ZonedDateTime) {
+    fun startAsHumanFriendlyString(): String = startTime.toUserFriendlyString()
 
-    fun startAsHumanFriendlyString(): String {
-        return toUserFriendlyString(startTime)
-    }
+    fun endAsHumanFriendlyString(): String = endTime.toUserFriendlyString()
 
-    fun endAsHumanFriendlyString(): String {
-        return toUserFriendlyString(endTime)
-    }
-
-    fun deadlineAsHumanFriendlyString(): String {
-        return toUserFriendlyString(guessDeadline)
-    }
+    fun deadlineAsHumanFriendlyString(): String = guessDeadline.toUserFriendlyString()
 }
-
-data class UpdateGuessWindow(
-    val startTime: ZonedDateTime?,
-    val endTime: ZonedDateTime?,
-    val guessDeadline: ZonedDateTime?,
-) {}

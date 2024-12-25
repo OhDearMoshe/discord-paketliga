@@ -59,7 +59,7 @@ class EndGameExtension(
                             val currentGuess = guessesIterator.next()
                             val memberBehavior = MemberBehavior(serverId, Snowflake(currentGuess.userId), kord)
                             mentionContent += " " + memberBehavior.asMember().mention
-                            mentionContent += " with guess time at " + toUserFriendlyString(currentGuess.guessTime)
+                            mentionContent += " with guess time at " + currentGuess.guessTime.toUserFriendlyString()
                             if (guessesIterator.hasNext()) mentionContent += ", "
                         }
 
@@ -119,7 +119,7 @@ class EndGameExtension(
     inner class EndGameArgs : Arguments() {
         val gameid by int {
             name = "gameid"
-            description = "The game ID announced by Dr Pakidge when the game was created "
+            description = "The game ID announced by Dr Pakidge when the game was created"
         }
 
         val deliverytime by string {

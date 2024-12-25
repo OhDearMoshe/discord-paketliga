@@ -46,9 +46,9 @@ class GameUpsertService(
                     )
                 )
             val gameNameString = gameNameStringMaker(gameName, member, username, createdGame.gameId!!)
-            return ":postal_horn: $gameNameString | package is arriving between  ${guessWindow.startAsHumanFriendlyString()} and " +
-                "${guessWindow.endAsHumanFriendlyString()}." +
-                " Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+            return ":postal_horn: $gameNameString | package is arriving between ${guessWindow.startAsHumanFriendlyString()} and " +
+                "${guessWindow.endAsHumanFriendlyString()}. " +
+                "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
         } catch (e: Exception) {
             logger.error("Error while creating game", e)
             return "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
@@ -77,9 +77,9 @@ class GameUpsertService(
             val guessWindow = updatedGame.getGuessWindow()
 
             val gameUpdatedString: String =
-                "Game #$gameId  updated: package now arriving between " +
-                    "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}." +
-                    " Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+                "Game #$gameId updated: package now arriving between " +
+                    "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
+                    "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
             val guesses = guessFinderService.findGuesses(gameId, null)
             val userIds = guesses.map { it.userId }.toList()
@@ -94,9 +94,8 @@ class GameUpsertService(
         }
     }
 
-    private fun gameNameStringMaker(gameName: String?, member: Member?, username: String, gameId: Int): String {
-        // We need username for non-server users that are using this command, if any (hence the nullable Member)
-        // Kinda unlikely, but putting this here just in case
-        return "$gameName (#$gameId) by ${member?.mention ?: username}"
-    }
+    // We need username for non-server users that are using this command, if any (hence the nullable Member)
+    // Kinda unlikely, but putting this here just in case
+    private fun gameNameStringMaker(gameName: String?, member: Member?, username: String, gameId: Int): String =
+        "$gameName (#$gameId) by ${member?.mention ?: username}"
 }

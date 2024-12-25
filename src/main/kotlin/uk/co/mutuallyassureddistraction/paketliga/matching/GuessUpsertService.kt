@@ -40,7 +40,7 @@ class GuessUpsertService(
                             errorString = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
                         }
                         "ERRA1" -> {
-                            errorString = "*\\*womp-womp*\\* Game ID #$gameId is not valid or is no longer active "
+                            errorString = "*\\*womp-womp*\\* Game ID #$gameId is not valid or is no longer active"
                         }
                     }
                 }

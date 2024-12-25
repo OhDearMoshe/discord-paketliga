@@ -5,7 +5,6 @@ import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
-import org.joda.time.DateTime
 
 class TimeParser {
 
@@ -21,10 +20,5 @@ class TimeParser {
         val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
         val dateText = parsedDate.parserOutputs.first().dateRange.startDateFormat
         return fromParsedHawkingString(dateText).withSecond(0)
-    }
-
-    // Yum Consistency
-    fun toZoneDateTime(date: DateTime): ZonedDateTime {
-        return date.toGregorianCalendar().toZonedDateTime()
     }
 }

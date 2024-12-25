@@ -22,7 +22,7 @@ class PointUpdaterService(private val pointDao: PointDao, private val winDao: Wi
         gameResult.losers.forEach { applyLoss(it) }
     }
 
-    fun applyWin(guess: Guess) {
+    private fun applyWin(guess: Guess) {
         winDao.addWinningGuess(Win(gameId = guess.gameId, guessId = guess.guessId!!, date = ZonedDateTime.now()))
         pointDao.addWin(Point(userId = guess.userId, played = 1, won = 1, totalPoint = 1F))
     }

@@ -31,7 +31,7 @@ class GuessUpsertServiceTest {
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
 
         val response = target.guessGame(1, guessTime, "Z", mention)
-        val expectedString = "<:sickos:918170456190775348> @OhDearMoshe has guessed 15-Oct-24 19:00 for game ID #1"
+        val expectedString = "<:sickos:918170456190775348> @OhDearMoshe has guessed Tue 15 Oct 19:00 for game ID #1"
         assertEquals(expectedString, response)
     }
 
@@ -85,12 +85,12 @@ class GuessUpsertServiceTest {
         target = GuessUpsertService(guessDao, gameDao, guessValidator)
 
         val response = target.guessGame(4, guessTime, "Z", mention)
-        val expectedString = "*\\*womp-womp*\\* Game ID #4 is not valid or is no longer active "
+        val expectedString = "*\\*womp-womp*\\* Game ID #4 is not valid or is no longer active"
         assertEquals(expectedString, response)
     }
 
-    private fun getGameStub(): Game {
-        return Game(
+    private fun getGameStub() =
+        Game(
             gameId = 1,
             gameName = "Testing testing",
             windowStart = ZonedDateTime.now().withHour(11).withMinute(0),
@@ -100,5 +100,4 @@ class GuessUpsertServiceTest {
             userId = "Z",
             gameActive = true,
         )
-    }
 }

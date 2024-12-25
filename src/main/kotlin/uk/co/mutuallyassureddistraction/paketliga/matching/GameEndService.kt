@@ -45,12 +45,15 @@ class GameEndService(
         return Pair(null, result)
     }
 
-    private fun isGameVoid(game: Game, deliveryTime: DeliveryTime): Boolean {
-        return deliveryTime.deliveryTime < game.guessesClose ||
+    private fun isGameVoid(game: Game, deliveryTime: DeliveryTime): Boolean =
+        deliveryTime.deliveryTime < game.guessesClose ||
             deliveryTime.deliveryTime.dayOfYear > game.windowClose.dayOfYear
-    }
 
-    fun handleExceptions(e: Exception, zonedDeliveryDateTime: ZonedDateTime, gameId: Int): Pair<String?, GameResult?> {
+    private fun handleExceptions(
+        e: Exception,
+        zonedDeliveryDateTime: ZonedDateTime,
+        gameId: Int,
+    ): Pair<String?, GameResult?> {
         var errorString = "Something went wrong. Check your inputs and try again, or just shout at @OhDearMoshe"
         when (e) {
             is UnableToExecuteStatementException -> {
