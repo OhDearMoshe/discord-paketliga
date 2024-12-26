@@ -6,6 +6,29 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
 
+/** Extensions */
+val ContributeExtensionMessage =
+    """
+:postal_horn: Discord guessing game. How to contribute :postal_horn:
+                        
+* Source code is hosted at: <https://github.com/OhDearMoshe/discord-paketliga>
+* Found a bug? Please raise an issues or a PR
+* Have a feature request? Please raise an issues or a PR
+* Want to suggest an improvement? Please raise an issue or PR
+* Snark? Direct to OhDearMoshe then go contemplate your life choices
+"""
+        .trimIndent()
+
+val CreditsExtensionMessage =
+    """
+:postal_horn: Discord guessing game. Credits :postal_horn:
+                        
+* For Shreddz, who was a better postmaster general than this bot ever could be
+* For Z, who did most of the work really
+* For Mike, who bitched this bot into existence
+"""
+        .trimIndent()
+
 /** Game Validation */
 const val DeliveryWindowStartAfterEndError =
     "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window"
