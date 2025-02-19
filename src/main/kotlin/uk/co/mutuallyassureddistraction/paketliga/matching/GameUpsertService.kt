@@ -46,7 +46,9 @@ class GameUpsertService(
                     )
                 )
             val gameNameString = gameNameStringMaker(gameName, createdGame.gameId!!)
-            return ":postal_horn: $gameNameString | ${member?.mention ?: username}'s package is arriving between ${guessWindow.startAsHumanFriendlyString()} and " +
+            val mention = member?.mention ?: username
+            return ":postal_horn: $gameNameString | $mention's package is arriving " +
+                    "between ${guessWindow.startAsHumanFriendlyString()} and " +
                 "${guessWindow.endAsHumanFriendlyString()}. " +
                 "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
         } catch (e: Exception) {
@@ -77,8 +79,9 @@ class GameUpsertService(
                     updateGuessWindow.guessDeadline,
                 )
             val guessWindow = updatedGame.getGuessWindow()
+            val mention = member?.mention ?: username
             val gameUpdatedString: String =
-                ":postal_horn: #$gameId has been updated| ${member?.mention ?: username}'s package is now arriving between " +
+                ":postal_horn: #$gameId has been updated| $mention's package is now arriving between " +
                     "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
                     "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
