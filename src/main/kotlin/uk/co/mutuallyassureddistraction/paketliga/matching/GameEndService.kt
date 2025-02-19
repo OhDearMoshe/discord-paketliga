@@ -4,6 +4,7 @@ import java.sql.SQLException
 import java.time.ZonedDateTime
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.slf4j.LoggerFactory
+import uk.co.mutuallyassureddistraction.paketliga.*
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
@@ -22,14 +23,14 @@ class GameEndService(
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
     fun endGame(gameId: Int, deliveryTime: DeliveryTime): Pair<String?, GameResult?> {
-        var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair("No games found.", null)
+        var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair(GameEndServiceGameIsNullError, null)
 
         // 1. we finish the game
         try {
             if (isGameVoid(searchedGame, deliveryTime)) {
                 // Void the game
-                gameDao.voidGameById(searchedGame.gameId!!, "Delivery time is outside of delivery window")
-                return Pair("Delivery time is outside of delivery window game void", null)
+                gameDao.voidGameById(searchedGame.gameId!!, DeliveryTimeOutsideWindowVoidReason)
+                return Pair(DeliveryTimeOutsideWindowGameVoidMessage, null)
             }
             searchedGame = gameDao.finishGame(gameId, deliveryTime.deliveryTime)
         } catch (e: Exception) {
@@ -54,14 +55,14 @@ class GameEndService(
         zonedDeliveryDateTime: ZonedDateTime,
         gameId: Int,
     ): Pair<String?, GameResult?> {
-        var errorString = "Something went wrong. Check your inputs and try again, or just shout at @OhDearMoshe"
+        var errorString = GameEndServiceGenericErrorMessage
         when (e) {
             is UnableToExecuteStatementException -> {
                 val original = e.cause as SQLException
                 when (original.sqlState) {
                     "ERRG0" -> {
                         errorString =
-                            "Ending game failed, delivery time #$zonedDeliveryDateTime is not between start and closing window of game #$gameId"
+                            failedToEndGameDueToDeliveryTimeOutOfWindowErrorMessage(zonedDeliveryDateTime, gameId)
                     }
                 }
             }

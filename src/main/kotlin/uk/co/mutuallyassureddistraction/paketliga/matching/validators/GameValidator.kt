@@ -1,6 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching.validators
 
 import java.time.ZonedDateTime
+import uk.co.mutuallyassureddistraction.paketliga.*
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
@@ -16,13 +17,11 @@ class GameValidator {
         val now = ZonedDateTime.now()
 
         return when {
-            startTime >= endTime ->
-                "<:notstonks:905102685827629066> Start of the delivery window must be before the end of the delivery window"
+            startTime >= endTime -> DeliveryWindowStartAfterEndError
 
-            guessDeadline >= startTime ->
-                "<:ohno:760904962108162069> Deadline for guesses must be before the delivery window opens"
+            guessDeadline >= startTime -> GuessDeadlineAfterWindowStartError
 
-            guessDeadline < now -> "<:pikachu:918170411605327924> Deadline for guesses can't be in the past."
+            guessDeadline < now -> GuessDeadlineInPastError
 
             else -> null
         }
@@ -30,15 +29,15 @@ class GameValidator {
 
     fun validateGameUpdate(game: Game?, userId: String, updateGuessWindow: UpdateGuessWindow): String? =
         when {
-            game == null -> "Inactive or invalid game ID. Double-check and try again"
+            game == null -> GameValidatorGameIsNullError
 
-            game.userId != userId -> "Mr Pump stops you from interfering with another persons mail"
+            game.userId != userId -> ChangingAnotherUsersGameError
 
-            !game.gameActive -> "Game (already) over, man. Should have sent this update first class"
+            !game.gameActive -> GameNotActiveError
 
             updateGuessWindow.startTime == null &&
                 updateGuessWindow.endTime == null &&
-                updateGuessWindow.guessDeadline == null -> "<:thonk:344120216227414018> You didn't change anything"
+                updateGuessWindow.guessDeadline == null -> UpdateDidNotChangeAnythingError
 
             else -> validateGuessWindow(updatedGuessWindowToGuessWindow(updateGuessWindow, game))
         }
