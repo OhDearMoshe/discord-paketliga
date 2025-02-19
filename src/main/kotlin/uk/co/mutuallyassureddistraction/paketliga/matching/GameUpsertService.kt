@@ -58,7 +58,9 @@ class GameUpsertService(
     fun updateGame(
         gameId: Int,
         userId: String,
+        member: Member?,
         updateGuessWindow: UpdateGuessWindow,
+        username: String
     ): Pair<Array<String>, List<String>> {
         try {
             val originalGame = gameDao.findActiveGameById(gameId)
@@ -75,9 +77,8 @@ class GameUpsertService(
                     updateGuessWindow.guessDeadline,
                 )
             val guessWindow = updatedGame.getGuessWindow()
-
             val gameUpdatedString: String =
-                "Game #$gameId updated: package now arriving between " +
+                ":postal_horn: #$gameId has been updated|  ${member?.mention ?: username}'s package is now arriving between " +
                     "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
                     "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
