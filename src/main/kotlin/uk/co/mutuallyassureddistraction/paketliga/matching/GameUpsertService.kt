@@ -49,8 +49,8 @@ class GameUpsertService(
             val mention = member?.mention ?: username
             return ":postal_horn: $gameNameString | $mention's package is arriving " +
                     "between ${guessWindow.startAsHumanFriendlyString()} and " +
-                "${guessWindow.endAsHumanFriendlyString()}. " +
-                "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+                    "${guessWindow.endAsHumanFriendlyString()}. " +
+                    "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
         } catch (e: Exception) {
             logger.error("Error while creating game", e)
             return "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
@@ -82,8 +82,8 @@ class GameUpsertService(
             val mention = member?.mention ?: username
             val gameUpdatedString: String =
                 ":postal_horn: #$gameId has been updated | $mention's package is now arriving between " +
-                    "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
-                    "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+                        "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
+                        "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
             val guesses = guessFinderService.findGuesses(gameId, null)
             val userIds = guesses.map { it.userId }.toList()
