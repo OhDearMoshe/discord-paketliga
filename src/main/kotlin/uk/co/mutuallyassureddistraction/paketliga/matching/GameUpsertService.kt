@@ -78,7 +78,7 @@ class GameUpsertService(
                 )
             val guessWindow = updatedGame.getGuessWindow()
             val gameUpdatedString: String =
-                ":postal_horn: #$gameId has been updated|  ${member?.mention ?: username}'s package is now arriving between " +
+                ":postal_horn: #$gameId has been updated| ${member?.mention ?: username}'s package is now arriving between " +
                     "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
                     "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 

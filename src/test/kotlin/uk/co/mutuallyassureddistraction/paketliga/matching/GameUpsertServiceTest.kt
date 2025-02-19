@@ -112,7 +112,7 @@ class GameUpsertServiceTest {
         val (updateString, userIds) = target.updateGame(1, "OhDear", member, updateGuessWindow, "OhDearMoshe")
 
         val expectedString =
-            ":postal_horn: #1 has been updated|  @OhDearMoshe's package is now arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+            ":postal_horn: #1 has been updated| @OhDearMoshe's package is now arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(updateString[0], expectedString)
         assertEquals(userIds[0], "Z")
     }
@@ -125,7 +125,7 @@ class GameUpsertServiceTest {
         val (updateString, userIds) = target.updateGame(1, "OhDear", null, updateGuessWindow, "OhDearMoshe")
 
         val expectedString =
-            ":postal_horn: #1 has been updated|  OhDearMoshe's package is now arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+            ":postal_horn: #1 has been updated| OhDearMoshe's package is now arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(updateString[0], expectedString)
         assertEquals(userIds[0], "Z")
     }
