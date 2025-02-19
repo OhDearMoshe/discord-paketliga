@@ -45,8 +45,8 @@ class GameUpsertService(
                         gameActive = true,
                     )
                 )
-            val gameNameString = gameNameStringMaker(gameName, member, username, createdGame.gameId!!)
-            return ":postal_horn: $gameNameString | package is arriving between ${guessWindow.startAsHumanFriendlyString()} and " +
+            val gameNameString = gameNameStringMaker(gameName, createdGame.gameId!!)
+            return ":postal_horn: $gameNameString | ${member?.mention ?: username}'s package is arriving between ${guessWindow.startAsHumanFriendlyString()} and " +
                 "${guessWindow.endAsHumanFriendlyString()}. " +
                 "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
         } catch (e: Exception) {
@@ -96,6 +96,6 @@ class GameUpsertService(
 
     // We need username for non-server users that are using this command, if any (hence the nullable Member)
     // Kinda unlikely, but putting this here just in case
-    private fun gameNameStringMaker(gameName: String?, member: Member?, username: String, gameId: Int): String =
-        "$gameName (#$gameId) by ${member?.mention ?: username}"
+    private fun gameNameStringMaker(gameName: String?, gameId: Int): String =
+        "$gameName (#$gameId)"
 }
