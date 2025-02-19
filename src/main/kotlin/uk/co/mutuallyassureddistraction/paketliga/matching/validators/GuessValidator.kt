@@ -1,23 +1,24 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching.validators
 
 import java.time.ZonedDateTime
+import uk.co.mutuallyassureddistraction.paketliga.GuessingInOwnGameError
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.guessOutsideOfGuessWindow
+import uk.co.mutuallyassureddistraction.paketliga.guessValidatorGameIsNullError
+import uk.co.mutuallyassureddistraction.paketliga.guessingWindowClosedError
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
 
 class GuessValidator {
     fun validateGuess(game: Game?, gameId: Int, userId: String, guessTime: GuessTime): String? =
         when {
-            game == null -> "Guessing failed, there is no active game with game ID #$gameId"
+            game == null -> guessValidatorGameIsNullError(gameId)
 
-            game.userId == userId -> "Mr Pump forbids you from guessing in your own game."
+            game.userId == userId -> GuessingInOwnGameError
 
-            // TODO: guessing window usage here referring to deadline is inconsistent
-            ZonedDateTime.now() >= game.guessesClose ->
-                "*\\*womp-womp*\\* Too late, the guessing window has closed for game ID #$gameId"
+            ZonedDateTime.now() >= game.guessesClose -> guessingWindowClosedError(gameId)
 
             guessTime.guessTime < game.windowStart || guessTime.guessTime > game.windowClose ->
-                "Guesses must be between ${game.windowStart.toUserFriendlyString()} and ${game.windowClose.toUserFriendlyString()}"
+                guessOutsideOfGuessWindow(game.windowStart, game.windowClose)
 
             else -> null
         }

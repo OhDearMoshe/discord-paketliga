@@ -2,8 +2,11 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import dev.kord.core.entity.Member
 import org.slf4j.LoggerFactory
+import uk.co.mutuallyassureddistraction.paketliga.GameCreationErrorMessage
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.gameAnnouncementMessage
+import uk.co.mutuallyassureddistraction.paketliga.gameUpdateMessage
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
@@ -45,15 +48,10 @@ class GameUpsertService(
                         gameActive = true,
                     )
                 )
-            val gameNameString = gameNameStringMaker(gameName, createdGame.gameId!!)
-            val mention = member?.mention ?: username
-            return ":postal_horn: $gameNameString | $mention's package is arriving " +
-                "between ${guessWindow.startAsHumanFriendlyString()} and " +
-                "${guessWindow.endAsHumanFriendlyString()}. " +
-                "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+            return gameAnnouncementMessage(gameName, member, username, createdGame.gameId!!, guessWindow)
         } catch (e: Exception) {
             logger.error("Error while creating game", e)
-            return "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
+            return GameCreationErrorMessage
         }
     }
 
@@ -79,11 +77,7 @@ class GameUpsertService(
                     updateGuessWindow.guessDeadline,
                 )
             val guessWindow = updatedGame.getGuessWindow()
-            val mention = member?.mention ?: username
-            val gameUpdatedString: String =
-                ":postal_horn: #$gameId has been updated | $mention's package is now arriving between " +
-                    "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
-                    "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+            val gameUpdatedString = gameUpdateMessage(gameId, guessWindow, member, username)
 
             val guesses = guessFinderService.findGuesses(gameId, null)
             val userIds = guesses.map { it.userId }.toList()
@@ -91,14 +85,7 @@ class GameUpsertService(
             return Pair(arrayOf(gameUpdatedString), userIds)
         } catch (e: Exception) {
             logger.error("Error while updating game", e)
-            return Pair(
-                arrayOf("<:pressf:692833208382914571> You done goofed. Check your inputs and try again. "),
-                arrayListOf(),
-            )
+            return Pair(arrayOf(GameCreationErrorMessage), arrayListOf())
         }
     }
-
-    // We need username for non-server users that are using this command, if any (hence the nullable Member)
-    // Kinda unlikely, but putting this here just in case
-    private fun gameNameStringMaker(gameName: String?, gameId: Int): String = "$gameName (#$gameId)"
 }
