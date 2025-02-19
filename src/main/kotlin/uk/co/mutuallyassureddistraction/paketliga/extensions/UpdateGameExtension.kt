@@ -42,7 +42,7 @@ class UpdateGameExtension(
                             user.asUser().id.value.toString(),
                             member?.asMember(),
                             updateWindow,
-                            user.asUser().username
+                            user.asUser().username,
                         )
 
                     respond { content = responseString[0] }
@@ -53,7 +53,7 @@ class UpdateGameExtension(
                             "Attention players, you may wish to update your guesses for game #$gameId\n"
                         userIds.forEach {
                             val memberBehavior = MemberBehavior(serverId, Snowflake(it), kord)
-                            mentionContent += " " + memberBehavior.asMember().mention + "\n"
+                            mentionContent += "${memberBehavior.asMember().mention} \n"
                         }
 
                         respond { content = mentionContent }

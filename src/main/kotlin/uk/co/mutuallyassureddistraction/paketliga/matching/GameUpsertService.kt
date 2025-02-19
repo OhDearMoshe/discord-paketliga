@@ -48,9 +48,9 @@ class GameUpsertService(
             val gameNameString = gameNameStringMaker(gameName, createdGame.gameId!!)
             val mention = member?.mention ?: username
             return ":postal_horn: $gameNameString | $mention's package is arriving " +
-                    "between ${guessWindow.startAsHumanFriendlyString()} and " +
-                    "${guessWindow.endAsHumanFriendlyString()}. " +
-                    "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+                "between ${guessWindow.startAsHumanFriendlyString()} and " +
+                "${guessWindow.endAsHumanFriendlyString()}. " +
+                "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
         } catch (e: Exception) {
             logger.error("Error while creating game", e)
             return "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
@@ -62,7 +62,7 @@ class GameUpsertService(
         userId: String,
         member: Member?,
         updateGuessWindow: UpdateGuessWindow,
-        username: String
+        username: String,
     ): Pair<Array<String>, List<String>> {
         try {
             val originalGame = gameDao.findActiveGameById(gameId)
@@ -82,8 +82,8 @@ class GameUpsertService(
             val mention = member?.mention ?: username
             val gameUpdatedString: String =
                 ":postal_horn: #$gameId has been updated | $mention's package is now arriving between " +
-                        "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
-                        "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+                    "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
+                    "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
 
             val guesses = guessFinderService.findGuesses(gameId, null)
             val userIds = guesses.map { it.userId }.toList()
@@ -100,6 +100,5 @@ class GameUpsertService(
 
     // We need username for non-server users that are using this command, if any (hence the nullable Member)
     // Kinda unlikely, but putting this here just in case
-    private fun gameNameStringMaker(gameName: String?, gameId: Int): String =
-        "$gameName (#$gameId)"
+    private fun gameNameStringMaker(gameName: String?, gameId: Int): String = "$gameName (#$gameId)"
 }
