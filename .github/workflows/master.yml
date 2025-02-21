@@ -31,10 +31,10 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
       - name: Build with Gradle Wrapper
-        run: TZ="Europe/London" ./gradlew test
+        run: TZ="Europe/London" ./gradlew build
 
       - name: Build container image
-        run: docker build -t ${{ secrets.DIGITALOCEAN_REPO_NAME }}/paketliga:latest .
+        run: docker build -t ${{ secrets.DIGITALOCEAN_REPO_NAME }}/mutuallyassureddistraction/paketliga:latest .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -45,7 +45,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push ${{ secrets.DIGITALOCEAN_REPO_NAME }}/paketliga:latest
+        run: docker push ${{ secrets.DIGITALOCEAN_REPO_NAME }}/mutuallyassureddistraction/paketliga:latest
 
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
