@@ -76,7 +76,8 @@ class GameUpsertServiceTest {
 
         val returnedString = target.createGame(gameName, guessWindow, "1234", member, "ZLX")
         val expectedString =
-            ":postal_horn: Random Amazon package (#1) by Z | package is arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+            ":postal_horn: Random Amazon package (#1) | Z's package is arriving between" +
+                " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(expectedString, returnedString)
     }
 
@@ -87,16 +88,20 @@ class GameUpsertServiceTest {
     fun returnStringWithNullGameNameAndMember() {
         val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
         val expectedString =
-            ":postal_horn: Game (#1) by ZLX | package is arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+            ":postal_horn: Game (#1) | ZLX's package is arriving between " +
+                "Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(expectedString, returnedString)
     }
 
     @DisplayName("updateGame() if validation fails return validation message")
     @Test
     fun returnUpdateStringOfFailure() {
+        val member = mockk<Member>()
+        every { member.mention } returns "@OhDearMoshe"
+
         val expectedString = "A big failure"
         every { gameValidator.validateGameUpdate(any(), any(), any()) } returns expectedString
-        val (updateString, _) = target.updateGame(1, "OhDear", updateGuessWindow)
+        val (updateString, _) = target.updateGame(1, "OhDear", member, updateGuessWindow, "OhDearMoshe")
 
         assertEquals(updateString[0], expectedString)
     }
@@ -104,10 +109,27 @@ class GameUpsertServiceTest {
     @DisplayName("updateGame() will return updated game string and correct user IDS")
     @Test
     fun returnStringWithUpdatedGameInfo() {
-        val (updateString, userIds) = target.updateGame(1, "OhDear", updateGuessWindow)
+        val member = mockk<Member>()
+        every { member.mention } returns "@OhDearMoshe"
+        val (updateString, userIds) = target.updateGame(1, "OhDear", member, updateGuessWindow, "OhDearMoshe")
 
         val expectedString =
-            "Game #1 updated: package now arriving between Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+            ":postal_horn: #1 has been updated | @OhDearMoshe's package is now arriving between" +
+                " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+        assertEquals(updateString[0], expectedString)
+        assertEquals(userIds[0], "Z")
+    }
+
+    @DisplayName("updateGame() will return updated game string with user name if member is null")
+    @Test
+    fun returnStringWithUpdatedGameInfoIfMemberNull() {
+        val member = mockk<Member>()
+        every { member.mention } returns "@OhDearMoshe"
+        val (updateString, userIds) = target.updateGame(1, "OhDear", null, updateGuessWindow, "OhDearMoshe")
+
+        val expectedString =
+            ":postal_horn: #1 has been updated | OhDearMoshe's package is now arriving between " +
+                "Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(updateString[0], expectedString)
         assertEquals(userIds[0], "Z")
     }

@@ -37,20 +37,24 @@ class UpdateGameExtension(
                 } else {
                     val updateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
                     val (responseString, userIds) =
-                        gameUpsertService.updateGame(gameId, user.asUser().id.value.toString(), updateWindow)
+                        gameUpsertService.updateGame(
+                            gameId,
+                            user.asUser().id.value.toString(),
+                            member?.asMember(),
+                            updateWindow,
+                            user.asUser().username,
+                        )
 
                     respond { content = responseString[0] }
 
                     if (userIds.isNotEmpty()) {
                         val kord = this@UpdateGameExtension.kord
-                        var mentionContent = "Mentioning users that have guessed:"
+                        var mentionContent =
+                            "Attention players, you may wish to update your guesses for game #$gameId\n"
                         userIds.forEach {
                             val memberBehavior = MemberBehavior(serverId, Snowflake(it), kord)
-                            mentionContent += " " + memberBehavior.asMember().mention
+                            mentionContent += "${memberBehavior.asMember().mention} \n"
                         }
-
-                        mentionContent +=
-                            " " + "as a notice that a game has been updated and possibly the time has changed"
 
                         respond { content = mentionContent }
                     }
