@@ -24,7 +24,7 @@ def postgres_kt_version = '0.9.3'
 
 // TEST
 def test_container_version = '1.17.6'
-def mockk_version = '1.13.4'
+def mockk_version = '1.13.16'
 
 
 repositories {
@@ -64,7 +64,7 @@ test {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 application {
