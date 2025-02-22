@@ -11,14 +11,10 @@ import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGuessesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessFinderService
-import uk.co.mutuallyassureddistraction.paketliga.matching.VoidGameService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
 
-class FindGuessExtension(
-    private val guessFinderService: GuessFinderService,
-    private val voidGameService: VoidGameService,
-    private val serverId: Snowflake,
-) : Extension() {
+class FindGuessExtension(private val guessFinderService: GuessFinderService, private val serverId: Snowflake) :
+    Extension() {
     override val name = "findGuessExtension"
 
     override suspend fun setup() {
@@ -34,10 +30,6 @@ class FindGuessExtension(
 
                 val gameId = arguments.gameid
                 val guessId = arguments.guessid
-
-                // I want to move this properly to a scheduler but as an interim call
-                // here to stop stale games clogging up the find games
-                voidGameService.cullExpiredGames()
 
                 if (gameId == null && guessId == null) {
                     respond {

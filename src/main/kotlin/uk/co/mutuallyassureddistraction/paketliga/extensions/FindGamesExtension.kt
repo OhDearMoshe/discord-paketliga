@@ -15,9 +15,13 @@ import uk.co.mutuallyassureddistraction.paketliga.findGuessGameName
 import uk.co.mutuallyassureddistraction.paketliga.findGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameFinderService
+import uk.co.mutuallyassureddistraction.paketliga.matching.VoidGameService
 
-class FindGamesExtension(private val gameFinderService: GameFinderService, private val serverId: Snowflake) :
-    Extension() {
+class FindGamesExtension(
+    private val gameFinderService: GameFinderService,
+    private val voidGameService: VoidGameService,
+    private val serverId: Snowflake,
+) : Extension() {
     override val name = "findGamesExtension"
 
     override suspend fun setup() {
@@ -31,6 +35,10 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
                 if (this.channel.id != DELIVERY_CHANNEL_ID) {
                     return@action
                 }
+
+                // I want to move this properly to a scheduler but as an interim call
+                // here to stop stale games clogging up the find games
+                voidGameService.cullExpiredGames()
 
                 val gameId = arguments.gameid
                 val gameName = arguments.gamename

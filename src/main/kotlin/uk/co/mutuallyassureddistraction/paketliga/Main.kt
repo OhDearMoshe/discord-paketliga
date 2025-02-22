@@ -81,9 +81,9 @@ suspend fun main(args: Array<String>) {
         logger.info("Creating Extensions")
         val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
-        val findGamesExtension = FindGamesExtension(gameFinderService, SERVER_ID)
+        val findGamesExtension = FindGamesExtension(gameFinderService, voidGameService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)
-        val findGuessExtension = FindGuessExtension(guessFinderService, voidGameService, SERVER_ID)
+        val findGuessExtension = FindGuessExtension(guessFinderService, SERVER_ID)
         val endGameExtension =
             EndGameExtension(gameEndService, leaderboardService, deliveryTimeParser, TOP_OF_LEADERBOARD_ROLE, SERVER_ID)
         val leaderboardExtension = LeaderboardExtension(leaderboardService, SERVER_ID)
