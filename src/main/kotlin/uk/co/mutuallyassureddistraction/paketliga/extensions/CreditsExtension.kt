@@ -5,6 +5,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.CreditsExtensionMessage
+import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 
 class CreditsExtension(private val serverId: Snowflake) : Extension() {
     override val name = "creditsextension"
@@ -15,7 +16,12 @@ class CreditsExtension(private val serverId: Snowflake) : Extension() {
             description = "Roll credits".toKey()
             guild(serverId)
 
-            action { respond { content = CreditsExtensionMessage } }
+            action {
+                if (this.channel.id != DELIVERY_CHANNEL_ID) {
+                    return@action
+                }
+                respond { content = CreditsExtensionMessage }
+            }
         }
     }
 }

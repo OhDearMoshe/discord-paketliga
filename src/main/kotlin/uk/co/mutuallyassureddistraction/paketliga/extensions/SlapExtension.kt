@@ -4,6 +4,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatCommand
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.utils.respond
+import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 
 class SlapExtension : Extension() {
     override val name = "slapExtension"
@@ -13,7 +14,12 @@ class SlapExtension : Extension() {
             name = "slap".toKey()
             description = "Get slapped!".toKey()
 
-            action { message.respond("*slaps you with a large, smelly trout!*") }
+            action {
+                if (this.channel.id != DELIVERY_CHANNEL_ID) {
+                    return@action
+                }
+                message.respond("*slaps you with a large, smelly trout!*")
+            }
         }
     }
 }

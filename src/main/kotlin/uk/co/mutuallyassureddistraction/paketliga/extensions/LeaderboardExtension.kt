@@ -8,6 +8,7 @@ import dev.kordex.core.commands.converters.impl.optionalUser
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
+import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 import uk.co.mutuallyassureddistraction.paketliga.matching.LeaderboardService
 
 class LeaderboardExtension(private val leaderboardService: LeaderboardService, private val serverId: Snowflake) :
@@ -22,6 +23,9 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
             guild(serverId)
 
             action {
+                if (this.channel.id != DELIVERY_CHANNEL_ID) {
+                    return@action
+                }
                 val userId = arguments.userId?.asUser()?.id?.value?.toString()
 
                 val leaderboard = leaderboardService.getLeaderboard(userId, null)
