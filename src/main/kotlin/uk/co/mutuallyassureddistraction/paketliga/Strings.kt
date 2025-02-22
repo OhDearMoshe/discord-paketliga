@@ -64,7 +64,8 @@ const val GameEndServiceGameIsNullError = "No games found."
 
 const val DeliveryTimeOutsideWindowVoidReason = "Delivery time is outside of delivery window"
 
-const val DeliveryTimeOutsideWindowGameVoidMessage = "Package was delivered outside of the window, we're all losers this time"
+const val DeliveryTimeOutsideWindowGameVoidMessage =
+    "Package was delivered outside of the window, we're all losers this time"
 
 const val GameEndServiceGenericErrorMessage =
     "Something went wrong. Check your inputs and try again, or just shout at @OhDearMoshe"
