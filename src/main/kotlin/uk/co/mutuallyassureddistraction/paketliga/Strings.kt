@@ -2,6 +2,7 @@ package uk.co.mutuallyassureddistraction.paketliga
 
 import dev.kord.core.entity.Member
 import java.time.ZonedDateTime
+import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
@@ -112,3 +113,12 @@ fun voidGameServiceGameIsNullError(gameId: Int) = "Game $gameId was not found"
 const val VoidGameServiceChangingAnotherUsersGameError = "Mr Pump prevents you from interfering with another game"
 
 fun gameVoidedMessage(gameId: Int) = "Game $gameId has been voided"
+
+fun findGuessWindow(response: FindGamesResponse): String {
+    return "Arriving between ${response.startAsHumanFriendlyString()} and ${response.endAsHumanFriendlyString()} " +
+        ".\n Guesses accepted until  ${response.guessesCloseAsHumanFriendlyString()}"
+}
+
+fun findGuessGameName(response: FindGamesResponse, user: String): String {
+    return "ID #${response.gameId}: Game by $user - ${response.gameName}"
+}

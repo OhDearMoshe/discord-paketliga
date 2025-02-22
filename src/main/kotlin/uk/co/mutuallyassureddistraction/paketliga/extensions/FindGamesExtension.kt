@@ -11,6 +11,8 @@ import com.kotlindiscord.kord.extensions.types.respondingPaginator
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
+import uk.co.mutuallyassureddistraction.paketliga.findGuessGameName
+import uk.co.mutuallyassureddistraction.paketliga.findGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameFinderService
 
@@ -44,20 +46,8 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
                                 val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
 
                                 val field = EmbedBuilder.Field()
-                                field.name =
-                                    "ID #" +
-                                        it.gameId.toString() +
-                                        ": Game by " +
-                                        memberBehavior.asMember().displayName +
-                                        " - " +
-                                        it.gameName
-                                field.value =
-                                    "Arriving between " +
-                                        it.windowStart +
-                                        " and " +
-                                        it.windowClose +
-                                        ".\n Guesses accepted until " +
-                                        it.guessesClose
+                                field.name = findGuessGameName(it, memberBehavior.asMember().displayName)
+                                field.value = findGuessWindow(it)
                                 pageFields.add(field)
                             }
 
