@@ -71,7 +71,7 @@ class GameEndServiceTest {
     @Test
     fun willVoidGameIfBeforeDeliveryWindow() {
         val returned = target.endGame(1, deliveryTime)
-        assertEquals(returned.first, "Delivery time is outside of delivery window game void")
+        assertEquals(returned.first, "Package was delivered outside of the window, we're all losers this time")
         assertNull(returned.second)
     }
 
@@ -79,7 +79,7 @@ class GameEndServiceTest {
     @Test
     fun willVoidGameIAfterDeliveryWindow() {
         val returned = target.endGame(2, deliveryTime)
-        assertEquals(returned.first, "Delivery time is outside of delivery window game void")
+        assertEquals(returned.first, "Package was delivered outside of the window, we're all losers this time")
         assertNull(returned.second)
     }
 
