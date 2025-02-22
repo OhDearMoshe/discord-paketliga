@@ -132,7 +132,7 @@ private fun configureBotBoot(bot: ExtensibleBot) {
 
         DELIVERY_CHANNEL_ID?.let {
             val message = UserMessageCreateBuilder()
-            message.content = "Out for delivery"
+            message.content = "NEITHER RAIN NOR SNOW NOR GLOM OF NIT CAN STAY THESE MESENGERS ABOT THEIR DUTY"
             this.kord.rest.channel.createMessage(DELIVERY_CHANNEL_ID, message.toRequest())
         }
     }
