@@ -122,3 +122,6 @@ fun findGuessWindow(response: FindGamesResponse): String {
 fun findGuessGameName(response: FindGamesResponse, user: String): String {
     return "ID #${response.gameId}: Game by $user - ${response.gameName}"
 }
+
+val startGameStrings =
+    listOf(":postal_horn: NEITHER RAIN NOR SNOW NOR GLOM OF NIT CAN STAY THESE MESENGERS ABOT THEIR DUTY :postal_horn:")
