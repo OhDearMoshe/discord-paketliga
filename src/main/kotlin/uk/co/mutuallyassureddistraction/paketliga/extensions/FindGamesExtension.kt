@@ -1,16 +1,15 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalInt
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalUser
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
-import com.kotlindiscord.kord.extensions.types.respondingPaginator
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.optionalInt
+import dev.kordex.core.commands.converters.impl.optionalString
+import dev.kordex.core.commands.converters.impl.optionalUser
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.findGuessGameName
 import uk.co.mutuallyassureddistraction.paketliga.findGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
@@ -22,8 +21,8 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
 
     override suspend fun setup() {
         publicSlashCommand(::FindGamesArgs) {
-            name = "pklfindgames"
-            description = "Get a list of active games"
+            name = "pklfindgames".toKey()
+            description = "Get a list of active games".toKey()
 
             guild(serverId)
 
@@ -39,6 +38,7 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
                 if (responseList.isEmpty()) {
                     respond { content = "No games found" }
                 } else {
+
                     val paginator = respondingPaginator {
                         responseList.chunked(5).map { response ->
                             val pageFields = ArrayList<EmbedBuilder.Field>()
@@ -46,7 +46,7 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
                                 val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
 
                                 val field = EmbedBuilder.Field()
-                                field.name = findGuessGameName(it, memberBehavior.asMember().displayName)
+                                field.name = findGuessGameName(it, memberBehavior.asMember().effectiveName)
                                 field.value = findGuessWindow(it)
                                 pageFields.add(field)
                             }
@@ -69,18 +69,18 @@ class FindGamesExtension(private val gameFinderService: GameFinderService, priva
 
     inner class FindGamesArgs : Arguments() {
         val gamecreator by optionalUser {
-            name = "gamecreator"
-            description = "Filter by creator name"
+            name = "gamecreator".toKey()
+            description = "Filter by creator name".toKey()
         }
 
         val gameid by optionalInt {
-            name = "gameid"
-            description = "Filter by Game ID"
+            name = "gameid".toKey()
+            description = "Filter by Game ID".toKey()
         }
 
         val gamename by optionalString {
-            name = "description"
-            description = "Filter by description"
+            name = "description".toKey()
+            description = "Filter by description".toKey()
         }
     }
 }

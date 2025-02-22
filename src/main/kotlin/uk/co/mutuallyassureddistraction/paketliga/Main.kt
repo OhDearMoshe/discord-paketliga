@@ -1,11 +1,11 @@
 package uk.co.mutuallyassureddistraction.paketliga
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.utils.env
-import com.kotlindiscord.kord.extensions.utils.envOrNull
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
+import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.utils.env
+import dev.kordex.core.utils.envOrNull
 import java.sql.Connection
 import java.sql.DriverManager
 import java.util.*

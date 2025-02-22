@@ -1,14 +1,13 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.int
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
-import com.kotlindiscord.kord.extensions.types.respondEphemeral
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.int
+import dev.kordex.core.commands.converters.impl.optionalString
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 
@@ -21,8 +20,8 @@ class UpdateGameExtension(
 
     override suspend fun setup() {
         publicSlashCommand(::UpdateGameArgs) {
-            name = "pklupdate"
-            description = "Edit the details of an active game"
+            name = "pklupdate".toKey()
+            description = "Edit the details of an active game".toKey()
 
             guild(serverId)
 
@@ -33,7 +32,10 @@ class UpdateGameExtension(
                 val guessesClose = arguments.guessesclose
 
                 if (startWindow == null && closeWindow == null && guessesClose == null) {
-                    respondEphemeral { content = "<:thonk:344120216227414018> You didn't change anything" }
+                    respond {
+                        ephemeral
+                        content = "<:thonk:344120216227414018> You didn't change anything"
+                    }
                 } else {
                     val updateWindow = gameTimeParserService.parseGameUpdateTime(startWindow, closeWindow, guessesClose)
                     val (responseString, userIds) =
@@ -65,23 +67,23 @@ class UpdateGameExtension(
 
     inner class UpdateGameArgs : Arguments() {
         val gameid by int {
-            name = "gameid"
-            description = "The game ID announced by Dr Pakidge when the game was created"
+            name = "gameid".toKey()
+            description = "The game ID announced by Dr Pakidge when the game was created".toKey()
         }
 
         val startwindow by optionalString {
-            name = "delivery-from"
-            description = "New start of delivery window"
+            name = "delivery-from".toKey()
+            description = "New start of delivery window".toKey()
         }
 
         val closewindow by optionalString {
-            name = "delivery-by"
-            description = "New end of delivery window"
+            name = "delivery-by".toKey()
+            description = "New end of delivery window".toKey()
         }
 
         val guessesclose by optionalString {
-            name = "guesses-until"
-            description = "New deadline for guesses"
+            name = "guesses-until".toKey()
+            description = "New deadline for guesses".toKey()
         }
     }
 }
