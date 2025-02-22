@@ -1,14 +1,14 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.int
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.MemberBehavior
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.int
+import dev.kordex.core.commands.converters.impl.string
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import java.util.logging.Logger
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameEndService
 import uk.co.mutuallyassureddistraction.paketliga.matching.LeaderboardService
@@ -27,8 +27,8 @@ class EndGameExtension(
 
     override suspend fun setup() {
         publicSlashCommand(::EndGameArgs) {
-            name = "pklend"
-            description = "Finalise an open game"
+            name = "pklend".toKey()
+            description = "Finalise an open game".toKey()
 
             guild(serverId)
 
@@ -118,13 +118,13 @@ class EndGameExtension(
 
     inner class EndGameArgs : Arguments() {
         val gameid by int {
-            name = "gameid"
-            description = "The game ID announced by Dr Pakidge when the game was created"
+            name = "gameid".toKey()
+            description = "The game ID announced by Dr Pakidge when the game was created".toKey()
         }
 
         val deliverytime by string {
-            name = "deliverytime"
-            description = "What time the package arrived"
+            name = "deliverytime".toKey()
+            description = "What time the package arrived".toKey()
         }
     }
 }

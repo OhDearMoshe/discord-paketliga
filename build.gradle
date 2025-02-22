@@ -7,10 +7,12 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '2.1.0-RC2'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
     id "org.flywaydb.flyway" version "10.0.0"
     id "com.ncorti.ktfmt.gradle" version "0.21.0"
+    id("dev.kordex.gradle.kordex") version "1.6.2"
 }
+
 group = 'uk.co.mutuallyassureddistraction'
 version = '1.0-SNAPSHOT'
 
@@ -18,7 +20,6 @@ version = '1.0-SNAPSHOT'
 def koin_version = '3.3.3'
 def jdbi_version = '3.37.1'
 def kotlin_reflect_version = '1.8.20'
-def kord_version = '1.5.6'
 def hawking_version = '0.1.7'
 def postgres_kt_version = '0.9.3'
 
@@ -26,16 +27,10 @@ def postgres_kt_version = '0.9.3'
 def test_container_version = '1.17.6'
 def mockk_version = '1.13.16'
 
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
 
     implementation "io.insert-koin:koin-core:$koin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect_version"
-    implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kord_version"
     implementation "com.zoho:hawking:$hawking_version"
     implementation "io.github.jan-tennert.supabase:postgrest-kt:$postgres_kt_version"
 

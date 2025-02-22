@@ -1,14 +1,13 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalUser
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respondEphemeral
-import com.kotlindiscord.kord.extensions.types.respondingPaginator
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.optionalUser
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.matching.LeaderboardService
 
 class LeaderboardExtension(private val leaderboardService: LeaderboardService, private val serverId: Snowflake) :
@@ -17,8 +16,8 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
 
     override suspend fun setup() {
         publicSlashCommand(::LeaderboardArgs) {
-            name = "pklrank"
-            description = "View the PaketLiga Leaderboard"
+            name = "pklrank".toKey()
+            description = "View the PaketLiga Leaderboard".toKey()
 
             guild(serverId)
 
@@ -28,7 +27,10 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
                 val leaderboard = leaderboardService.getLeaderboard(userId, null)
 
                 if (leaderboard.isEmpty()) {
-                    respondEphemeral { content = "No data found" }
+                    respond {
+                        ephemeral
+                        content = "No data found"
+                    }
                 } else {
                     val kord = this@LeaderboardExtension.kord
 
@@ -44,7 +46,7 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
                                     "# " +
                                         counter +
                                         " : " +
-                                        memberBehavior.asMember().displayName +
+                                        memberBehavior.asMember().effectiveName +
                                         " | " +
                                         it.totalPoint +
                                         " points"
@@ -71,8 +73,8 @@ class LeaderboardExtension(private val leaderboardService: LeaderboardService, p
 
     inner class LeaderboardArgs : Arguments() {
         val userId by optionalUser {
-            name = "username"
-            description = "Filter by username"
+            name = "username".toKey()
+            description = "Filter by username".toKey()
         }
     }
 }
