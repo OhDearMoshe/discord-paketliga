@@ -125,4 +125,11 @@ fun findGuessGameName(response: FindGamesResponse, user: String): String {
 }
 
 val startGameStrings =
-    listOf(":postal_horn: NEITHER RAIN NOR SNOW NOR GLOM OF NIT CAN STAY THESE MESENGERS ABOT THEIR DUTY :postal_horn:")
+    listOf(
+        ":postal_horn: NEITHER RAIN NOR SNOW NOR GLOM OF NIT CAN STAY THESE MESENGERS ABOT THEIR DUTY :postal_horn:",
+        "We do not talk about collusion",
+        "We do NOT talk about collusion",
+        "Guess who's back you fucks",
+        "Rumours of my demise have been greatly exaggerated",
+        "Mike restarted his Plex server, I'm just a victim",
+    )

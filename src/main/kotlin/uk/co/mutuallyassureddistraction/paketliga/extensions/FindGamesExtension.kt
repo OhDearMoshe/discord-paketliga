@@ -30,7 +30,6 @@ class FindGamesExtension(
             description = "Get a list of active games".toKey()
 
             guild(serverId)
-
             action {
                 if (this.channel.id != DELIVERY_CHANNEL_ID) {
                     return@action
