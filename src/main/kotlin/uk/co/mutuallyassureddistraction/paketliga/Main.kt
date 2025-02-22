@@ -2,7 +2,10 @@ package uk.co.mutuallyassureddistraction.paketliga
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.utils.env
+import com.kotlindiscord.kord.extensions.utils.envOrNull
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.event.gateway.ReadyEvent
+import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import java.sql.Connection
 import java.sql.DriverManager
 import java.util.*
@@ -36,6 +39,7 @@ val SERVER_ID =
     Snowflake(
         env("SERVER_ID").toLong() // Get the test server ID from the env vars or a .env file
     )
+val DELIVERY_CHANNEL_ID = envOrNull("DELIVERY_CHANNEL")?.let { Snowflake(it) }
 
 private val BOT_TOKEN = env("BOT_TOKEN") // Get the bot' token from the env vars or a .env file
 
@@ -113,11 +117,25 @@ suspend fun main(args: Array<String>) {
                     add { creditsExtension }
                 }
             }
+
+        configureBotBoot(bot)
         logger.info("Starting Bot. Beep boop")
         bot.start()
     }
 
     // TODO logging when DB is timeout
+}
+
+private fun configureBotBoot(bot: ExtensibleBot) {
+    bot.on<ReadyEvent> {
+        this.kord.editPresence { playing("Out for delivery") }
+
+        DELIVERY_CHANNEL_ID?.let {
+            val message = UserMessageCreateBuilder()
+            message.content = "Out for delivery"
+            this.kord.rest.channel.createMessage(DELIVERY_CHANNEL_ID, message.toRequest())
+        }
+    }
 }
 
 private fun getJdbi(connection: Connection): Jdbi {
