@@ -1,17 +1,17 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 
 class RulesExtension(private val serverId: Snowflake) : Extension() {
     override val name = "rulesExtension"
 
     override suspend fun setup() {
         publicSlashCommand {
-            name = "pklrules"
-            description = "Explain the rules"
+            name = "pklrules".toKey()
+            description = "Explain the rules".toKey()
             guild(serverId)
 
             action {

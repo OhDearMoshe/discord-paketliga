@@ -1,15 +1,13 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalInt
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
-import com.kotlindiscord.kord.extensions.types.respondEphemeral
-import com.kotlindiscord.kord.extensions.types.respondingPaginator
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.optionalInt
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGuessesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessFinderService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
@@ -20,8 +18,8 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
     override suspend fun setup() {
         publicSlashCommand(::FindGuessArgs) {
-            name = "pklfindguess"
-            description = "Search for guesses"
+            name = "pklfindguess".toKey()
+            description = "Search for guesses".toKey()
 
             guild(serverId)
             action {
@@ -29,7 +27,10 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                 val guessId = arguments.guessid
 
                 if (gameId == null && guessId == null) {
-                    respondEphemeral { content = "You didn't enter any search terms" }
+                    respond {
+                        ephemeral
+                        content = "You didn't enter any search terms"
+                    }
                 } else {
                     val responseList: List<FindGuessesResponse> = guessFinderService.findGuesses(gameId, guessId)
 
@@ -46,7 +47,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
                                     val field = EmbedBuilder.Field()
                                     field.name =
-                                        "Guess #${guessId.toString()}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().displayName}"
+                                        "Guess #${guessId.toString()}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().effectiveName}"
                                     guessFields.add(field)
                                 }
 
@@ -74,13 +75,13 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
     inner class FindGuessArgs : Arguments() {
         val guessid by optionalInt {
-            name = "guessid"
-            description = "The guess ID provided by Dr Pakidge when you submitted your guess"
+            name = "guessid".toKey()
+            description = "The guess ID provided by Dr Pakidge when you submitted your guess".toKey()
         }
 
         val gameid by optionalInt {
-            name = "gameid"
-            description = "The game ID announced by Dr Pakidge when the game was created"
+            name = "gameid".toKey()
+            description = "The game ID announced by Dr Pakidge when the game was created".toKey()
         }
     }
 }

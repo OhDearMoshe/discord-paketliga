@@ -1,12 +1,12 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.optionalString
+import dev.kordex.core.commands.converters.impl.string
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 
@@ -19,8 +19,8 @@ class CreateGameExtension(
 
     override suspend fun setup() {
         publicSlashCommand(::PaketGameArgs) { // Public slash commands have public responses
-            name = "pkl"
-            description = "Start a game"
+            name = "pkl".toKey()
+            description = "Start a game".toKey()
 
             // Use guild commands for testing, global ones take up to an hour to update
             guild(serverId)
@@ -54,23 +54,23 @@ class CreateGameExtension(
      */
     inner class PaketGameArgs : Arguments() {
         val startwindow by string {
-            name = "delivery-from"
-            description = "Start of delivery window"
+            name = "delivery-from".toKey()
+            description = "Start of delivery window".toKey()
         }
 
         val closewindow by string {
-            name = "delivery-by"
-            description = "End of delivery window"
+            name = "delivery-by".toKey()
+            description = "End of delivery window".toKey()
         }
 
         val guessesclose by optionalString {
-            name = "guesses-until"
-            description = "(Optional) Deadline for guesses"
+            name = "guesses-until".toKey()
+            description = "(Optional) Deadline for guesses".toKey()
         }
 
         val gamename by optionalString {
-            name = "description"
-            description = "(Optional) A short description of the game"
+            name = "description".toKey()
+            description = "(Optional) A short description of the game".toKey()
         }
     }
 }

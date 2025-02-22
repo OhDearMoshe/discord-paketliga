@@ -1,12 +1,12 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.int
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Snowflake
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.int
+import dev.kordex.core.commands.converters.impl.optionalString
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.matching.VoidGameService
 
 class VoidGameExtension(private val voidGameService: VoidGameService, private val serverId: Snowflake) : Extension() {
@@ -14,8 +14,8 @@ class VoidGameExtension(private val voidGameService: VoidGameService, private va
 
     override suspend fun setup() {
         publicSlashCommand(::VoidGameArguments) {
-            name = "pklvoid"
-            description = "Void an active game"
+            name = "pklvoid".toKey()
+            description = "Void an active game".toKey()
 
             guild(serverId)
 
@@ -29,12 +29,12 @@ class VoidGameExtension(private val voidGameService: VoidGameService, private va
 
     inner class VoidGameArguments : Arguments() {
         val gameid by int {
-            name = "gameid"
-            description = "The game ID announced by Dr Pakidge when the game was created"
+            name = "gameid".toKey()
+            description = "The game ID announced by Dr Pakidge when the game was created".toKey()
         }
         val reason by optionalString {
-            name = "reason"
-            description = "The reason you want to void this game"
+            name = "reason".toKey()
+            description = "The reason you want to void this game".toKey()
         }
     }
 }
