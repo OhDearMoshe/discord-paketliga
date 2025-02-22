@@ -25,8 +25,12 @@ val CreditsExtensionMessage =
 :postal_horn: Discord guessing game. Credits :postal_horn:
                         
 * For Shreddz, who was a better postmaster general than this bot ever could be
-* For Z, who did most of the work really
 * For Mike, who bitched this bot into existence
+* For Z, who did most of the work really
+* And for DavidTheWin and Jin who also did a lot of the work
+* For Moshe, who did contribute at some point he swears
+* For Kjmci for product consultation
+* For Wraith, TooDeep and DangerZone for excellent QA
 """
         .trimIndent()
 
