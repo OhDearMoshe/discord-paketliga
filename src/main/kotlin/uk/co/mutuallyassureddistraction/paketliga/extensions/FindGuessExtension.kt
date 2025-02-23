@@ -46,27 +46,30 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                     } else {
 
                         val paginator = respondingPaginator {
-                            responseList.sortedByDescending { it.guessTime }.chunked(5).map { response ->
-                                val guessFields = ArrayList<EmbedBuilder.Field>()
-                                response.forEach {
-                                    val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
+                            responseList
+                                .sortedByDescending { it.guessTime }
+                                .chunked(5)
+                                .map { response ->
+                                    val guessFields = ArrayList<EmbedBuilder.Field>()
+                                    response.forEach {
+                                        val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
 
-                                    val field = EmbedBuilder.Field()
-                                    field.name =
-                                        "Guess #${it.guessId}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().effectiveName}"
-                                    guessFields.add(field)
-                                }
+                                        val field = EmbedBuilder.Field()
+                                        field.name =
+                                            "Guess #${it.guessId}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().effectiveName}"
+                                        guessFields.add(field)
+                                    }
 
-                                page {
-                                    title =
-                                        if (arguments.gameid != null) {
-                                            "Active guesses for game ID #$gameId: "
-                                        } else {
-                                            "PKL guess for guess ID #" + arguments.guessid + ":"
-                                        }
-                                    fields = guessFields
+                                    page {
+                                        title =
+                                            if (arguments.gameid != null) {
+                                                "Active guesses for game ID #$gameId: "
+                                            } else {
+                                                "PKL guess for guess ID #" + arguments.guessid + ":"
+                                            }
+                                        fields = guessFields
+                                    }
                                 }
-                            }
 
                             // This will make the pagination function (next prev etc) to disappear after timeout time
                             timeoutSeconds = 15L
