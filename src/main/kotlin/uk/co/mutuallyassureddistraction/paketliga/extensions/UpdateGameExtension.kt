@@ -48,6 +48,7 @@ class UpdateGameExtension(
                             user.asUser().id.value.toString(),
                             member?.asMember(),
                             updateWindow,
+                            arguments.carrier,
                             user.asUser().username,
                         )
 
@@ -88,6 +89,11 @@ class UpdateGameExtension(
         val guessesclose by optionalString {
             name = "guesses-until".toKey()
             description = "New deadline for guesses".toKey()
+        }
+
+        val carrier by optionalString {
+            name = "description".toKey()
+            description = "New carrier for your parcel".toKey()
         }
     }
 }

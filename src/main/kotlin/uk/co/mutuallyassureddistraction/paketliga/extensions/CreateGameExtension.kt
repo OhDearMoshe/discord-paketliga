@@ -41,6 +41,7 @@ class CreateGameExtension(
                     gameUpsertService.createGame(
                         arguments.gamename,
                         guessWindow,
+                        arguments.carrier,
                         user.asUser().id.value.toString(),
                         member?.asMember(),
                         user.asUser().username,
@@ -76,6 +77,11 @@ class CreateGameExtension(
         val gamename by optionalString {
             name = "description".toKey()
             description = "(Optional) A short description of the game".toKey()
+        }
+
+        val carrier by optionalString {
+            name = "description".toKey()
+            description = "(Optional) Who is delivering your parcel?".toKey()
         }
     }
 }

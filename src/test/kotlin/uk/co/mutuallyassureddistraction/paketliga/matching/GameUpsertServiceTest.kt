@@ -9,6 +9,7 @@ import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.DEFAULT_CARRIER
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
@@ -40,9 +41,9 @@ class GameUpsertServiceTest {
         val guessFinderService = mockk<GuessFinderService>()
         every { gameDao.createGame(any()) } returns getGameStub()
         every { gameDao.findActiveGameById(1) } returns activeGame
-        every { gameDao.updateGameTimes(any(), any(), any(), any()) } returns getUpdatedGameStub()
+        every { gameDao.updateGameTimes(any(), any(), any(), any(), any()) } returns getUpdatedGameStub()
         every { gameValidator.validateGameCreate(any()) } returns null
-        every { gameValidator.validateGameUpdate(any(), any(), any()) } returns null
+        every { gameValidator.validateGameUpdate(any(), any(), any(), any()) } returns null
 
         val guessesResponse =
             arrayListOf(
@@ -63,7 +64,7 @@ class GameUpsertServiceTest {
     fun returnsErrorMessageWhenCreatingGame() {
         val expectedString = "A failure"
         every { gameValidator.validateGameCreate(any()) } returns expectedString
-        val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
+        val returnedString = target.createGame(null, guessWindow, DEFAULT_CARRIER, "1234", null, "ZLX")
         assertEquals(expectedString, returnedString)
     }
 
@@ -74,7 +75,7 @@ class GameUpsertServiceTest {
         every { member.mention } returns "Z"
         val gameName = "Random Amazon package"
 
-        val returnedString = target.createGame(gameName, guessWindow, "1234", member, "ZLX")
+        val returnedString = target.createGame(gameName, guessWindow, DEFAULT_CARRIER, "1234", member, "ZLX")
         val expectedString =
             ":postal_horn: Random Amazon package (#1) | Z's package is arriving between" +
                 " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
@@ -86,10 +87,24 @@ class GameUpsertServiceTest {
     )
     @Test
     fun returnStringWithNullGameNameAndMember() {
-        val returnedString = target.createGame(null, guessWindow, "1234", null, "ZLX")
+        val returnedString = target.createGame(null, guessWindow, DEFAULT_CARRIER, "1234", null, "ZLX")
         val expectedString =
             ":postal_horn: Game (#1) | ZLX's package is arriving between " +
                 "Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+        assertEquals(expectedString, returnedString)
+    }
+
+    @DisplayName("createGame() will return string with carrier if there is one provided")
+    @Test
+    fun returnStringWithCarrier() {
+        val member = mockk<Member>()
+        every { member.mention } returns "Z"
+        val gameName = "Random Amazon package"
+
+        val returnedString = target.createGame(gameName, guessWindow, "Amazon", "1234", member, "ZLX")
+        val expectedString =
+            ":postal_horn: Random Amazon package (#1) | Z's Amazon package is arriving between" +
+                " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(expectedString, returnedString)
     }
 
@@ -100,8 +115,9 @@ class GameUpsertServiceTest {
         every { member.mention } returns "@OhDearMoshe"
 
         val expectedString = "A big failure"
-        every { gameValidator.validateGameUpdate(any(), any(), any()) } returns expectedString
-        val (updateString, _) = target.updateGame(1, "OhDear", member, updateGuessWindow, "OhDearMoshe")
+        every { gameValidator.validateGameUpdate(any(), any(), any(), any()) } returns expectedString
+        val (updateString, _) =
+            target.updateGame(1, "OhDear", member, updateGuessWindow, DEFAULT_CARRIER, "OhDearMoshe")
 
         assertEquals(updateString[0], expectedString)
     }
@@ -111,10 +127,25 @@ class GameUpsertServiceTest {
     fun returnStringWithUpdatedGameInfo() {
         val member = mockk<Member>()
         every { member.mention } returns "@OhDearMoshe"
-        val (updateString, userIds) = target.updateGame(1, "OhDear", member, updateGuessWindow, "OhDearMoshe")
+        val (updateString, userIds) =
+            target.updateGame(1, "OhDear", member, updateGuessWindow, DEFAULT_CARRIER, "OhDearMoshe")
 
         val expectedString =
             ":postal_horn: #1 has been updated | @OhDearMoshe's package is now arriving between" +
+                " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+        assertEquals(updateString[0], expectedString)
+        assertEquals(userIds[0], "Z")
+    }
+
+    @DisplayName("updateGame() will return updated game string with carrier if not null of default")
+    @Test
+    fun returnStringWithCarrierIfNotNull() {
+        val member = mockk<Member>()
+        every { member.mention } returns "@OhDearMoshe"
+        val (updateString, userIds) = target.updateGame(1, "OhDear", member, updateGuessWindow, "Amazon", "OhDearMoshe")
+
+        val expectedString =
+            ":postal_horn: #1 has been updated | @OhDearMoshe's Amazon package is now arriving between" +
                 " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(updateString[0], expectedString)
         assertEquals(userIds[0], "Z")
@@ -125,11 +156,25 @@ class GameUpsertServiceTest {
     fun returnStringWithUpdatedGameInfoIfMemberNull() {
         val member = mockk<Member>()
         every { member.mention } returns "@OhDearMoshe"
-        val (updateString, userIds) = target.updateGame(1, "OhDear", null, updateGuessWindow, "OhDearMoshe")
+        val (updateString, userIds) =
+            target.updateGame(1, "OhDear", null, updateGuessWindow, DEFAULT_CARRIER, "OhDearMoshe")
 
         val expectedString =
             ":postal_horn: #1 has been updated | OhDearMoshe's package is now arriving between " +
                 "Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+        assertEquals(updateString[0], expectedString)
+        assertEquals(userIds[0], "Z")
+    }
+
+    @DisplayName("updateGame() will return just the carrier if only the carrier has been updated ")
+    @Test
+    fun returnStringWithJustCarrier() {
+        val member = mockk<Member>()
+        every { member.mention } returns "@OhDearMoshe"
+        val (updateString, userIds) =
+            target.updateGame(1, "OhDear", member, UpdateGuessWindow(null, null, null), "Amazon", "OhDearMoshe")
+
+        val expectedString = ":postal_horn: #1 has been updated | @OhDearMoshe's package is now delivered by Amazon"
         assertEquals(updateString[0], expectedString)
         assertEquals(userIds[0], "Z")
     }

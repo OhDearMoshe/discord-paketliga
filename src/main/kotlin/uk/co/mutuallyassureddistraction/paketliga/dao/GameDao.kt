@@ -16,7 +16,8 @@ interface GameDao {
                deliveryTime,
                userId,
                gameActive,
-               gameVoided
+               gameVoided,
+               carrier
           )
           VALUES (
                :game.gameName,
@@ -26,7 +27,8 @@ interface GameDao {
                :game.deliveryTime,
                :game.userId,
                :game.gameActive,
-               :game.gameVoided
+               :game.gameVoided,
+               :game.carrier
           )
           RETURNING *
      """
@@ -39,7 +41,8 @@ interface GameDao {
           SET 
                windowStart = COALESCE(:windowStart, windowStart),
                windowClose = COALESCE(:windowClose, windowClose),
-               guessesClose = COALESCE(:guessesClose, windowClose)
+               guessesClose = COALESCE(:guessesClose, windowClose),
+               carrier = COALESCE(:carrier, carrier)
           WHERE gameId = :id
           RETURNING *
      """
@@ -49,6 +52,7 @@ interface GameDao {
         @Bind("windowStart") windowStart: ZonedDateTime?,
         @Bind("windowClose") windowClose: ZonedDateTime?,
         @Bind("guessesClose") guessesClose: ZonedDateTime?,
+        @Bind("carrier") carrier: String?,
     ): Game
 
     @SqlQuery(
