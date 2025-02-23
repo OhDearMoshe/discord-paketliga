@@ -47,7 +47,7 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
                         val paginator = respondingPaginator {
                             responseList
-                                .sortedByDescending { it.guessTime }
+                                .sortedBy { it.guessTime }
                                 .chunked(5)
                                 .map { response ->
                                     val guessFields = ArrayList<EmbedBuilder.Field>()
