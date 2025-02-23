@@ -2,6 +2,7 @@ package uk.co.mutuallyassureddistraction.paketliga
 
 import dev.kord.core.entity.Member
 import java.time.ZonedDateTime
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.DEFAULT_CARRIER
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
@@ -84,16 +85,36 @@ fun gameAnnouncementMessage(
     username: String,
     gameId: Int,
     guessWindow: GuessWindow,
-) =
-    ":postal_horn: ${gameNameStringMaker(gameName, gameId)} | ${member?.mention ?: username}'s package is arriving " +
+    carrier: String?,
+): String {
+    var userCarrier = ""
+    if (carrier != null && carrier != DEFAULT_CARRIER) {
+        userCarrier = "$carrier "
+    }
+    return ":postal_horn: ${gameNameStringMaker(gameName, gameId)} | ${member?.mention ?: username}'s ${userCarrier}package is arriving " +
         "between ${guessWindow.startAsHumanFriendlyString()} and " +
         "${guessWindow.endAsHumanFriendlyString()}. " +
         "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+}
 
-fun gameUpdateMessage(gameId: Int, guessWindow: GuessWindow, member: Member?, username: String) =
-    ":postal_horn: #$gameId has been updated | ${member?.mention ?: username}'s package is now arriving between " +
+fun gameUpdateMessage(
+    gameId: Int,
+    guessWindow: GuessWindow,
+    carrier: String?,
+    member: Member?,
+    username: String,
+): String {
+    var userCarrier = ""
+    if (carrier != null && carrier != DEFAULT_CARRIER) {
+        userCarrier = "$carrier "
+    }
+    return ":postal_horn: #$gameId has been updated | ${member?.mention ?: username}'s ${userCarrier}package is now arriving between " +
         "${guessWindow.startAsHumanFriendlyString()} and ${guessWindow.endAsHumanFriendlyString()}. " +
         "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"
+}
+
+fun gameUpdatedOnlyCarrier(gameId: Int, carrier: String, member: Member?, username: String) =
+    ":postal_horn: #$gameId has been updated | ${member?.mention ?: username}'s package is now delivered by $carrier"
 
 const val GameCreationErrorMessage = "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
 

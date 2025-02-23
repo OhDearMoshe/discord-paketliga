@@ -27,17 +27,21 @@ class GameValidator {
         }
     }
 
-    fun validateGameUpdate(game: Game?, userId: String, updateGuessWindow: UpdateGuessWindow): String? =
+    fun validateGameUpdate(
+        game: Game?,
+        userId: String,
+        updateGuessWindow: UpdateGuessWindow,
+        carrier: String?,
+    ): String? =
         when {
             game == null -> GameValidatorGameIsNullError
 
             game.userId != userId -> ChangingAnotherUsersGameError
 
-            !game.gameActive -> GameNotActiveError
+            !game.gameActive && !updateGuessWindow.isEmpty() -> GameNotActiveError
 
-            updateGuessWindow.startTime == null &&
-                updateGuessWindow.endTime == null &&
-                updateGuessWindow.guessDeadline == null -> UpdateDidNotChangeAnythingError
+            updateGuessWindow.isEmpty() && carrier == null -> UpdateDidNotChangeAnythingError
+            updateGuessWindow.isEmpty() && carrier != null -> null
 
             else -> validateGuessWindow(updatedGuessWindowToGuessWindow(updateGuessWindow, game))
         }

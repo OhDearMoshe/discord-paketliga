@@ -52,13 +52,20 @@ class GameDaoTest {
     @Test
     fun canSuccessfullyUpdateGameTimes() {
         val updatedGame: Game =
-            target.updateGameTimes(1, null, null, ZonedDateTime.parse("2023-04-07T13:00:00.000Z[Europe/London]"))
+            target.updateGameTimes(1, null, null, ZonedDateTime.parse("2023-04-07T13:00:00.000Z[Europe/London]"), null)
         // Guesses close should be updated..
         assertEquals(updatedGame.guessesClose, ZonedDateTime.parse("2023-04-07T13:00:00.000Z[Europe/London]"))
 
         // While others are not since it was null in the params
         assertEquals(createdGame.windowClose, updatedGame.windowClose)
         assertEquals(createdGame.windowStart, updatedGame.windowStart)
+    }
+
+    @DisplayName("updateGameTimes() will successfully update the carrier if not null")
+    @Test
+    fun canSuccessfullyUpdateCarrier() {
+        val updatedGame: Game = target.updateGameTimes(1, null, null, null, "Amazon")
+        assertEquals("Amazon", updatedGame.carrier)
     }
 
     @DisplayName("finishGame() will successfully update the game deliveryTime and gameActive to false")

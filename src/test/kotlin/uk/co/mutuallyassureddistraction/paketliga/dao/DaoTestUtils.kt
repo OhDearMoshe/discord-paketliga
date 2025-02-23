@@ -44,7 +44,8 @@ fun setUpDatabaseTables(jdbi: Jdbi) {
                       userId VARCHAR(50) not null,
                       gameActive BOOLEAN not null,
                       gameVoided BOOLEAN not null DEFAULT FALSE,
-                      voidedReason VARCHAR(50)
+                      voidedReason VARCHAR(50),
+                      carrier VARCHAR(50) not null DEFAULT 'N/A'
             )
         """
                 .trimIndent()
