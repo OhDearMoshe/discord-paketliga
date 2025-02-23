@@ -80,7 +80,7 @@ class CreateGameExtension(
         }
 
         val carrier by optionalString {
-            name = "description".toKey()
+            name = "carrier".toKey()
             description = "(Optional) Who is delivering your parcel?".toKey()
         }
     }
