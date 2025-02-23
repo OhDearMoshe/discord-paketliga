@@ -35,6 +35,23 @@ class GuessUpsertServiceTest {
         assertEquals(expectedString, response)
     }
 
+    @DisplayName("guessGame() will create a guess successfully with a star if its 11:11")
+    @Test
+    fun returnCreateGuessWithSuccessTrueMakeAWish() {
+        val wishingTime = GuessTime(ZonedDateTime.parse("2024-10-15T11:11:00Z"))
+        val guessDao = mockk<GuessDao>()
+        every { guessDao.createGuess(any()) } returns Unit
+        val gameDao = mockk<GameDao>()
+        val guessValidator = mockk<GuessValidator>()
+        every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
+        every { gameDao.findActiveGameById(any()) } returns getGameStub()
+        target = GuessUpsertService(guessDao, gameDao, guessValidator)
+
+        val response = target.guessGame(1, wishingTime, "Z", mention)
+        val expectedString = ":stars: @OhDearMoshe has guessed Tue 15 Oct 11:11 for game ID #1"
+        assertEquals(expectedString, response)
+    }
+
     @DisplayName("guessGame() will fail to create a guess because failed validation")
     @Test
     fun returnCreateGuessWithFailedMessageDueToFailedValidation() {

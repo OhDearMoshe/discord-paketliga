@@ -102,8 +102,13 @@ const val GameCreationErrorMessage = "<:pressf:692833208382914571> You done goof
 private fun gameNameStringMaker(gameName: String?, gameId: Int): String = "$gameName (#$gameId)"
 
 /** Guess Upsert Service */
-fun guessCreationMessage(userMention: String, guessTime: GuessTime, gameId: Int) =
-    "<:sickos:918170456190775348> $userMention has guessed ${guessTime.toHumanString()} for game ID #$gameId"
+fun guessCreationMessage(userMention: String, guessTime: GuessTime, gameId: Int): String {
+    var emoji = "<:sickos:918170456190775348>"
+    if (guessTime.isMakingAWish()) {
+        emoji = ":stars:"
+    }
+    return "$emoji $userMention has guessed ${guessTime.toHumanString()} for game ID #$gameId"
+}
 
 const val GuessCreationErrorMessage = "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
 
