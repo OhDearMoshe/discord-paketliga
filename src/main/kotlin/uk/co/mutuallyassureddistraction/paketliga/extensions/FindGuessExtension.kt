@@ -44,15 +44,16 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
                     if (responseList.isEmpty()) {
                         respond { content = "Nothing found for those details" }
                     } else {
+
                         val paginator = respondingPaginator {
-                            responseList.chunked(5).map { response ->
+                            responseList.sortedByDescending { it.guessTime }.chunked(5).map { response ->
                                 val guessFields = ArrayList<EmbedBuilder.Field>()
                                 response.forEach {
                                     val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
 
                                     val field = EmbedBuilder.Field()
                                     field.name =
-                                        "Guess #${guessId.toString()}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().effectiveName}"
+                                        "Guess #${it.guessId}: ${it.guessTime.toUserFriendlyString()} by ${memberBehavior.asMember().effectiveName}"
                                     guessFields.add(field)
                                 }
 
