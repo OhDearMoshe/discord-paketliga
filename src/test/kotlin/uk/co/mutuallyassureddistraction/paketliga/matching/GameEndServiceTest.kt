@@ -116,7 +116,10 @@ class GameEndServiceTest {
     fun returnDeliveryTimeIsInvalidErrorMessageIfItsNotInThePast() {
         val deliveryTime = DeliveryTime(ZonedDateTime.now().plusDays(1L))
         val returned = target.endGame(0, deliveryTime)
-        assertEquals(returned.first, "Delivery time interpreted as being invalid: ${deliveryTime.deliveryTime.toUserFriendlyString()}, Try adding a qualifier like “11:11 **this morning**” or “5:45pm **today**” to help Dr Pakidge understand it more clearly.")
+        assertEquals(
+            returned.first,
+            "Delivery time interpreted as being invalid: ${deliveryTime.deliveryTime.toUserFriendlyString()}, Try adding a qualifier like “11:11 **this morning**” or “5:45pm **today**” to help Dr Pakidge understand it more clearly.",
+        )
         assertNull(returned.second)
     }
 

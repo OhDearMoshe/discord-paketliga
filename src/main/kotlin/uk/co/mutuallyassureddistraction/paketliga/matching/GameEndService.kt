@@ -1,6 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import java.sql.SQLException
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.slf4j.LoggerFactory
@@ -12,7 +13,6 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResult
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTime
-import java.time.LocalDateTime
 
 class GameEndService(
     private val guessDao: GuessDao,
@@ -20,13 +20,12 @@ class GameEndService(
     private val gameResultResolver: GameResultResolver,
     private val pointUpdaterService: PointUpdaterService,
 ) {
-
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
     fun endGame(gameId: Int, deliveryTime: DeliveryTime): Pair<String?, GameResult?> {
         var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair(GameEndServiceGameIsNullError, null)
         // 1. we check if the time is in the past, otherwise throw an error.
-        if(!isDeliveryTimeInThePast(deliveryTime)) {
+        if (!isDeliveryTimeInThePast(deliveryTime)) {
             return Pair(deliveryTimeInThePastErrorMessage(deliveryTime.deliveryTime), null)
         }
 
