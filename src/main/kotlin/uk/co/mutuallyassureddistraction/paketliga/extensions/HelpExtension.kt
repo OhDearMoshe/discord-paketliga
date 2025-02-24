@@ -4,7 +4,6 @@ import dev.kord.common.entity.Snowflake
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
-import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 
 class HelpExtension(private val serverId: Snowflake) : Extension() {
     override val name = "helpExtension"
@@ -16,9 +15,6 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
             guild(serverId)
 
             action {
-                if (this.channel.id != DELIVERY_CHANNEL_ID) {
-                    return@action
-                }
                 respond {
                     content =
                         """

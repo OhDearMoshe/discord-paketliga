@@ -10,7 +10,6 @@ import dev.kordex.core.commands.converters.impl.optionalUser
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
-import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 import uk.co.mutuallyassureddistraction.paketliga.findGuessGameName
 import uk.co.mutuallyassureddistraction.paketliga.findGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGamesResponse
@@ -31,9 +30,6 @@ class FindGamesExtension(
 
             guild(serverId)
             action {
-                if (this.channel.id != DELIVERY_CHANNEL_ID) {
-                    return@action
-                }
 
                 // I want to move this properly to a scheduler but as an interim call
                 // here to stop stale games clogging up the find games

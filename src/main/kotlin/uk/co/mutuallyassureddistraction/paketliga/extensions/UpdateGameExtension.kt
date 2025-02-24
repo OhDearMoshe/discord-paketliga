@@ -8,7 +8,6 @@ import dev.kordex.core.commands.converters.impl.optionalString
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
-import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 
@@ -27,9 +26,6 @@ class UpdateGameExtension(
             guild(serverId)
 
             action {
-                if (this.channel.id != DELIVERY_CHANNEL_ID) {
-                    return@action
-                }
                 val gameId = arguments.gameid
                 val startWindow = arguments.startwindow
                 val closeWindow = arguments.closewindow

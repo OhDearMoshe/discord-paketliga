@@ -8,7 +8,6 @@ import dev.kordex.core.commands.converters.impl.optionalInt
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
-import uk.co.mutuallyassureddistraction.paketliga.DELIVERY_CHANNEL_ID
 import uk.co.mutuallyassureddistraction.paketliga.matching.FindGuessesResponse
 import uk.co.mutuallyassureddistraction.paketliga.matching.GuessFinderService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.toUserFriendlyString
@@ -24,10 +23,6 @@ class FindGuessExtension(private val guessFinderService: GuessFinderService, pri
 
             guild(serverId)
             action {
-                if (this.channel.id != DELIVERY_CHANNEL_ID) {
-                    return@action
-                }
-
                 val gameId = arguments.gameid
                 val guessId = arguments.guessid
 
