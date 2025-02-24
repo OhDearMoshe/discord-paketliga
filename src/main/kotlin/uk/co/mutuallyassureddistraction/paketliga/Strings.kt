@@ -72,6 +72,9 @@ const val DeliveryTimeOutsideWindowVoidReason = "Delivery time is outside of del
 const val DeliveryTimeOutsideWindowGameVoidMessage =
     "Package was delivered outside of the window, we're all losers this time"
 
+fun deliveryTimeInThePastErrorMessage(zonedDeliveryDateTime: ZonedDateTime) =
+    "Delivery time interpreted as being invalid: ${zonedDeliveryDateTime.toUserFriendlyString()}, Try adding a qualifier like “11:11 **this morning**” or “5:45pm **today**” to help Dr Pakidge understand it more clearly."
+
 const val GameEndServiceGenericErrorMessage =
     "Something went wrong. Check your inputs and try again, or just shout at @OhDearMoshe"
 
