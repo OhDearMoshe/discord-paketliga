@@ -12,6 +12,7 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResult
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTime
+import java.time.LocalDateTime
 
 class GameEndService(
     private val guessDao: GuessDao,
@@ -24,8 +25,12 @@ class GameEndService(
 
     fun endGame(gameId: Int, deliveryTime: DeliveryTime): Pair<String?, GameResult?> {
         var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair(GameEndServiceGameIsNullError, null)
+        // 1. we check if the time is in the past, otherwise throw an error.
+        if(!isDeliveryTimeInThePast(deliveryTime)) {
+            return Pair(deliveryTimeInThePastErrorMessage(deliveryTime.deliveryTime), null)
+        }
 
-        // 1. we finish the game
+        // 2. we finish the game
         try {
             if (isGameVoid(searchedGame, deliveryTime)) {
                 // Void the game
@@ -37,14 +42,17 @@ class GameEndService(
             return handleExceptions(e, deliveryTime.deliveryTime, gameId)
         }
 
-        // 2. we get the guesses and find the winning guess(es)
+        // 3. we get the guesses and find the winning guess(es)
         val guesses = guessDao.findGuessesByGameId(gameId)
         val result = gameResultResolver.findWinners(searchedGame, guesses)
 
-        // 3. We apply some tasty tasty points
+        // 4. We apply some tasty tasty points
         pointUpdaterService.applyPoints(result)
         return Pair(null, result)
     }
+
+    private fun isDeliveryTimeInThePast(deliveryTime: DeliveryTime): Boolean =
+        deliveryTime.deliveryTime.toLocalDateTime().isBefore(LocalDateTime.now())
 
     private fun isGameVoid(game: Game, deliveryTime: DeliveryTime): Boolean =
         deliveryTime.deliveryTime < game.guessesClose ||
