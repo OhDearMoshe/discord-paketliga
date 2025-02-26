@@ -10,6 +10,7 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
 import uk.co.mutuallyassureddistraction.paketliga.gameNotValidOrActiveErrorMessage
 import uk.co.mutuallyassureddistraction.paketliga.guessCreationMessage
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessNudger
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
 
@@ -17,6 +18,7 @@ class GuessUpsertService(
     private val guessDao: GuessDao,
     private val gameDao: GameDao,
     private val guessValidator: GuessValidator,
+    private val guessNudger: GuessNudger,
 ) {
 
     private val logger = LoggerFactory.getLogger(GuessUpsertService::class.java)
@@ -25,14 +27,15 @@ class GuessUpsertService(
 
         try {
             val searchedGame = gameDao.findActiveGameById(gameId)
-            val errorMessage = guessValidator.validateGuess(searchedGame, gameId, userId, guessTime)
+            val finalisedGuessTime = guessNudger.nudgeGuessToDeliveryDay(searchedGame, guessTime)
+            val errorMessage = guessValidator.validateGuess(searchedGame, gameId, userId, finalisedGuessTime)
             if (errorMessage != null) {
                 return errorMessage
             }
             guessDao.createGuess(
-                Guess(guessId = null, gameId = gameId, guessTime = guessTime.guessTime, userId = userId)
+                Guess(guessId = null, gameId = gameId, guessTime = finalisedGuessTime.guessTime, userId = userId)
             )
-            return guessCreationMessage(userMention, guessTime, gameId)
+            return guessCreationMessage(userMention, finalisedGuessTime, gameId)
         } catch (e: Exception) {
             var errorString = GuessCreationErrorMessage
             when (e) {
