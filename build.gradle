@@ -20,7 +20,7 @@ version = '1.0-SNAPSHOT'
 def koin_version = '3.3.3'
 def jdbi_version = '3.37.1'
 def kotlin_reflect_version = '1.8.20'
-def hawking_version = '0.1.7'
+def hawking_version = '0.1.9'
 def postgres_kt_version = '0.9.3'
 
 // TEST
