@@ -23,10 +23,7 @@ import uk.co.mutuallyassureddistraction.paketliga.extensions.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterService
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.DeliveryTimeParser
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTimeParserService
-import uk.co.mutuallyassureddistraction.paketliga.matching.time.TimeParser
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
 
@@ -69,7 +66,7 @@ suspend fun main(args: Array<String>) {
         val deliveryTimeParser = DeliveryTimeParser(TimeParser())
 
         val gameFinderService = GameFinderService(gameDao)
-        val guessUpsertService = GuessUpsertService(guessDao, gameDao, guessValidator)
+        val guessUpsertService = GuessUpsertService(guessDao, gameDao, guessValidator, GuessNudger())
         val guessFinderService = GuessFinderService(guessDao)
         val gameUpsertService = GameUpsertService(gameDao, guessFinderService, gameValidator)
         val gameResultResolver = GameResultResolver()
