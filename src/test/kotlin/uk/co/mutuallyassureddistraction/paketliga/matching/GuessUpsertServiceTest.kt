@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
+import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessNudger
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
 
@@ -26,9 +27,13 @@ class GuessUpsertServiceTest {
         every { guessDao.createGuess(any()) } returns Unit
         val gameDao = mockk<GameDao>()
         val guessValidator = mockk<GuessValidator>()
+        val guessNudger = mockk<GuessNudger>()
+
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
         every { gameDao.findActiveGameById(any()) } returns getGameStub()
-        target = GuessUpsertService(guessDao, gameDao, guessValidator)
+        every { guessNudger.nudgeGuessToDeliveryDay(any(), any()) }.returns(guessTime)
+
+        target = GuessUpsertService(guessDao, gameDao, guessValidator, guessNudger)
 
         val response = target.guessGame(1, guessTime, "Z", mention)
         val expectedString = "<:sickos:918170456190775348> @OhDearMoshe has guessed Tue 15 Oct 19:00 for game ID #1"
@@ -43,9 +48,13 @@ class GuessUpsertServiceTest {
         every { guessDao.createGuess(any()) } returns Unit
         val gameDao = mockk<GameDao>()
         val guessValidator = mockk<GuessValidator>()
+        val guessNudger = mockk<GuessNudger>()
+
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
         every { gameDao.findActiveGameById(any()) } returns getGameStub()
-        target = GuessUpsertService(guessDao, gameDao, guessValidator)
+        every { guessNudger.nudgeGuessToDeliveryDay(any(), any()) }.returns(wishingTime)
+
+        target = GuessUpsertService(guessDao, gameDao, guessValidator, guessNudger)
 
         val response = target.guessGame(1, wishingTime, "Z", mention)
         val expectedString = ":stars: @OhDearMoshe has guessed Tue 15 Oct 11:11 for game ID #1"
@@ -63,7 +72,10 @@ class GuessUpsertServiceTest {
         every { gameDao.findActiveGameById(any()) } returns getGameStub()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns "Error message"
-        target = GuessUpsertService(guessDao, gameDao, guessValidator)
+        val guessNudger = mockk<GuessNudger>()
+        every { guessNudger.nudgeGuessToDeliveryDay(any(), any()) }.returns(guessTime)
+
+        target = GuessUpsertService(guessDao, gameDao, guessValidator, guessNudger)
 
         val response = target.guessGame(4, guessTime, "Z", mention)
         val expectedString = "Error message"
@@ -81,7 +93,9 @@ class GuessUpsertServiceTest {
         every { gameDao.findActiveGameById(any()) } returns getGameStub()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
-        target = GuessUpsertService(guessDao, gameDao, guessValidator)
+        val guessNudger = mockk<GuessNudger>()
+        target = GuessUpsertService(guessDao, gameDao, guessValidator, guessNudger)
+        every { guessNudger.nudgeGuessToDeliveryDay(any(), any()) }.returns(guessTime)
 
         val response = target.guessGame(2, guessTime, "Z", mention)
         val expectedString = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
@@ -99,7 +113,10 @@ class GuessUpsertServiceTest {
         every { gameDao.findActiveGameById(any()) } returns getGameStub()
         val guessValidator = mockk<GuessValidator>()
         every { guessValidator.validateGuess(any(), any(), any(), any()) } returns null
-        target = GuessUpsertService(guessDao, gameDao, guessValidator)
+        val guessNudger = mockk<GuessNudger>()
+        every { guessNudger.nudgeGuessToDeliveryDay(any(), any()) }.returns(guessTime)
+
+        target = GuessUpsertService(guessDao, gameDao, guessValidator, guessNudger)
 
         val response = target.guessGame(4, guessTime, "Z", mention)
         val expectedString = "*\\*womp-womp*\\* Game ID #4 is not valid or is no longer active"
