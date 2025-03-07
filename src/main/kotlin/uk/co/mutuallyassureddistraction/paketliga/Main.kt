@@ -37,6 +37,8 @@ val SERVER_ID =
     )
 val DELIVERY_CHANNEL_ID = Snowflake(env("DELIVERY_CHANNEL"))
 
+val NOTIFICATION_ROLE_ID = Snowflake(env("NOTIFICATION_ROLE_ID"))
+
 private val BOT_TOKEN = env("BOT_TOKEN") // Get the bot' token from the env vars or a .env file
 
 private class PKLBOT {}
@@ -76,7 +78,8 @@ suspend fun main(args: Array<String>) {
         val voidGameService = VoidGameService(gameDao)
 
         logger.info("Creating Extensions")
-        val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
+        val createGameExtension =
+            CreateGameExtension(gameUpsertService, gameTimeParserService, NOTIFICATION_ROLE_ID, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, voidGameService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)

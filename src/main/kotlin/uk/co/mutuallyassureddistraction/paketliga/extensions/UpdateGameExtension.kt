@@ -88,7 +88,7 @@ class UpdateGameExtension(
         }
 
         val carrier by optionalString {
-            name = "description".toKey()
+            name = "carrier".toKey()
             description = "New carrier for your parcel".toKey()
         }
     }

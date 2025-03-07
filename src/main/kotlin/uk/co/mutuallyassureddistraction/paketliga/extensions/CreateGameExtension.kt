@@ -13,6 +13,7 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserSe
 class CreateGameExtension(
     private val gameUpsertService: GameUpsertService,
     private val gameTimeParserService: GameTimeParserService,
+    private val notificationRole: Snowflake,
     private val serverId: Snowflake,
 ) : Extension() {
     override val name = "createGameExtension"
@@ -41,7 +42,8 @@ class CreateGameExtension(
                         member?.asMember(),
                         user.asUser().username,
                     )
-                respond { content = responseMessage }
+
+                respond { content = responseMessage + "\n @${notificationRole.value}" }
 
                 // TODO put the logic in try/catch and add logging?
             }
