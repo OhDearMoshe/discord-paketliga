@@ -43,7 +43,7 @@ class CreateGameExtension(
                         user.asUser().username,
                     )
 
-                respond { content = responseMessage + "\n @${notificationRole.value}" }
+                respond { content = responseMessage + "\n <@${notificationRole.value}>" }
 
                 // TODO put the logic in try/catch and add logging?
             }
