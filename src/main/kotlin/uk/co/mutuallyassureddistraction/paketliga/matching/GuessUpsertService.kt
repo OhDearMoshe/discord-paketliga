@@ -3,13 +3,10 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 import java.sql.SQLException
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.slf4j.LoggerFactory
-import uk.co.mutuallyassureddistraction.paketliga.GuessCreationErrorMessage
-import uk.co.mutuallyassureddistraction.paketliga.GuessNotWithinDeliveryWindowErrorMessage
+import uk.co.mutuallyassureddistraction.paketliga.*
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Guess
-import uk.co.mutuallyassureddistraction.paketliga.gameNotValidOrActiveErrorMessage
-import uk.co.mutuallyassureddistraction.paketliga.guessCreationMessage
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessNudger
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessTime
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
@@ -44,7 +41,7 @@ class GuessUpsertService(
                     val original = e.cause as SQLException
                     when (original.sqlState) {
                         "23505" -> {
-                            errorString = GuessNotWithinDeliveryWindowErrorMessage
+                            errorString = GuessTakenErrorMessage
                         }
                         "ERRA1" -> {
                             errorString = gameNotValidOrActiveErrorMessage(gameId)

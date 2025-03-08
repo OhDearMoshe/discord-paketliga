@@ -136,6 +136,8 @@ fun guessCreationMessage(userMention: String, guessTime: GuessTime, gameId: Int)
 
 const val GuessCreationErrorMessage = "<:pressf:692833208382914571> You done goofed. Check your inputs and try again."
 
+const val GuessTakenErrorMessage = "You silly <:sausage:275920818339315712> another user has already guessed that time"
+
 const val GuessNotWithinDeliveryWindowErrorMessage = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
 
 fun gameNotValidOrActiveErrorMessage(gameId: Int) =

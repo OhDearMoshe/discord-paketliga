@@ -98,7 +98,7 @@ class GuessUpsertServiceTest {
         every { guessNudger.nudgeGuessToDeliveryDay(any(), any()) }.returns(guessTime)
 
         val response = target.guessGame(2, guessTime, "Z", mention)
-        val expectedString = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
+        val expectedString = "You silly <:sausage:275920818339315712> another user has already guessed that time"
         assertEquals(expectedString, response)
     }
 
