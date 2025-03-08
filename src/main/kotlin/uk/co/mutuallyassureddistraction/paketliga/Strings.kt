@@ -138,8 +138,6 @@ const val GuessCreationErrorMessage = "<:pressf:692833208382914571> You done goo
 
 const val GuessTakenErrorMessage = "You silly <:sausage:275920818339315712> another user has already guessed that time"
 
-const val GuessNotWithinDeliveryWindowErrorMessage = "*\\*womp-womp*\\* Your guess isn't within the delivery window"
-
 fun gameNotValidOrActiveErrorMessage(gameId: Int) =
     "*\\*womp-womp*\\* Game ID #$gameId is not valid or is no longer active"
 
@@ -172,3 +170,14 @@ val startGameStrings =
         "Eh, of course you insinuate something like that in your usual patronizing manner",
         "Evri dog has its day",
     )
+
+// Need to get this from Git and automate this at some point
+val ReleaseNotes =
+    """
+        V0.0.6
+        * Added new startup messages
+        * Added role pinging on game start
+        * Fixed error message if guessing an already guessed time
+        * Added release notes command
+    """
+        .trimIndent()

@@ -33,6 +33,7 @@ class HelpExtension(private val serverId: Snowflake) : Extension() {
                         * /pklrules -> View the rules
                         * /pklcontribute -> Raise bugs. See how to contribute
                         * /pklcredits -> View credits
+                        * /pklreleasenotes -> View release notes
                     
                         Guessing times: time guessing uses a library that is designed parse naturally spoken time
                         (things like tomorrow 11:11AM) although can sometimes be a little funny about what is parses. 
