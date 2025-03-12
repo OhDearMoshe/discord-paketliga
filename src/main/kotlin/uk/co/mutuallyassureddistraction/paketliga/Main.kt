@@ -1,6 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import dev.kordex.core.ExtensibleBot
@@ -19,6 +20,7 @@ import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.WinDao
+import uk.co.mutuallyassureddistraction.paketliga.event.GameCreatedEvent
 import uk.co.mutuallyassureddistraction.paketliga.extensions.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.results.GameResultResolver
@@ -78,8 +80,7 @@ suspend fun main(args: Array<String>) {
         val voidGameService = VoidGameService(gameDao)
 
         logger.info("Creating Extensions")
-        val createGameExtension =
-            CreateGameExtension(gameUpsertService, gameTimeParserService, NOTIFICATION_ROLE_ID, SERVER_ID)
+        val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, voidGameService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)
@@ -131,9 +132,17 @@ private fun configureBotBoot(bot: ExtensibleBot) {
     bot.on<ReadyEvent> {
         this.kord.editPresence { playing("Out for delivery") }
 
-        DELIVERY_CHANNEL_ID?.let {
+        DELIVERY_CHANNEL_ID.let {
             val message = UserMessageCreateBuilder()
             message.content = startGameStrings.random()
+            this.kord.rest.channel.createMessage(DELIVERY_CHANNEL_ID, message.toRequest())
+        }
+    }
+
+    bot.on<GameCreatedEvent> {
+        DELIVERY_CHANNEL_ID.let {
+            val message = UserMessageCreateBuilder()
+            message.content = RoleBehavior(SERVER_ID, NOTIFICATION_ROLE_ID, kord).asRole().mention
             this.kord.rest.channel.createMessage(DELIVERY_CHANNEL_ID, message.toRequest())
         }
     }

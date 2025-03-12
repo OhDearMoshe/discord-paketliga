@@ -1,14 +1,13 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import dev.kord.core.entity.Member
+import dev.kordex.core.ExtensibleBot
 import org.slf4j.LoggerFactory
-import uk.co.mutuallyassureddistraction.paketliga.GameCreationErrorMessage
+import uk.co.mutuallyassureddistraction.paketliga.*
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.DEFAULT_CARRIER
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import uk.co.mutuallyassureddistraction.paketliga.gameAnnouncementMessage
-import uk.co.mutuallyassureddistraction.paketliga.gameUpdateMessage
-import uk.co.mutuallyassureddistraction.paketliga.gameUpdatedOnlyCarrier
+import uk.co.mutuallyassureddistraction.paketliga.event.GameCreatedEvent
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.UpdateGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
@@ -18,16 +17,16 @@ class GameUpsertService(
     private val guessFinderService: GuessFinderService,
     private val gameValidator: GameValidator,
 ) {
-
     private val logger = LoggerFactory.getLogger(GameUpsertService::class.java)
 
-    fun createGame(
+    suspend fun createGame(
         userGameName: String?,
         guessWindow: GuessWindow,
         carrier: String?,
         userId: String,
         member: Member?,
         username: String,
+        bot: ExtensibleBot,
     ): String {
         try {
             val validationErrorMessage = gameValidator.validateGameCreate(guessWindow)
@@ -52,6 +51,7 @@ class GameUpsertService(
                         carrier = carrier ?: DEFAULT_CARRIER,
                     )
                 )
+            bot.send(GameCreatedEvent())
             return gameAnnouncementMessage(gameName, member, username, createdGame.gameId!!, guessWindow, carrier)
         } catch (e: Exception) {
             logger.error("Error while creating game", e)

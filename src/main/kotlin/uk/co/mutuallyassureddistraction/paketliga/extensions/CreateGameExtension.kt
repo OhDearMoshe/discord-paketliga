@@ -1,22 +1,24 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
 import dev.kord.common.entity.Snowflake
+import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.impl.optionalString
 import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
+import org.koin.core.component.inject
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 
 class CreateGameExtension(
     private val gameUpsertService: GameUpsertService,
     private val gameTimeParserService: GameTimeParserService,
-    private val notificationRole: Snowflake,
     private val serverId: Snowflake,
 ) : Extension() {
     override val name = "createGameExtension"
+    override val bot: ExtensibleBot by inject()
 
     override suspend fun setup() {
         publicSlashCommand(::PaketGameArgs) { // Public slash commands have public responses
@@ -41,11 +43,10 @@ class CreateGameExtension(
                         user.asUser().id.value.toString(),
                         member?.asMember(),
                         user.asUser().username,
+                        bot,
                     )
 
-                respond { content = responseMessage + "\n <@&${notificationRole.value}>" }
-
-                // TODO put the logic in try/catch and add logging?
+                respond { content = responseMessage }
             }
         }
     }

@@ -1,11 +1,15 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
 import dev.kord.core.entity.Member
+import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.builders.ExtensibleBotBuilder
 import io.mockk.every
 import io.mockk.mockk
 import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
@@ -20,6 +24,7 @@ class GameUpsertServiceTest {
     private lateinit var target: GameUpsertService
     private val gameValidator: GameValidator = mockk<GameValidator>()
     private val activeGame = mockk<Game>()
+    private val bot = mockk<ExtensibleBot>()
 
     private val guessWindow =
         GuessWindow(
@@ -44,6 +49,8 @@ class GameUpsertServiceTest {
         every { gameDao.updateGameTimes(any(), any(), any(), any(), any()) } returns getUpdatedGameStub()
         every { gameValidator.validateGameCreate(any()) } returns null
         every { gameValidator.validateGameUpdate(any(), any(), any(), any()) } returns null
+        every { bot.settings } returns ExtensibleBotBuilder()
+        every { bot.eventPublisher } returns MutableSharedFlow()
 
         val guessesResponse =
             arrayListOf(
@@ -61,21 +68,21 @@ class GameUpsertServiceTest {
 
     @DisplayName("createGame() if an error message is returned from validator return it")
     @Test
-    fun returnsErrorMessageWhenCreatingGame() {
+    fun returnsErrorMessageWhenCreatingGame() = runTest {
         val expectedString = "A failure"
         every { gameValidator.validateGameCreate(any()) } returns expectedString
-        val returnedString = target.createGame(null, guessWindow, DEFAULT_CARRIER, "1234", null, "ZLX")
+        val returnedString = target.createGame(null, guessWindow, DEFAULT_CARRIER, "1234", null, "ZLX", bot)
         assertEquals(expectedString, returnedString)
     }
 
     @DisplayName("createGame() will return string with gameName and member mentioned if both values are not null")
     @Test
-    fun returnStringWithNonNullGameNameAndMember() {
+    fun returnStringWithNonNullGameNameAndMember() = runTest {
         val member = mockk<Member>()
         every { member.mention } returns "Z"
         val gameName = "Random Amazon package"
 
-        val returnedString = target.createGame(gameName, guessWindow, DEFAULT_CARRIER, "1234", member, "ZLX")
+        val returnedString = target.createGame(gameName, guessWindow, DEFAULT_CARRIER, "1234", member, "ZLX", bot)
         val expectedString =
             ":postal_horn: Random Amazon package (#1) | Z's package is arriving between" +
                 " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
@@ -86,8 +93,8 @@ class GameUpsertServiceTest {
         "createGame() will return string with default 'Game' string and username if game name and member are null"
     )
     @Test
-    fun returnStringWithNullGameNameAndMember() {
-        val returnedString = target.createGame(null, guessWindow, DEFAULT_CARRIER, "1234", null, "ZLX")
+    fun returnStringWithNullGameNameAndMember() = runTest {
+        val returnedString = target.createGame(null, guessWindow, DEFAULT_CARRIER, "1234", null, "ZLX", bot)
         val expectedString =
             ":postal_horn: Game (#1) | ZLX's package is arriving between " +
                 "Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
@@ -96,12 +103,12 @@ class GameUpsertServiceTest {
 
     @DisplayName("createGame() will return string with carrier if there is one provided")
     @Test
-    fun returnStringWithCarrier() {
+    fun returnStringWithCarrier() = runTest {
         val member = mockk<Member>()
         every { member.mention } returns "Z"
         val gameName = "Random Amazon package"
 
-        val returnedString = target.createGame(gameName, guessWindow, "Amazon", "1234", member, "ZLX")
+        val returnedString = target.createGame(gameName, guessWindow, "Amazon", "1234", member, "ZLX", bot)
         val expectedString =
             ":postal_horn: Random Amazon package (#1) | Z's Amazon package is arriving between" +
                 " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
