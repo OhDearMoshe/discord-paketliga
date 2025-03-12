@@ -1,6 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.RoleBehavior
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.impl.optionalString
 import dev.kordex.core.commands.converters.impl.string
@@ -43,7 +44,10 @@ class CreateGameExtension(
                         user.asUser().username,
                     )
 
-                respond { content = responseMessage + "\n <@&${notificationRole.value}>" }
+                val kord = this@CreateGameExtension.kord
+                val pingRole = RoleBehavior(serverId, notificationRole, kord)
+
+                respond { content = responseMessage + "\n" + pingRole.mention }
 
                 // TODO put the logic in try/catch and add logging?
             }
