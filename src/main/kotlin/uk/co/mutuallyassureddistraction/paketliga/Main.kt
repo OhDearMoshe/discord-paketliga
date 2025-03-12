@@ -1,9 +1,12 @@
 package uk.co.mutuallyassureddistraction.paketliga
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.MemberBehavior
+import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.events.interfaces.RoleEvent
 import dev.kordex.core.utils.env
 import java.sql.Connection
 import java.sql.DriverManager
@@ -79,7 +82,7 @@ suspend fun main(args: Array<String>) {
 
         logger.info("Creating Extensions")
         val createGameExtension =
-            CreateGameExtension(gameUpsertService, gameTimeParserService, NOTIFICATION_ROLE_ID, SERVER_ID)
+            CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val updateGameExtension = UpdateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
         val findGamesExtension = FindGamesExtension(gameFinderService, voidGameService, SERVER_ID)
         val guessGameExtension = GuessGameExtension(guessUpsertService, guessTimeParserService, SERVER_ID)
@@ -131,9 +134,17 @@ private fun configureBotBoot(bot: ExtensibleBot) {
     bot.on<ReadyEvent> {
         this.kord.editPresence { playing("Out for delivery") }
 
-        DELIVERY_CHANNEL_ID?.let {
+        DELIVERY_CHANNEL_ID.let {
             val message = UserMessageCreateBuilder()
             message.content = startGameStrings.random()
+            this.kord.rest.channel.createMessage(DELIVERY_CHANNEL_ID, message.toRequest())
+        }
+    }
+
+    bot.on<RolePingEvent> {
+        DELIVERY_CHANNEL_ID.let {
+            val message = UserMessageCreateBuilder()
+            message.content = RoleBehavior(SERVER_ID, NOTIFICATION_ROLE_ID, kord).asRole().mention
             this.kord.rest.channel.createMessage(DELIVERY_CHANNEL_ID, message.toRequest())
         }
     }
