@@ -9,7 +9,6 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
 import org.koin.core.component.inject
-import uk.co.mutuallyassureddistraction.paketliga.RolePingEvent
 import uk.co.mutuallyassureddistraction.paketliga.matching.GameUpsertService
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.GameTimeParserService
 
@@ -44,10 +43,10 @@ class CreateGameExtension(
                         user.asUser().id.value.toString(),
                         member?.asMember(),
                         user.asUser().username,
+                        bot,
                     )
 
                 respond { content = responseMessage }
-                bot.send(RolePingEvent())
             }
         }
     }

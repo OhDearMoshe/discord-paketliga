@@ -97,7 +97,9 @@ class EndGameExtension(
         currentWinnerMember.asMember().addRole(topOfLeaderBoardRole)
 
         if (pastWinner == null || currentWinner == pastWinner) {
-            return "**" + currentWinnerMember.asMember().effectiveName + "**" +
+            return "**" +
+                currentWinnerMember.asMember().effectiveName +
+                "**" +
                 " is on top the leaderboard with " +
                 currentWinnerPoint +
                 " points"
@@ -108,11 +110,15 @@ class EndGameExtension(
         val pastWinnerMember = MemberBehavior(serverId, Snowflake(pastWinner), kord)
         pastWinnerMember.asMember().removeRole(topOfLeaderBoardRole)
 
-        return "**" + currentWinnerMember.asMember().effectiveName + "**" +
+        return "**" +
+            currentWinnerMember.asMember().effectiveName +
+            "**" +
             " is now on top the leaderboard with " +
             currentWinnerPoint +
             " points, sorry " +
-            "**" + pastWinnerMember.asMember().effectiveName + "**" +
+            "**" +
+            pastWinnerMember.asMember().effectiveName +
+            "**" +
             " better luck next time."
     }
 
