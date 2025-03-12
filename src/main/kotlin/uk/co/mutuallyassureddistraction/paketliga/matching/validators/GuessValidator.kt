@@ -1,6 +1,7 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching.validators
 
 import java.time.ZonedDateTime
+import uk.co.mutuallyassureddistraction.paketliga.GuessingInOwnGameError
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
 import uk.co.mutuallyassureddistraction.paketliga.guessOutsideOfGuessWindow
 import uk.co.mutuallyassureddistraction.paketliga.guessValidatorGameIsNullError
@@ -12,7 +13,7 @@ class GuessValidator {
         when {
             game == null -> guessValidatorGameIsNullError(gameId)
 
-            // game.userId == userId -> GuessingInOwnGameError
+            game.userId == userId -> GuessingInOwnGameError
 
             ZonedDateTime.now() >= game.guessesClose -> guessingWindowClosedError(gameId)
 

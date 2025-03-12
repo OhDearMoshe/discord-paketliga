@@ -174,10 +174,8 @@ val startGameStrings =
 // Need to get this from Git and automate this at some point
 val ReleaseNotes =
     """
-        V0.0.6
-        * Added new startup messages
-        * Added role pinging on game start
-        * Fixed error message if guessing an already guessed time
-        * Added release notes command
+        V0.0.7
+        * Fix broken role pinging on game creation
+        * Removed pings after game ending, for top of leaderboard and leaderboard change. It is now using bold instead.
     """
         .trimIndent()
