@@ -37,7 +37,8 @@ class EndGameExtension(
                 val deliveryTime = deliveryTimeParser.parse(arguments.deliverytime)
 
                 val pastWinner = leaderboardService.getLeaderboard(null, 1)
-                val (responseString, result) = gameEndService.endGame(gameId, deliveryTime)
+                val (responseString, result) =
+                    gameEndService.endGame(gameId, deliveryTime, user.asUser().id.value.toString())
                 val currentWinner = leaderboardService.getLeaderboard(null, 1)
 
                 try {

@@ -165,17 +165,18 @@ val startGameStrings =
         "Guess who's back you fucks",
         "Rumours of my demise have been greatly exaggerated",
         "Mike restarted his Plex server, I'm just a victim",
-        "Looking for pupdates",
+        "HELLO LITTLE CITRA",
         "Blobby blobby blob blob",
         "Eh, of course you insinuate something like that in your usual patronizing manner",
         "Evri dog has its day",
+        "Got caught chefposting and had to be restarted",
     )
 
 // Need to get this from Git and automate this at some point
 val ReleaseNotes =
     """
-        V0.0.7
-        * Fix broken role pinging on game creation
-        * Removed pings after game ending, for top of leaderboard and leaderboard change. It is now using bold instead.
+        V0.0.8
+        * Fixed users being able to end another users game
+        * More start game strings
     """
         .trimIndent()
