@@ -63,15 +63,23 @@ class GameEndServiceTest {
     @DisplayName("endGame() will return no games found string and empty array when no game is found")
     @Test
     fun returnStringWithNoGamesFound() {
-        val returned = target.endGame(999, deliveryTime)
+        val returned = target.endGame(999, deliveryTime, "Z")
         assertEquals(returned.first, "No games found.")
+        assertNull(returned.second)
+    }
+
+    @DisplayName("endGame() will not let another user interfere")
+    @Test
+    fun returnStringWithNotYourGGame() {
+        val returned = target.endGame(1, deliveryTime, "Moshe")
+        assertEquals(returned.first, "Mr Pump stops you from interfering with another persons mail")
         assertNull(returned.second)
     }
 
     @DisplayName("endGame() will void game id early delivery")
     @Test
     fun willVoidGameIfBeforeDeliveryWindow() {
-        val returned = target.endGame(1, deliveryTime)
+        val returned = target.endGame(1, deliveryTime, "Z")
         assertEquals(returned.first, "Package was delivered outside of the window, we're all losers this time")
         assertNull(returned.second)
     }
@@ -79,7 +87,7 @@ class GameEndServiceTest {
     @DisplayName("endGame() will void game if late delivery")
     @Test
     fun willVoidGameIAfterDeliveryWindow() {
-        val returned = target.endGame(2, deliveryTime)
+        val returned = target.endGame(2, deliveryTime, "Z")
         assertEquals(returned.first, "Package was delivered outside of the window, we're all losers this time")
         assertNull(returned.second)
     }
@@ -87,7 +95,7 @@ class GameEndServiceTest {
     @DisplayName("endGame() will return null string and array of winning guesses")
     @Test
     fun returnNullStringWithWinners() {
-        val returned = target.endGame(0, deliveryTime)
+        val returned = target.endGame(0, deliveryTime, "Z")
         assertEquals(returned.first, null)
         assertEquals(returned.second!!.winners.size, 1)
         assertEquals(returned.second!!.winners[0].userId, "Z")
@@ -96,7 +104,7 @@ class GameEndServiceTest {
     @DisplayName("endGame() will return null string and array of winning guesses if late but same day delivery")
     @Test
     fun returnNullStringWithWinnersLateAndSameDay() {
-        val returned = target.endGame(3, deliveryTime)
+        val returned = target.endGame(3, deliveryTime, "Z")
         assertEquals(returned.first, null)
         assertEquals(returned.second!!.winners.size, 1)
         assertEquals(returned.second!!.winners[0].userId, "Z")
@@ -105,7 +113,7 @@ class GameEndServiceTest {
     @DisplayName("endGame() will return null string and array of winning guesses if early but still below guess close")
     @Test
     fun returnNullStringWithWinnersEarlyGuessClose() {
-        val returned = target.endGame(4, deliveryTime)
+        val returned = target.endGame(4, deliveryTime, "Z")
         assertEquals(returned.first, null)
         assertEquals(returned.second!!.winners.size, 1)
         assertEquals(returned.second!!.winners[0].userId, "Z")
@@ -115,7 +123,7 @@ class GameEndServiceTest {
     @Test
     fun returnDeliveryTimeIsInvalidErrorMessageIfItsNotInThePast() {
         val deliveryTime = DeliveryTime(ZonedDateTime.now().plusDays(1L))
-        val returned = target.endGame(0, deliveryTime)
+        val returned = target.endGame(0, deliveryTime, "Z")
         assertEquals(
             returned.first,
             "Delivery time interpreted as being invalid: ${deliveryTime.deliveryTime.toUserFriendlyString()}, Try adding a qualifier like “11:11 **this morning**” or “5:45pm **today**” to help Dr Pakidge understand it more clearly.",

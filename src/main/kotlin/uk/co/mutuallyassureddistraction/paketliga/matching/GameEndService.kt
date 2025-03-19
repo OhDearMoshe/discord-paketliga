@@ -22,8 +22,12 @@ class GameEndService(
 ) {
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
 
-    fun endGame(gameId: Int, deliveryTime: DeliveryTime): Pair<String?, GameResult?> {
+    fun endGame(gameId: Int, deliveryTime: DeliveryTime, userId: String): Pair<String?, GameResult?> {
         var searchedGame: Game = gameDao.findActiveGameById(gameId) ?: return Pair(GameEndServiceGameIsNullError, null)
+
+        if (searchedGame.userId != userId) {
+            return Pair(ChangingAnotherUsersGameError, null)
+        }
         // 1. we check if the time is in the past, otherwise throw an error.
         if (!isDeliveryTimeInThePast(deliveryTime)) {
             return Pair(deliveryTimeInThePastErrorMessage(deliveryTime.deliveryTime), null)
