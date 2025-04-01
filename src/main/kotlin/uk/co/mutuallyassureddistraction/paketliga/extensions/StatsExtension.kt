@@ -10,10 +10,7 @@ import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
 import uk.co.mutuallyassureddistraction.paketliga.matching.StatsService
 
-class StatsExtension(
-    private val statsService: StatsService,
-    private val serverId: Snowflake
-) : Extension() {
+class StatsExtension(private val statsService: StatsService, private val serverId: Snowflake) : Extension() {
     override val name = "statsExtension"
 
     override suspend fun setup() {
@@ -25,13 +22,14 @@ class StatsExtension(
 
             action {
                 val statsType = arguments.statsType
-                if(statsType.isNullOrEmpty() || statsType == "help") {
+                if (statsType.isNullOrEmpty() || statsType == "help") {
                     respond {
                         content =
                             """
                             Choose your stats type:
                             * `gamescreated` -> Show ranks for most game created. Capitalism, baby
-                        """.trimIndent()
+                        """
+                                .trimIndent()
                     }
                 } else {
                     val kord = this@StatsExtension.kord
@@ -47,7 +45,8 @@ class StatsExtension(
                                         val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
                                         val field = EmbedBuilder.Field()
                                         field.inline = true
-                                        field.name = "# $counter : ${memberBehavior.asMember().effectiveName}" +
+                                        field.name =
+                                            "# $counter : ${memberBehavior.asMember().effectiveName}" +
                                                 " | ${it.gameCount} games created"
                                         field.value = "Most used carrier : **${it.mostCarrier}**"
                                         pageFields.add(field)

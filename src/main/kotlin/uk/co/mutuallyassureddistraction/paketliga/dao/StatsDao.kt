@@ -1,7 +1,6 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao
 
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.GameCreated
 
 interface StatsDao {
