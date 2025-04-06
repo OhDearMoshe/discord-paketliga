@@ -13,7 +13,7 @@ class StatsService(private val statsDao: StatsDao) {
         return statsDao.getMostPopularCarriers(1)
     }
 
-    fun findCarriersWithMostVoidedGames(): List<Carrier>{
+    fun findCarriersWithMostVoidedGames(): List<Carrier> {
         return statsDao.getCarriersWithMostVoidedGames(2)
     }
 

@@ -43,7 +43,8 @@ class StatsExtension(private val statsService: StatsService, private val serverI
                         Most popular carrier: ${mostPopularCarriers.carrier}
                         Most voided carrier: ${mostVoidedCarrier.carrier}
                         ```
-                        """.trimIndent()
+                        """
+                            .trimIndent()
                 }
             }
         }
