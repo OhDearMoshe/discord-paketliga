@@ -1,10 +1,8 @@
 package uk.co.mutuallyassureddistraction.paketliga.extensions
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.behavior.MemberBehavior
-import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kordex.core.commands.Arguments
-import dev.kordex.core.commands.converters.impl.optionalString
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.toKey
@@ -14,70 +12,44 @@ class StatsExtension(private val statsService: StatsService, private val serverI
     override val name = "statsExtension"
 
     override suspend fun setup() {
-        publicSlashCommand(::StatsArgs) {
+        publicSlashCommand {
             name = "pklstats".toKey()
             description = "View PaketLiga stats".toKey()
 
             guild(serverId)
 
             action {
-                val statsType = arguments.statsType
-                if (statsType.isNullOrEmpty() || statsType == "help") {
-                    respond {
-                        content =
-                            """
-                            Choose your stats type:
-                            * `gamescreated` -> Show ranks for most game created. Capitalism, baby
+                val kord = this@StatsExtension.kord
+
+                respond {
+                    val mostGamesByUser = statsService.findCreatedGamesByUsers().first()
+                    val mostPopularCarriers = statsService.findMostPopularCarriers().first()
+                    val mostVoidedGamesByUser = statsService.findUsersWithMostVoidedGames().first()
+
+                    val mostVoidedCarriers = statsService.findCarriersWithMostVoidedGames()
+                    val mostVoidedCarrier =
+                        if (mostVoidedCarriers.first().carrier == "N/A" && mostVoidedCarriers.size > 1) {
+                            mostVoidedCarriers[1]
+                        } else {
+                            mostVoidedCarriers.first()
+                        }
+
+                    content =
                         """
-                                .trimIndent()
-                    }
-                } else {
-                    val kord = this@StatsExtension.kord
-                    when (statsType.lowercase()) {
-                        "gamescreated" -> {
-                            val gameCreated = statsService.findCreatedGames()
-
-                            val paginator = respondingPaginator {
-                                var counter = 1
-                                gameCreated.chunked(10).map { response ->
-                                    val pageFields = ArrayList<EmbedBuilder.Field>()
-                                    response.forEach {
-                                        val memberBehavior = MemberBehavior(serverId, Snowflake(it.userId), kord)
-                                        val field = EmbedBuilder.Field()
-                                        field.inline = true
-                                        field.name =
-                                            "# $counter : ${memberBehavior.asMember().effectiveName}" +
-                                                " | ${it.gameCount} games created"
-                                        field.value = "Most used carrier : **${it.mostCarrier}**"
-                                        pageFields.add(field)
-                                        counter++
-                                    }
-
-                                    page {
-                                        title = "PaketLiga - Number of Games Created: "
-                                        fields = pageFields
-                                    }
-                                }
-                                timeoutSeconds = 20L
-                            }
-                            paginator.send()
-                        }
-                        else -> {
-                            respond {
-                                ephemeral
-                                content = "No stats of type $statsType found"
-                            }
-                        }
-                    }
+                        :postal_horn: PaketLiga General Stats :postal_horn:
+                        ```
+                        User with most games: ${getMemberNameFromUserId(mostGamesByUser.userId, kord)}
+                        User with most voided games: ${getMemberNameFromUserId(mostVoidedGamesByUser.userId, kord)}
+                        Most popular carrier: ${mostPopularCarriers.carrier}
+                        Most voided carrier: ${mostVoidedCarrier.carrier}
+                        ```
+                        """.trimIndent()
                 }
             }
         }
     }
 
-    inner class StatsArgs : Arguments() {
-        val statsType by optionalString {
-            name = "type".toKey()
-            description = "Stats type to return".toKey()
-        }
+    private suspend fun getMemberNameFromUserId(userId: String, kord: Kord): String {
+        return MemberBehavior(serverId, Snowflake(userId), kord).asMember().effectiveName
     }
 }

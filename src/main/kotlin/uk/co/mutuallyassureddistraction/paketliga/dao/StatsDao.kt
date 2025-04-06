@@ -1,25 +1,57 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao
 
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.GameCreated
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Carrier
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.UserGame
 
 interface StatsDao {
     @SqlQuery(
         """
-        SELECT a.userId, COUNT(userId) as gameCount,
-            (
-                SELECT carrier mostCarrier
-                FROM Game g
-                WHERE g.userId = a.userId
-                GROUP BY carrier
-                ORDER BY COUNT(carrier) DESC
-                LIMIT 1
-            )
-        FROM Game a
-        GROUP BY a.userId
+        SELECT userId, COUNT(userId) as gameCount
+        FROM Game
+        GROUP BY userId
         ORDER BY gameCount
         DESC
+        LIMIT :limit;
     """
     )
-    fun getGameCreatedSortedByCountDesc(): List<GameCreated>
+    fun getGamesCreatedByUsers(limit: Int?): List<UserGame>
+
+    @SqlQuery(
+        """
+        SELECT carrier, count(carrier) as carrierCount
+        FROM Game
+        GROUP BY carrier
+        ORDER BY carrierCount
+        DESC
+        LIMIT :limit;
+    """
+    )
+    fun getMostPopularCarriers(limit: Int?): List<Carrier>
+
+    @SqlQuery(
+        """
+        SELECT carrier, count(carrier) as carrierCount
+        FROM Game
+        WHERE gameVoided = 'TRUE'
+        GROUP BY carrier
+        ORDER BY carrierCount
+        DESC
+        LIMIT :limit;
+    """
+    )
+    fun getCarriersWithMostVoidedGames(limit: Int?): List<Carrier>
+
+    @SqlQuery(
+        """
+        SELECT userId, COUNT(userId) as gameCount
+        FROM Game
+        WHERE gameVoided = 'TRUE'
+        GROUP BY userId
+        ORDER BY gameCount
+        DESC
+        LIMIT :limit;
+    """
+    )
+    fun getUsersWithMostVoidedGames(limit: Int?): List<UserGame>
 }

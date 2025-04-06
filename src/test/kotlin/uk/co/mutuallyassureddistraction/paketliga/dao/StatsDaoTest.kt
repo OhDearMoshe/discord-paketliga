@@ -1,13 +1,14 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao
 
-import java.time.ZonedDateTime
-import kotlin.test.assertEquals
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Carrier
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Game
-import uk.co.mutuallyassureddistraction.paketliga.dao.entity.GameCreated
+import uk.co.mutuallyassureddistraction.paketliga.dao.entity.UserGame
+import java.time.ZonedDateTime
+import kotlin.test.assertEquals
 
 class StatsDaoTest {
     private lateinit var target: StatsDao
@@ -27,13 +28,36 @@ class StatsDaoTest {
         testWrapper.stopContainers()
     }
 
-    @DisplayName("getGameCreatedSortedByCountDesc() will successfully return userId and count of game created")
+    @DisplayName("getGamesCreatedByUsers() will successfully return userId and count of game created")
     @Test
-    fun canSuccessfullyGetGameCreatedSortedByCountDesc() {
-        val searchedStats: List<GameCreated> = target.getGameCreatedSortedByCountDesc()
+    fun canSuccessfullyGetGamesCreatedByUsers() {
+        val searchedStats: List<UserGame> = target.getGamesCreatedByUsers(1)
         assertEquals(searchedStats.first().userId, "Z")
         assertEquals(searchedStats.first().gameCount, 1)
-        assertEquals(searchedStats.first().mostCarrier, "N/A")
+    }
+
+    @DisplayName("getMostPopularCarriers() will successfully return carrier and count of carriers")
+    @Test
+    fun canSuccessfullyGetMostPopularCarriers() {
+        val searchedStats: List<Carrier> = target.getMostPopularCarriers(1)
+        assertEquals(searchedStats.first().carrier, "N/A")
+        assertEquals(searchedStats.first().carrierCount, 1)
+    }
+
+    @DisplayName("getCarriersWithMostVoidedGames() will successfully return carrier and count of most voided carriers")
+    @Test
+    fun canSuccessfullyGetCarriersWithMostVoidedGames() {
+        val searchedStats: List<Carrier> = target.getCarriersWithMostVoidedGames(1)
+        assertEquals(searchedStats.first().carrier, "N/A")
+        assertEquals(searchedStats.first().carrierCount, 1)
+    }
+
+    @DisplayName("getUsersWithMostVoidedGames() will successfully return carrier and count of most voided carriers")
+    @Test
+    fun canSuccessfullyGetUsersWithMostVoidedGames() {
+        val searchedStats: List<UserGame> = target.getUsersWithMostVoidedGames(1)
+        assertEquals(searchedStats.first().userId, "Z")
+        assertEquals(searchedStats.first().gameCount, 1)
     }
 
     private fun createGame() {
@@ -47,6 +71,7 @@ class StatsDaoTest {
                 deliveryTime = null,
                 userId = "Z",
                 carrier = "N/A",
+                gameVoided = true,
                 gameActive = true,
             )
         gameDao.createGame(game)

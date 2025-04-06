@@ -1,3 +1,11 @@
 package uk.co.mutuallyassureddistraction.paketliga.dao.entity
 
-data class GameCreated(val userId: String, val gameCount: Int, val mostCarrier: String)
+data class UserGame(
+    val userId: String,
+    val gameCount: Int
+)
+
+data class Carrier(
+    val carrier: String,
+    val carrierCount: Int
+)
