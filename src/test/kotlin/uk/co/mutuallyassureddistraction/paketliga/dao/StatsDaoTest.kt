@@ -33,14 +33,14 @@ class StatsDaoTest {
     fun canSuccessfullyGetGamesCreatedByUsers() {
         val searchedStats: List<UserGame> = target.getGamesCreatedByUsers(1)
         assertEquals(searchedStats.first().userId, "Z")
-        assertEquals(searchedStats.first().gameCount, 1)
+        assertEquals(searchedStats.first().gameCount, 2)
     }
 
     @DisplayName("getMostPopularCarriers() will successfully return carrier and count of carriers")
     @Test
     fun canSuccessfullyGetMostPopularCarriers() {
         val searchedStats: List<Carrier> = target.getMostPopularCarriers(1)
-        assertEquals(searchedStats.first().carrier, "N/A")
+        assertEquals(searchedStats.first().carrier, "Amazon")
         assertEquals(searchedStats.first().carrierCount, 1)
     }
 
@@ -48,7 +48,7 @@ class StatsDaoTest {
     @Test
     fun canSuccessfullyGetCarriersWithMostVoidedGames() {
         val searchedStats: List<Carrier> = target.getCarriersWithMostVoidedGames(1)
-        assertEquals(searchedStats.first().carrier, "N/A")
+        assertEquals(searchedStats.first().carrier, "Amazon")
         assertEquals(searchedStats.first().carrierCount, 1)
     }
 
@@ -57,7 +57,7 @@ class StatsDaoTest {
     fun canSuccessfullyGetUsersWithMostVoidedGames() {
         val searchedStats: List<UserGame> = target.getUsersWithMostVoidedGames(1)
         assertEquals(searchedStats.first().userId, "Z")
-        assertEquals(searchedStats.first().gameCount, 1)
+        assertEquals(searchedStats.first().gameCount, 2)
     }
 
     private fun createGame() {
@@ -74,6 +74,20 @@ class StatsDaoTest {
                 gameVoided = true,
                 gameActive = true,
             )
+        val gameTwo =
+            Game(
+                gameId = 2,
+                gameName = "A random game name for test",
+                windowStart = ZonedDateTime.parse("2023-04-07T09:00:00.000Z[Europe/London]"),
+                windowClose = ZonedDateTime.parse("2023-04-07T17:00:00.000Z[Europe/London]"),
+                guessesClose = ZonedDateTime.parse("2023-04-07T12:00:00.000Z[Europe/London]"),
+                deliveryTime = null,
+                userId = "Z",
+                carrier = "Amazon",
+                gameVoided = true,
+                gameActive = true,
+            )
         gameDao.createGame(game)
+        gameDao.createGame(gameTwo)
     }
 }

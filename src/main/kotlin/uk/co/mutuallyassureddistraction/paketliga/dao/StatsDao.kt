@@ -21,6 +21,7 @@ interface StatsDao {
         """
         SELECT carrier, count(carrier) as carrierCount
         FROM Game
+        WHERE carrier != 'N/A'
         GROUP BY carrier
         ORDER BY carrierCount
         DESC
@@ -34,6 +35,7 @@ interface StatsDao {
         SELECT carrier, count(carrier) as carrierCount
         FROM Game
         WHERE gameVoided = 'TRUE'
+        AND carrier != 'N/A'
         GROUP BY carrier
         ORDER BY carrierCount
         DESC
