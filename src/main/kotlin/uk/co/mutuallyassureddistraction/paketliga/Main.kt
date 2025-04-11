@@ -16,10 +16,7 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
 import org.slf4j.LoggerFactory
-import uk.co.mutuallyassureddistraction.paketliga.dao.GameDao
-import uk.co.mutuallyassureddistraction.paketliga.dao.GuessDao
-import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
-import uk.co.mutuallyassureddistraction.paketliga.dao.WinDao
+import uk.co.mutuallyassureddistraction.paketliga.dao.*
 import uk.co.mutuallyassureddistraction.paketliga.event.GameCreatedEvent
 import uk.co.mutuallyassureddistraction.paketliga.extensions.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.*
@@ -60,6 +57,7 @@ suspend fun main(args: Array<String>) {
         val guessDao = jdbi.onDemand<GuessDao>()
         val pointDao = jdbi.onDemand<PointDao>()
         val winDao = jdbi.onDemand<WinDao>()
+        val statsDao = jdbi.onDemand<StatsDao>()
         logger.info("Init Services")
         // Validators
         val gameValidator = GameValidator()
@@ -78,6 +76,7 @@ suspend fun main(args: Array<String>) {
         val gameEndService = GameEndService(guessDao, gameDao, gameResultResolver, pointUpdaterService)
         val leaderboardService = LeaderboardService(pointDao)
         val voidGameService = VoidGameService(gameDao)
+        val statsService = StatsService(statsDao)
 
         logger.info("Creating Extensions")
         val createGameExtension = CreateGameExtension(gameUpsertService, gameTimeParserService, SERVER_ID)
@@ -94,6 +93,7 @@ suspend fun main(args: Array<String>) {
         val rulesExtension = RulesExtension(SERVER_ID)
         val creditsExtension = CreditsExtension(SERVER_ID)
         val releaseNotesExtension = ReleaseNotesExtension(SERVER_ID)
+        val statsExtension = StatsExtension(statsService, SERVER_ID)
 
         logger.info("Creating bot")
         val bot =
@@ -117,6 +117,7 @@ suspend fun main(args: Array<String>) {
                     add { rulesExtension }
                     add { creditsExtension }
                     add { releaseNotesExtension }
+                    add { statsExtension }
                 }
             }
 
