@@ -94,7 +94,11 @@ fun gameAnnouncementMessage(
     if (carrier != null && carrier != DEFAULT_CARRIER) {
         userCarrier = "$carrier "
     }
-    return ":postal_horn: ${gameNameStringMaker(gameName, gameId)} | ${member?.mention ?: username}'s ${userCarrier}package is arriving " +
+    var announceEmoji = ":postal_horn:"
+    if (gameId.toString().endsWith("69")) {
+        announceEmoji = "<:noice:831631016891514950>"
+    }
+    return "$announceEmoji ${gameNameStringMaker(gameName, gameId)} | ${member?.mention ?: username}'s ${userCarrier}package is arriving " +
         "between ${guessWindow.startAsHumanFriendlyString()} and " +
         "${guessWindow.endAsHumanFriendlyString()}. " +
         "Guesses accepted until ${guessWindow.deadlineAsHumanFriendlyString()}"

@@ -25,6 +25,7 @@ class GameUpsertServiceTest {
     private val gameValidator: GameValidator = mockk<GameValidator>()
     private val activeGame = mockk<Game>()
     private val bot = mockk<ExtensibleBot>()
+    private val gameDao = mockk<GameDao>()
 
     private val guessWindow =
         GuessWindow(
@@ -42,7 +43,6 @@ class GameUpsertServiceTest {
 
     @BeforeEach
     fun setUp() {
-        val gameDao = mockk<GameDao>()
         val guessFinderService = mockk<GuessFinderService>()
         every { gameDao.createGame(any()) } returns getGameStub()
         every { gameDao.findActiveGameById(1) } returns activeGame
@@ -85,6 +85,38 @@ class GameUpsertServiceTest {
         val returnedString = target.createGame(gameName, guessWindow, DEFAULT_CARRIER, "1234", member, "ZLX", bot)
         val expectedString =
             ":postal_horn: Random Amazon package (#1) | Z's package is arriving between" +
+                " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+        assertEquals(expectedString, returnedString)
+    }
+
+    @DisplayName("createGame() will return string with gameName with noice if game number is 69")
+    @Test
+    fun returnStringWithNoice() = runTest {
+        val member = mockk<Member>()
+        every { member.mention } returns "Z"
+        val gameName = "Random Amazon package"
+
+        every { gameDao.createGame(any()) } returns getGameStub().copy(gameId = 69)
+
+        val returnedString = target.createGame(gameName, guessWindow, DEFAULT_CARRIER, "1234", member, "ZLX", bot)
+        val expectedString =
+            "<:noice:831631016891514950> Random Amazon package (#69) | Z's package is arriving between" +
+                " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
+        assertEquals(expectedString, returnedString)
+    }
+
+    @DisplayName("createGame() will return string with gameName with noice if game number is 269")
+    @Test
+    fun returnStringWithANoiceEnding() = runTest {
+        val member = mockk<Member>()
+        every { member.mention } returns "Z"
+        val gameName = "Random Amazon package"
+
+        every { gameDao.createGame(any()) } returns getGameStub().copy(gameId = 269)
+
+        val returnedString = target.createGame(gameName, guessWindow, DEFAULT_CARRIER, "1234", member, "ZLX", bot)
+        val expectedString =
+            "<:noice:831631016891514950> Random Amazon package (#269) | Z's package is arriving between" +
                 " Tue 15 Oct 19:00 and Tue 15 Oct 20:00. Guesses accepted until Tue 15 Oct 18:00"
         assertEquals(expectedString, returnedString)
     }
