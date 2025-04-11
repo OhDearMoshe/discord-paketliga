@@ -174,6 +174,15 @@ val startGameStrings =
         "Eh, of course you insinuate something like that in your usual patronizing manner",
         "Evri dog has its day",
         "Got caught chefposting and had to be restarted",
+        "Noot Noot!!! <:nootnoot:340091832924897282> ",
+        "Understandable. Have a nice day",
+        "Factory resetting my phone… If I don’t make it back tell TV chef I love him",
+        "HA HA! BUSINESS",
+        "Well now I’m not doing it",
+        "It was DNS",
+        "Choo-choo motherfucker!",
+        "Someone put 20p in the meter",
+        "Yeah. I’m thinking I’m back",
     )
 
 // Need to get this from Git and automate this at some point
@@ -182,5 +191,6 @@ val ReleaseNotes =
         V0.0.8
         * Fixed users being able to end another users game
         * More start game strings
+        * Added basic stats
     """
         .trimIndent()
