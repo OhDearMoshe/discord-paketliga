@@ -170,6 +170,8 @@ val startGameStrings =
         "Eh, of course you insinuate something like that in your usual patronizing manner",
         "Evri dog has its day",
         "Got caught chefposting and had to be restarted",
+        "Noot Noot!!!",
+        "Understandable. Have a nice day",
     )
 
 // Need to get this from Git and automate this at some point
