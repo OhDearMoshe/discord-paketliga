@@ -32,6 +32,7 @@ val CreditsExtensionMessage =
 * For Moshe, who did contribute at some point he swears
 * For Kjmci for product consultation
 * For Wraith, TooDeep and DangerZone for excellent QA
+* For Capybara whom did yet more excellent QA
 """
         .trimIndent()
 
@@ -183,14 +184,14 @@ val startGameStrings =
         "Choo-choo motherfucker!",
         "Someone put 20p in the meter",
         "Yeah. I’m thinking I’m back",
+        "Is that a packidge in your pocket or are you just happy to see me",
     )
 
 // Need to get this from Git and automate this at some point
 val ReleaseNotes =
     """
-        V0.0.8
-        * Fixed users being able to end another users game
+        V0.0.9
+        * Updated credits
         * More start game strings
-        * Added basic stats
     """
         .trimIndent()
