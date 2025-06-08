@@ -17,7 +17,7 @@ class TimeParser {
     }
 
     fun parseDate(dateString: String): ZonedDateTime {
-        val parsedDate = parser.parse(dateString, Date(), hawkingConfiguration, "eng")
+        val parsedDate = parser.parse(nudgeDateString(dateString), Date(), hawkingConfiguration, "eng")
         val dateText = parsedDate.parserOutputs.first().dateRange.startDateFormat
         return fromParsedHawkingString(dateText).withSecond(0)
     }
@@ -28,8 +28,15 @@ class TimeParser {
         val date = Date()
         date.hours = 2
         date.minutes = 0
-        val parsedDate = parser.parse(dateString, date, hawkingConfiguration, "eng")
+        val parsedDate = parser.parse(nudgeDateString(dateString), date, hawkingConfiguration, "eng")
         val dateText = parsedDate.parserOutputs.first().dateRange.startDateFormat
         return fromParsedHawkingString(dateText).withSecond(0)
+    }
+
+    fun nudgeDateString(dateString: String): String {
+        return when (dateString) {
+            "10:10" -> "$dateString am"
+            else -> dateString
+        }
     }
 }
