@@ -193,5 +193,7 @@ val ReleaseNotes =
         V0.0.9
         * Updated credits
         * More start game strings
+        * Fixed that darn 10:10 issue
+        * Added a translation bin to nudge known problematic strings
     """
         .trimIndent()
