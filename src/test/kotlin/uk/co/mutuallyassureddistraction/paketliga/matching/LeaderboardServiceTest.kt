@@ -52,7 +52,7 @@ class LeaderboardServiceTest {
         target = LeaderboardService(pointDao)
 
         val points = target.getLeaderboard(null, null)
-        assertEquals(points.size, 3)
+        assertEquals(points.size, 4)
         assertEquals(points[0].userId, "Y")
         assertEquals(points[1].userId, "W")
         assertEquals(points[2].userId, "X")
