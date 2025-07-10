@@ -10,7 +10,7 @@ class LeaderboardService(private val pointDao: PointDao) {
     fun getLeaderboard(userId: String?, limit: Int?): List<Point> {
         try {
             if (userId == null) {
-                return pointDao.getPointsSortedByTotalPointsDesc(limit)
+                return sortByWinsAndPlayedRatio(pointDao.getPointsSortedByTotalPointsDesc(limit))
             }
 
             val userPoint = pointDao.getPointByUserId(userId)
@@ -21,5 +21,22 @@ class LeaderboardService(private val pointDao: PointDao) {
         }
 
         return arrayListOf()
+    }
+
+    private fun sortByWinsAndPlayedRatio(points: List<Point>): List<Point> {
+        val comparator = Comparator { p1: Point, p2: Point ->
+            if (p1.totalPoint.equals(p2.totalPoint)) {
+                val p1Ratio = p1.won.toBigDecimal().divide(p1.played.toBigDecimal())
+                val p2Ratio = p2.won.toBigDecimal().divide(p2.played.toBigDecimal())
+
+                return@Comparator p2Ratio.compareTo(p1Ratio)
+            }
+
+            return@Comparator p2.totalPoint.compareTo(p1.totalPoint)
+        }
+
+        val copy = arrayListOf<Point>().apply { addAll(points) }
+        copy.sortWith(comparator)
+        return copy
     }
 }
