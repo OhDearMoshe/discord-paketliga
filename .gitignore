@@ -122,3 +122,4 @@ outTmp/
 /kotlin-native/dist
 kotlin-ide/
 .idea
+/data/

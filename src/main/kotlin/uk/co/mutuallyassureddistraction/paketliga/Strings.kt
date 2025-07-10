@@ -190,10 +190,7 @@ val startGameStrings =
 // Need to get this from Git and automate this at some point
 val ReleaseNotes =
     """
-        V0.0.9
-        * Updated credits
-        * More start game strings
-        * Fixed that darn 10:10 issue
-        * Added a translation bin to nudge known problematic strings
+        V0.0.10
+        * Added Leaderboard sorting based on wins : played ratio
     """
         .trimIndent()
