@@ -3,6 +3,7 @@ package uk.co.mutuallyassureddistraction.paketliga.matching
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Point
+import java.math.RoundingMode
 
 class LeaderboardService(private val pointDao: PointDao) {
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
@@ -26,8 +27,8 @@ class LeaderboardService(private val pointDao: PointDao) {
     private fun sortByWinsAndPlayedRatio(points: List<Point>): List<Point> {
         val comparator = Comparator { p1: Point, p2: Point ->
             if (p1.totalPoint.equals(p2.totalPoint)) {
-                val p1Ratio = p1.won.toBigDecimal().divide(p1.played.toBigDecimal())
-                val p2Ratio = p2.won.toBigDecimal().divide(p2.played.toBigDecimal())
+                val p1Ratio = p1.won.toBigDecimal().divide(p1.played.toBigDecimal(), 4, RoundingMode.FLOOR)
+                val p2Ratio = p2.won.toBigDecimal().divide(p2.played.toBigDecimal(), 4, RoundingMode.FLOOR)
 
                 return@Comparator p2Ratio.compareTo(p1Ratio)
             }
