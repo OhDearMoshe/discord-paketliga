@@ -1,9 +1,9 @@
 package uk.co.mutuallyassureddistraction.paketliga.matching
 
+import java.math.RoundingMode
 import org.slf4j.LoggerFactory
 import uk.co.mutuallyassureddistraction.paketliga.dao.PointDao
 import uk.co.mutuallyassureddistraction.paketliga.dao.entity.Point
-import java.math.RoundingMode
 
 class LeaderboardService(private val pointDao: PointDao) {
     private val logger = LoggerFactory.getLogger(LeaderboardService::class.java)
