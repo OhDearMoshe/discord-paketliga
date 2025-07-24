@@ -48,14 +48,16 @@ class LeaderboardServiceTest {
                 Point(3, "X", 8, 3, 0, 0, 0, 3F),
                 Point(2, "Y", 3, 3, 0, 0, 0, 3F),
                 Point(1, "Z", 1, 1, 1, 0, 0, 1F),
+                Point(1, "V", 7, 3, 4, 0, 0, 3F),
             )
         target = LeaderboardService(pointDao)
 
         val points = target.getLeaderboard(null, null)
-        assertEquals(points.size, 4)
+        assertEquals(points.size, 5)
         assertEquals(points[0].userId, "Y")
         assertEquals(points[1].userId, "W")
-        assertEquals(points[2].userId, "X")
-        assertEquals(points[3].userId, "Z")
+        assertEquals(points[2].userId, "V")
+        assertEquals(points[3].userId, "X")
+        assertEquals(points[4].userId, "Z")
     }
 }
