@@ -25,6 +25,9 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterS
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
+import uk.co.mutuallyassureddistraction.paketliga.services.StaleGameCullService
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 
 val PG_JDBC_URL = env("POSTGRES_JDBC_URL")
 val PG_USERNAME = env("POSTGRES_USERNAME")
@@ -94,6 +97,12 @@ suspend fun main(args: Array<String>) {
         val creditsExtension = CreditsExtension(SERVER_ID)
         val releaseNotesExtension = ReleaseNotesExtension(SERVER_ID)
         val statsExtension = StatsExtension(statsService, SERVER_ID)
+
+        val staleGameCullService = StaleGameCullService(gameDao)
+
+        Timer("GameCullTimer", true).schedule(TimeUnit.HOURS.toMillis(24)) {
+            staleGameCullService.cullStaleGames()
+        }
 
         logger.info("Creating bot")
         val bot =
