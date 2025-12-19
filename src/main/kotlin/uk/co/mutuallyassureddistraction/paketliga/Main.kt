@@ -25,6 +25,7 @@ import uk.co.mutuallyassureddistraction.paketliga.matching.results.PointUpdaterS
 import uk.co.mutuallyassureddistraction.paketliga.matching.time.*
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GameValidator
 import uk.co.mutuallyassureddistraction.paketliga.matching.validators.GuessValidator
+import uk.co.mutuallyassureddistraction.paketliga.scheduler.SeasonScheduler
 
 val PG_JDBC_URL = env("POSTGRES_JDBC_URL")
 val PG_USERNAME = env("POSTGRES_USERNAME")
@@ -121,8 +122,9 @@ suspend fun main(args: Array<String>) {
                 }
             }
 
+        val seasonName = SeasonScheduler().scheduleEndOfSeason()
         configureBotBoot(bot)
-        logger.info("Starting Bot. Beep boop")
+        println("Starting Bot. Beep boop. Season: $seasonName")
         bot.start()
     }
 
