@@ -1,9 +1,9 @@
 package uk.co.mutuallyassureddistraction.paketliga.scheduler
 
+import java.time.LocalDateTime
 import org.quartz.impl.StdSchedulerFactory
 import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.Yaml
-import java.time.LocalDateTime
 
 class SeasonScheduler {
     fun scheduleEndOfSeason(): String {
@@ -19,9 +19,9 @@ class SeasonScheduler {
         val now = LocalDateTime.now()
         var seasonName: String? = ""
 
-        for(season in config.seasons) {
+        for (season in config.seasons) {
             val endDateTime = LocalDateTime.parse(season.endDate)
-            if(endDateTime.isBefore(now)) {
+            if (endDateTime.isBefore(now)) {
                 logger.info("Skipping ${season.seasonName}: Already passed (${season.endDate})")
                 continue
             }
