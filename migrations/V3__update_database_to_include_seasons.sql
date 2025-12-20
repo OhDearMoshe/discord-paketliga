@@ -11,7 +11,7 @@ INSERT INTO SEASON VALUES(
     1,
     'PaketLiga Original Season',
     to_timestamp('22/02/2025', 'DD/MM/YYYY'),
-    to_timestamp('21 Dec 2025 15:03 GMT', 'DD Mon YYYY HH24:MI TZR'),
+    to_timestamp('21 Dec 2025 15:03:00', 'DD Mon YYYY HH24:MI:SS'),
     true
 );
 
