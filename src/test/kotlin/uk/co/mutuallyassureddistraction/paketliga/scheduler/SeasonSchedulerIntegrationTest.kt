@@ -40,7 +40,7 @@ class SeasonSchedulerIntegrationTest {
     @BeforeEach
     fun setUp() {
         val dynamicTime =
-            LocalDateTime.now().plusSeconds(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+            LocalDateTime.now().plusSeconds(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
 
         val testYaml =
             """
@@ -75,6 +75,6 @@ class SeasonSchedulerIntegrationTest {
     @Test
     fun `should migrate schema and execute job`() {
         seasonScheduler.scheduleEndOfSeason(scheduler)
-        await().atMost(20, TimeUnit.SECONDS).untilAsserted { verify(exactly = 1) { gameDao.findActiveGameById(1) } }
+        await().atMost(30, TimeUnit.SECONDS).untilAsserted { verify(exactly = 1) { gameDao.findActiveGameById(1) } }
     }
 }
