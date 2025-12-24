@@ -1,0 +1,11 @@
+seasons:
+  - seasonName: "2025 - December Solstice"
+    endDate: "2025-12-21T15:03"
+  - seasonName: "2026 - March Equinox"
+    endDate: "2025-03-20T14:46"
+  - seasonName: "2026 - June Solstice"
+    endDate: "2025-06-21T09:24"
+  - seasonName: "2026 - September Equinox"
+    endDate: "2025-09-23T01:05"
+  - seasonName: "2026 - December Solstice"
+    endDate: "2025-12-21T20:50"

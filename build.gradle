@@ -7,10 +7,10 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '2.1.21'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
     id "org.flywaydb.flyway" version "10.0.0"
     id "com.ncorti.ktfmt.gradle" version "0.21.0"
-    id("dev.kordex.gradle.kordex") version "1.6.2"
+    id("dev.kordex.gradle.kordex") version "1.8.1"
 }
 
 group = 'uk.co.mutuallyassureddistraction'
@@ -22,6 +22,7 @@ def jdbi_version = '3.37.1'
 def kotlin_reflect_version = '1.8.20'
 def hawking_version = '0.1.9'
 def postgres_kt_version = '0.9.3'
+def quartz_version = '2.5.2'
 
 // TEST
 def test_container_version = '1.17.6'
@@ -33,6 +34,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect_version"
     implementation "com.zoho:hawking:$hawking_version"
     implementation "io.github.jan-tennert.supabase:postgrest-kt:$postgres_kt_version"
+    implementation "org.quartz-scheduler:quartz:$quartz_version"
+    implementation "org.yaml:snakeyaml:2.2"
 
     // Data Access
     implementation "org.jdbi:jdbi3-core:$jdbi_version"
@@ -64,7 +67,7 @@ kotlin {
 }
 
 application {
-    mainClassName = 'uk.co.mutuallyassureddistraction.paketliga.MainKt'
+    mainClass.set('uk.co.mutuallyassureddistraction.paketliga.MainKt')
 }
 
 jar {
