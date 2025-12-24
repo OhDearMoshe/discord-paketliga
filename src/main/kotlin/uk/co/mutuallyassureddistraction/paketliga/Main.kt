@@ -124,7 +124,7 @@ suspend fun main(args: Array<String>) {
 
         val seasonName = SeasonScheduler().scheduleEndOfSeason()
         configureBotBoot(bot)
-        println("Starting Bot. Beep boop. Season: $seasonName")
+        logger.info("Starting Bot. Beep boop. Season: $seasonName")
         bot.start()
     }
 
